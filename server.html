@@ -1,0 +1,1167 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>サーバー側の守りの旅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaf2f8; --surface:#ffffff; --surface-2:#e1eff6; --ink:#0d1b2a; --ink-2:#4a5d75; --line:#c8d5e4;
+  --accent:#0891b2; --accent-soft:rgba(8,145,178,.12); --answer:#d97706; --answer-soft:rgba(217,119,6,.13); --ok:#15803d; --ok-soft:rgba(21,128,61,.12);
+  --ground:#e3ebf4; --zone-home:rgba(21,128,61,.09); --zone-isp:rgba(8,145,178,.1); --zone-net:rgba(217,119,6,.09);
+  --grid:rgba(8,145,178,.07); --glow:0 0 0 1px rgba(8,145,178,.4),0 0 16px rgba(8,145,178,.15); --on-accent:#ffffff;
+  --shadow:0 1px 2px rgba(13,27,42,.06),0 6px 18px rgba(13,27,42,.07);
+  --board-grid:rgba(8,145,178,.14); --board-edge:#b9cadc;
+  --z-home:rgba(21,128,61,.13); --z-home-edge:#15803d; --z-isp:rgba(8,145,178,.15); --z-isp-edge:#0e7490;
+  --z-net:rgba(217,119,6,.13); --z-net-edge:#b45309; --z-web:rgba(124,58,237,.11); --z-web-edge:#6d28d9;
+  --accent2:#7c3aed;
+  --wash:radial-gradient(1100px 620px at 0% 0%,rgba(8,145,178,.16),transparent 62%),radial-gradient(900px 560px at 100% 25%,rgba(124,58,237,.12),transparent 60%),radial-gradient(1000px 640px at 40% 100%,rgba(217,119,6,.10),transparent 60%);
+  --strip:linear-gradient(90deg,#06b6d4,#7c3aed 55%,#f59e0b);
+  --bar-bg:linear-gradient(90deg,rgba(8,145,178,.12),rgba(124,58,237,.09));
+  --primary-bg:linear-gradient(135deg,#0891b2,#4f46e5);
+  --num-bg:linear-gradient(135deg,#0891b2,#7c3aed); --num-fg:#ffffff;
+  --h1-grad:linear-gradient(90deg,#0d1b2a 20%,#0891b2 60%,#7c3aed);
+  --subh-bar:linear-gradient(#0891b2,#7c3aed);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.85;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:48px 0 12px}
+.kicker{font-size:13px;color:var(--ink-2);letter-spacing:.08em}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.35;margin:6px 0 12px}
+h2{font-size:clamp(20px,3.6vw,26px);margin:56px 0 8px;line-height:1.4}
+h2 .num{display:inline-block;font-size:14px;color:var(--accent);margin-right:8px;font-family:"JetBrains Mono",monospace}
+p{margin:.6em 0}
+.lead{font-size:17px;color:var(--ink-2)}
+b{color:var(--ink)}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.92em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.note{font-size:13px;color:var(--ink-2)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+button.primary:hover:not(:disabled){filter:brightness(1.08)}
+button.on{background:var(--accent-soft);border-color:var(--accent)}
+
+/* --- analogy --- */
+.analogy{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:12px}
+.analogy .box{text-align:center;padding:14px}
+.analogy .big{font-size:20px;font-weight:700}
+.analogy .arrow{font-size:22px;color:var(--ink-2)}
+
+/* --- domain tree --- */
+.domain-input{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.domain-input input{flex:1;min-width:220px;font:inherit;font-family:"JetBrains Mono",monospace;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{font-size:13px;padding:4px 10px}
+.stairs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.stair{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-left:calc(var(--k) * 22px);opacity:0;transform:translateX(-8px);animation:in .4s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.stair .blk{font-family:"JetBrains Mono",monospace;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.stair .blk .new{color:var(--accent);font-weight:600}
+.stair .desc{flex:1 1 10em;font-size:13px;color:var(--ink-2)}
+.domain-err{color:var(--answer);font-size:14px}
+
+/* --- stage --- */
+.stage-card{padding:0;overflow:hidden}
+.stage-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stage-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.stage-bar button,.stepper-bar button{white-space:nowrap}
+.counter{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-2);min-width:56px;text-align:center}
+.stage-wrap{position:relative;width:100%;overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage-wrap.dragging{cursor:grabbing}
+.stage{position:absolute;left:0;top:0;width:820px;height:600px;transform-origin:0 0;perspective:1500px;perspective-origin:50% 30%;
+  --ax:55deg; --az:-24deg}
+.plane{position:absolute;left:30px;top:50px;width:800px;height:520px;transform-style:preserve-3d;
+  transform:rotateX(var(--ax)) rotateZ(var(--az));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.dragging .plane,.dragging .anchor{transition:none!important}
+.plane > svg{position:absolute;inset:0;overflow:visible}
+.ground{fill:var(--ground)}
+.zone-home{fill:var(--zone-home)}.zone-isp{fill:var(--zone-isp)}.zone-net{fill:var(--zone-net)}
+.zone-label{font-size:16px;font-weight:700;letter-spacing:.04em}
+.board-gridline{stroke:var(--board-grid);stroke-width:1}
+.ground{stroke:var(--board-edge);stroke-width:2}
+.zone{stroke-width:2.5}
+.z-home{fill:var(--z-home);stroke:var(--z-home-edge)}.l-home{fill:var(--z-home-edge)}
+.z-isp{fill:var(--z-isp);stroke:var(--z-isp-edge)}.l-isp{fill:var(--z-isp-edge)}
+.z-net{fill:var(--z-net);stroke:var(--z-net-edge)}.l-net{fill:var(--z-net-edge)}
+.z-web{fill:var(--z-web);stroke:var(--z-web-edge)}.l-web{fill:var(--z-web-edge)}
+.link{stroke:var(--ink-2);stroke-opacity:.45;stroke-width:4;fill:none;stroke-linecap:round}
+.link.web{stroke-dasharray:2 10}
+.link.active{stroke:var(--accent);stroke-opacity:1;stroke-width:6;stroke-dasharray:10 8;animation:flow .6s linear infinite}
+.link.active.ans{stroke:var(--answer)}
+@keyframes flow{to{stroke-dashoffset:-18}}
+.shadow{fill:rgba(0,0,0,.18)}
+.anchor{position:absolute;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.node{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.node .icon{width:64px;height:64px;border-radius:16px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);transition:border-color .3s,box-shadow .3s,transform .3s}
+.node .icon svg{width:38px;height:38px;color:var(--ink-2)}
+.node.hl .icon{border-color:var(--accent);box-shadow:0 0 0 6px var(--accent-soft),var(--shadow);transform:translateY(-4px)}
+.node .lbl{font-size:15px;font-weight:700;white-space:nowrap;background:var(--surface);padding:0 8px;border-radius:6px;border:1px solid var(--line)}
+.node .sub{font-size:11px;color:var(--ink-2);white-space:nowrap;font-family:"JetBrains Mono",monospace}
+.bubble{position:absolute;bottom:136px;left:0;transform:translateX(-50%) scale(.6);opacity:0;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;padding:6px 12px;border-radius:12px;white-space:nowrap;transition:opacity .25s,transform .25s;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--ink)}
+.bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.packet-anchor{transition:none;transform:translateZ(var(--h,0px)) rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1))}
+.packet{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.packet .env{width:44px;height:30px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.packet.ans .env{background:var(--answer)}
+.packet.web .env{background:var(--ok)}
+.packet.hide{opacity:0}
+.drag-hint{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px 8px;pointer-events:none}
+
+.panels{display:grid;grid-template-columns:1.25fr .8fr 1.2fr;gap:14px;margin-top:14px;align-items:start}
+.explain{padding:18px 22px 22px;border-top:1px solid var(--line);background:var(--surface);min-height:190px}
+.explain h3{margin:0 0 4px;font-size:21px;line-height:1.5}
+.explain #stepText{font-size:16.5px}
+.timeline{display:flex;gap:4px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.timeline button{flex:0 0 auto;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.timeline button .n{font-family:"JetBrains Mono",monospace;font-size:11px;opacity:.7}
+.timeline button.done{color:var(--ink);border-color:var(--line);background:var(--surface-2)}
+.timeline button.cur{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:700}
+.timeline button.cur.ans{background:var(--answer);border-color:var(--answer)}
+.node{transition:opacity .35s}
+.node.dim{opacity:.55}
+.url-split{font-size:14px;margin:4px 0 10px;padding:8px 12px;border-radius:8px;background:var(--surface-2)}
+.url-split .dim-part{color:var(--ink-2);opacity:.6}
+.url-split .host-part{color:var(--accent);font-weight:600;background:var(--accent-soft);border-radius:4px;padding:0 2px}
+.explain .stepno{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+.explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.side{display:flex;flex-direction:column;gap:14px}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.msg{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6}
+.msg .head{display:inline-block;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:1px 8px;border-radius:6px;margin-bottom:6px}
+.msg .head.q{background:var(--accent-soft);color:var(--accent)}
+.msg .head.a{background:var(--answer-soft);color:var(--answer)}
+.msg table{border-collapse:collapse;width:100%}
+.msg td{padding:3px 0;vertical-align:top;border-top:1px dashed var(--line)}
+.msg td:first-child{width:5.5em;white-space:nowrap;color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding-right:8px}
+.msg .empty{color:var(--ink-2);font-family:"Noto Sans JP",sans-serif}
+.timer{font-family:"JetBrains Mono",monospace;font-size:28px;font-weight:600}
+.timer small{font-size:13px;color:var(--ink-2);font-weight:400}
+.history{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.history span{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--surface-2);border-radius:6px;padding:1px 8px}
+.cache-list{list-style:none;margin:0;padding:0;font-size:13px}
+.cache-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.cache-list li.flash{animation:flash 1.2s}
+@keyframes flash{0%{background:var(--ok-soft)}100%{background:transparent}}
+.cache-list .ttl{font-family:"JetBrains Mono",monospace;color:var(--ok);white-space:nowrap}
+.cache-list .gone{color:var(--ink-2);text-decoration:line-through}
+.cache-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cache-btns button{font-size:12px;padding:4px 10px}
+.clock{font-size:12px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+
+/* --- summary / quiz --- */
+.summary li{margin:6px 0}
+.quiz{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.q .opts button{text-align:left}
+.q .opts button.right{background:var(--ok-soft);border-color:var(--ok)}
+.q .opts button.wrong{background:var(--answer-soft);border-color:var(--answer)}
+.q .fb{font-size:14px;margin-top:6px;min-height:1.4em}
+footer{margin:64px 0 48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+footer a{color:var(--accent)}
+
+@media (max-width:720px){
+  .panels{grid-template-columns:1fr}
+  .explain{padding:16px}
+  .analogy{grid-template-columns:1fr}
+  .analogy .arrow{transform:rotate(90deg);text-align:center}
+  .drag-hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .plane,.anchor{transition:none}
+  .link.active{animation:none}
+}
+
+/* --- 共通パーツ --- */
+.sub-h{font-size:18px;margin:32px 0 6px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;font-size:14px;padding:6px 12px;border-radius:8px}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow);font-weight:700;color:var(--accent)}
+.wrap-seg{margin-bottom:12px}
+.row-btns{display:flex;gap:8px;margin-top:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.mini-card h3{margin:0 0 6px;font-size:16px}
+.mini-card p{font-size:14.5px}
+
+/* --- 2.3 PCの中 --- */
+.stepper{padding:0;overflow:hidden}
+.stepper-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stepper-bar .seg{background:var(--bg)}
+.stepper-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;padding:20px}
+.pc-stack{position:relative;border:2px dashed var(--line);border-radius:16px;padding:30px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.pc-frame-label{position:absolute;top:6px;left:14px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.layer{border:2px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface);transition:border-color .3s,background .3s,opacity .3s;position:relative}
+.layer .lname{font-weight:700;font-size:15px}
+.layer .lsub{font-size:12px;color:var(--ink-2)}
+.layer .lmem{position:absolute;right:12px;top:10px;font-size:11px;color:var(--ink-2)}
+.layer.on{border-color:var(--accent);background:var(--accent-soft)}
+.layer.skip{opacity:.35}
+.layer.skip .lname{text-decoration:line-through}
+.os-inner{display:flex;gap:8px;margin-top:8px}
+.mini{flex:1;font-size:12px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px;background:var(--surface-2);transition:all .3s}
+.mini.on{border-color:var(--accent);background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 0 0 3px var(--accent-soft)}
+.pc-out{text-align:center;font-size:13px;color:var(--ink-2);padding:6px;border-radius:10px;transition:all .3s}
+.pc-out.on{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.pc-chip{position:absolute;right:-12px;top:0;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:top .5s cubic-bezier(.3,.7,.2,1),background .3s}
+.pc-chip.lock{background:var(--ok)}
+.pc-explain h3{margin:0 0 6px;font-size:19px}
+.pc-explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.pkt-box{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pkt-box div{display:flex;border-top:1px dashed var(--line)}
+.pkt-box div:first-child{border-top:0}
+.pkt-box span{padding:4px 10px}
+.pkt-box span:first-child{width:7.5em;white-space:nowrap;flex:0 0 auto;background:var(--surface-2);color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px}
+
+/* --- 2.5 レコード --- */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font-family:"JetBrains Mono",monospace;font-weight:600;min-width:64px}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rec-q,.rec-a{font-size:13.5px;padding:8px 12px;border-radius:8px;overflow-x:auto;white-space:nowrap}
+.rec-q{background:var(--accent-soft);color:var(--accent)}
+.rec-a{background:var(--answer-soft);color:var(--answer);margin-top:6px}
+.rec-body h3{margin:14px 0 4px;font-size:18px}
+.parallel{display:flex;flex-direction:column;gap:8px}
+.lane{display:grid;grid-template-columns:4.5em 1fr 9em;gap:10px;align-items:center}
+.lane .who{font-size:12px;color:var(--ink-2)}
+.track{position:relative;height:30px;border-radius:8px;background:var(--surface-2)}
+.chip{position:absolute;top:3px;left:4px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;background:var(--accent);color:#fff;transition:left 1s cubic-bezier(.4,0,.2,1)}
+.chip.ans{background:var(--answer)}
+.res{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--answer);opacity:0;transition:opacity .3s}
+.res.show{opacity:1}
+
+/* --- 2.6 CDN --- */
+.cdn-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+#cdnMap{width:100%;height:auto;background:var(--surface-2);border-radius:12px}
+#cdnMap .grid{stroke:var(--line);stroke-width:1}
+#cdnMap .land{fill:var(--ground);stroke:var(--line);stroke-width:1}
+#cdnMap .edge{fill:var(--surface);stroke:var(--ink-2);stroke-width:2}
+#cdnMap .edge.pick{fill:var(--answer);stroke:var(--answer)}
+#cdnMap .origin{fill:var(--ink-2)}
+#cdnMap .me{fill:var(--accent)}
+#cdnMap .me-ring{fill:none;stroke:var(--accent);stroke-width:2;animation:ring 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+#cdnMap .route{stroke:var(--answer);stroke-width:3;stroke-dasharray:6 6;fill:none;animation:flow .6s linear infinite}
+#cdnMap .route.far{stroke:var(--ink-2);stroke-width:1.5;opacity:.6;animation:none}
+#cdnMap text{font-size:13px;fill:var(--ink);font-family:"Noto Sans JP",sans-serif}
+#cdnMap text.small{font-size:11px;fill:var(--ink-2)}
+.cdn-flow{font-size:12.5px;display:flex;flex-direction:column;gap:8px}
+.cdn-flow .f{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.cdn-flow .f b{font-family:"Noto Sans JP",sans-serif;font-size:12px;color:var(--ink-2);display:block;font-weight:500}
+.cdn-flow .f.hit{border-color:var(--answer);background:var(--answer-soft)}
+.cdn-flow .lat{font-family:"Noto Sans JP",sans-serif;font-size:13px}
+.cdn-flow .lat strong{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--answer)}
+
+/* --- 2.7 守る --- */
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.enc-view{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.enc-label{font-size:12px;font-weight:700;padding:6px 12px;background:var(--surface-2);color:var(--ink-2)}
+.enc-screen{background:#0d1117;color:#7ee787;font-size:12.5px;padding:12px;min-height:150px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.enc-screen .warn{color:#ffa657}
+.enc-screen .dim{color:#6e7681}
+.enc-grid h3{margin:0 0 6px;font-size:18px}
+.spec{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
+.spec td{padding:4px 8px;border-top:1px solid var(--line)}
+.spec td:first-child{color:var(--ink-2);width:5em}
+.race{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:10px;padding-right:96px}
+.race-row{display:grid;grid-template-columns:8.5em 1fr;gap:10px;align-items:center}
+.race-who{font-size:13px;font-weight:700;line-height:1.3}
+.race-who small{font-weight:400;color:var(--ink-2);font-size:11px}
+.race-track{position:relative;height:34px;background:var(--surface-2);border-radius:8px}
+.race-chip{position:absolute;left:4px;top:5px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;color:#fff;white-space:nowrap;transition:left .9s cubic-bezier(.4,0,.2,1),opacity .4s,transform .4s}
+.race-chip.fake{background:#c92a2a}
+.race-chip.real{background:var(--ok)}
+.race-chip.arrived{left:calc(100% - 136px)}
+.race-chip.rejected{opacity:.35;transform:rotate(-8deg)}
+.race-chip.rejected::after{content:" ✕"}
+.race-chip.accepted::after{content:" ✓"}
+.race-goal{position:absolute;right:0;top:0;bottom:0;width:86px;border:2px solid var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:11px;font-weight:700;background:var(--surface);padding:4px}
+.race-result{margin-top:12px;font-size:15px;min-height:1.5em}
+.race-result .bad{color:#e03131;font-weight:700}
+.race-result .good{color:var(--ok);font-weight:700}
+.chain{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.chain-step{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:13px;display:flex;flex-direction:column}
+.chain-step b{font-family:"JetBrains Mono",monospace}
+.chain-step span{color:var(--ink-2);font-size:12px}
+.chain-arrow{font-size:12px;color:var(--accent);padding-left:12px}
+
+/* --- 2.8 試す --- */
+.can-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.can-list li{position:relative;padding:8px 12px 8px 38px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:13.5px;line-height:1.6}
+.can-list li b{display:block;font-size:14.5px}
+.can-list li span{color:var(--ink-2)}
+.can-list li::before{position:absolute;left:12px;top:8px;font-weight:700;font-size:15px}
+.can-list li.yes::before{content:"✓";color:var(--ok)}
+.can-list li.no::before{content:"✕";color:var(--answer)}
+.cmds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.cmd{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmd-line{display:flex;align-items:center;gap:8px;background:#0d1117;padding:8px 8px 8px 12px}
+.cmd-line code{flex:1;color:#e6edf3;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.cmd-line code::before{content:"$ ";color:#6e7681}
+.cmd-line button{font-size:12px;padding:3px 10px;background:#21262d;color:#e6edf3;border-color:#30363d}
+.cmd-desc{font-size:13.5px;padding:8px 12px}
+.trace-card{padding:0;overflow:hidden}
+.trace{background:#0d1117;color:#c9d1d9;font-size:12px;padding:12px 0;overflow-x:auto;line-height:1.75}
+.trace .ln{padding:0 14px;white-space:pre;cursor:default}
+.trace .ln.g{cursor:pointer;border-left:3px solid transparent}
+.trace .ln.g:hover{background:#161b22}
+.trace .ln.g.on{background:#1f2a40;border-left-color:#6ea0ff}
+.trace .ln.recv{color:#7ee787}
+.trace .ln.cmt{color:#6e7681}
+.trace .ln .k{color:#ffa657}
+.trace-explain{padding:14px 18px;font-size:15px;border-top:1px solid var(--line);min-height:80px}
+.trace-explain h4{margin:0 0 4px;font-size:16px}
+
+@media (max-width:720px){
+  .pc-body,.cdn-grid,.enc-grid,.cols{grid-template-columns:1fr}
+  .pc-chip{right:6px}
+  .lane{grid-template-columns:1fr 7em}
+  .lane .who{display:none}
+  .stair{margin-left:calc(var(--k) * 12px)}
+  .rec-a{white-space:normal;overflow-wrap:anywhere}
+  .race{padding-right:0}
+  .race-row{grid-template-columns:6.5em 1fr}
+  .race-goal{position:static;width:auto;padding:8px}
+}
+
+/* ===== サイバー調の仕上げ ===== */
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.kicker::before{content:"▍";animation:blink 1.1s steps(1) infinite;margin-right:4px}
+@keyframes blink{50%{opacity:0}}
+h1{background:linear-gradient(90deg,var(--ink) 30%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .num{font-size:13px;padding:2px 8px;border:1px solid var(--accent);border-radius:4px;text-shadow:0 0 8px var(--accent-soft);vertical-align:3px}
+h2 .num::before{content:"// "}
+.card{position:relative;background:linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));border-color:var(--line);border-radius:10px}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2}
+.card::before{top:0;left:0;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-top-left-radius:10px}
+.card::after{bottom:0;right:0;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-bottom-right-radius:10px}
+button{border-radius:6px;background:transparent;transition:border-color .15s,box-shadow .15s,background .15s}
+button:hover:not(:disabled){border-color:var(--accent);box-shadow:var(--glow)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 0 16px var(--accent-soft)}
+button.on,.seg button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);box-shadow:none}
+.seg{border:1px solid var(--line);background:var(--bg)}
+.seg button.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.stage-bar,.stepper-bar{background:var(--surface-2)}
+.counter{color:var(--accent)}
+.node .icon{background:var(--surface);border-radius:12px}
+.node .icon svg{color:var(--accent)}
+.node.hl .icon{box-shadow:var(--glow);border-color:var(--accent)}
+.node .lbl{background:var(--surface);border-color:var(--line);border-radius:4px}
+.bubble{background:var(--accent);color:var(--on-accent);box-shadow:var(--glow)}
+.bubble::after{border-top-color:var(--accent)}
+.packet .env{box-shadow:0 0 18px var(--accent)}
+.packet.ans .env{box-shadow:0 0 18px var(--answer)}
+.link.active{filter:drop-shadow(0 0 4px var(--accent))}
+.link.active.ans{filter:drop-shadow(0 0 4px var(--answer))}
+.explain .stepno,.stepno{font-family:"JetBrains Mono",monospace;letter-spacing:.1em}
+.layer{border-radius:8px;overflow:hidden}
+.layer.on{box-shadow:var(--glow)}
+.layer.on::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);transform:translateX(-100%);animation:scan 1.8s linear infinite;pointer-events:none}
+@keyframes scan{to{transform:translateX(100%)}}
+.pc-stack{border-color:var(--accent-soft);border-radius:12px}
+.pc-frame-label{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.1em}
+.pc-chip{box-shadow:0 0 14px var(--accent);color:var(--on-accent)}
+.pc-chip.lock{box-shadow:0 0 14px var(--ok)}
+.timeline button.cur{color:var(--on-accent);box-shadow:0 0 12px var(--accent-soft)}
+.timer{color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+.tabs button.on{color:var(--on-accent);box-shadow:var(--glow)}
+.chip{color:var(--on-accent)}
+.stair .blk{border-radius:6px}
+.cache-list .ttl{text-shadow:0 0 8px var(--ok-soft)}
+.packet .env,.race-chip.real,.cdn-flow .f.hit{color:var(--on-accent)}
+.cdn-flow .f.hit{background:var(--answer);border-color:var(--answer)}
+.cdn-flow .f.hit b{color:var(--on-accent);opacity:.75}
+.enc-screen{background:#02050a;border-top:1px solid var(--line);text-shadow:0 0 6px rgba(126,231,135,.35)}
+.timeline{scrollbar-color:var(--line) transparent}
+.timeline::-webkit-scrollbar{height:6px}
+.timeline::-webkit-scrollbar-track{background:transparent}
+.timeline::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.zone{filter:drop-shadow(0 0 6px var(--board-grid))}
+
+/* 送信・受信している2台を強く、それ以外を弱く */
+.node .icon{position:relative}
+.node .role{position:absolute;top:-11px;right:-22px;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:4px;background:var(--accent);color:var(--on-accent);box-shadow:0 0 10px var(--accent);opacity:0;transition:opacity .25s}
+.node.send .role,.node.recv .role{opacity:1}
+.node.hl .icon{background:var(--accent-soft);border-width:2.5px}
+.node.hl .lbl{border-color:var(--accent);color:var(--ink);box-shadow:0 0 10px var(--accent-soft)}
+.node.hl .sub{color:var(--ink)}
+.node.ans .icon{border-color:var(--answer);background:var(--answer-soft);box-shadow:0 0 0 1px var(--answer),0 0 22px var(--answer-soft)}
+.node.ans .icon svg{color:var(--answer)}
+.node.ans .lbl{border-color:var(--answer)}
+.node.ans .role{background:var(--answer);box-shadow:0 0 10px var(--answer)}
+.node.dim{opacity:.28;filter:grayscale(.7)}
+.zone,.zone-label{transition:opacity .4s}
+.zone-dim{opacity:.35}
+
+/* 色のトークンで切り替える装飾（ダークでは控えめ・ライトでは色を足す） */
+body::before{content:"";position:fixed;inset:0;background:var(--wash);pointer-events:none;z-index:-1}
+h1{background-image:var(--h1-grad)}
+h2 .num{background:var(--num-bg);color:var(--num-fg)}
+.card{background-image:var(--strip),linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));background-size:100% 3px,auto;background-repeat:no-repeat}
+.stage-bar,.stepper-bar{background:var(--bar-bg)}
+button.primary,.timeline button.cur:not(.ans){background:var(--primary-bg);border-color:transparent}
+.sub-h{border-left:4px solid transparent;border-image:var(--subh-bar) 1;padding-left:10px}
+.summary li::marker{color:var(--accent2)}
+@media (prefers-reduced-motion: reduce){
+  .kicker::before,.layer.on::after{animation:none}
+}
+.top-nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:14px}
+.top-nav a{color:var(--ink-2);text-decoration:none}
+.top-nav a:hover{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none;color:var(--accent)}
+
+/* ===== 章をまたいで使う部品（第3章以降） ===== */
+:root{--bad:#dc2626;--c-port:#64748b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bad:#ff5c5c;--c-port:#94a3b8}}
+:root[data-theme="dark"]{--bad:#ff5c5c;--c-port:#94a3b8}
+.card a{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none}
+.chap-nav a:hover{text-decoration:underline}
+.ver-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.toggle input{accent-color:var(--answer);width:16px;height:16px}
+.tag{display:inline-block;font-family:"JetBrains Mono",monospace;padding:0 6px;border-radius:4px;font-size:11px}
+.tag.q{background:var(--accent-soft);color:var(--accent)}
+.tag.a{background:var(--answer-soft);color:var(--answer)}
+kbd{font-family:"JetBrains Mono",monospace;font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface-2)}
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.cmp{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+table.cmp th,table.cmp td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.cmp thead th{background:var(--surface-2);font-size:13px;color:var(--ink-2)}
+table.cmp tbody th{font-weight:700;white-space:nowrap;color:var(--ink-2);font-size:13px}
+table.cmp tr:last-child td,table.cmp tr:last-child th{border-bottom:0}
+.trace .ln .hk{color:#79c0ff}
+.explain-box{margin-top:12px;font-size:14.5px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;min-height:3em}
+.explain-box b.t{display:block;font-size:15.5px}
+.explain-box.ans{border-left-color:var(--answer)}
+.big-stat{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--ink-2)}
+.big-stat b{font-family:"JetBrains Mono",monospace;font-size:26px;color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+input[type=range]{accent-color:var(--accent);width:100%}
+
+/* あいさつの図（はしご型） */
+.hs-card{padding:0;overflow:hidden}
+.hs-ladder{padding:16px 20px 6px}
+.hs-ends{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.hs-end{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:14px}
+.hs-state{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:1px 8px;border-radius:4px;border:1px solid var(--line);color:var(--ink-2);transition:all .3s}
+.hs-state.est{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.hs-state.mid{border-color:var(--accent);color:var(--accent)}
+.hs-rows{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px 0;min-height:200px;background:linear-gradient(var(--line),var(--line)) 25% 0/2px 100% no-repeat,linear-gradient(var(--line),var(--line)) 75% 0/2px 100% no-repeat}
+.hs-row{position:relative;height:44px;opacity:0;animation:in .4s forwards}
+.hs-arrow{position:absolute;top:22px;left:25%;right:25%;height:2px;background:var(--c);box-shadow:0 0 8px var(--c)}
+.hs-arrow::after{content:"";position:absolute;top:-5px;border:6px solid transparent}
+.hs-row.r .hs-arrow::after{right:-2px;border-left:9px solid var(--c);border-right:0}
+.hs-row.l .hs-arrow::after{left:-2px;border-right:9px solid var(--c);border-left:0}
+.hs-lbl{position:absolute;top:0;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;white-space:nowrap;color:var(--c);background:var(--surface);padding:0 8px;border-radius:4px}
+.hs-num{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2);white-space:nowrap}
+.hs-row.q{--c:var(--accent)}.hs-row.a{--c:var(--answer)}.hs-row.d{--c:var(--ok)}
+.hs-explain{padding:4px 20px 18px;font-size:15px}
+.hs-explain h3{margin:0 0 4px;font-size:18px}
+
+@keyframes pin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (max-width:720px){.hs-lbl{font-size:11px}.hs-num{font-size:10px}}
+
+/* 小さなブラウザの画面 */
+.mini-browser{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column;min-height:150px}
+.mb-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.mb-dots{display:flex;gap:4px}.mb-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.mb-url{flex:1;min-width:0;font-size:11.5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mb-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;text-align:center;font-size:14px}
+.mb-page .big{font-size:26px;font-weight:700;line-height:1.2}
+.mb-page .sm{font-size:12px;color:var(--ink-2)}
+.mb-page.warn{background:rgba(220,38,38,.08)}
+.row-btns{flex-wrap:wrap}
+.row-btns button,.ver-bar button{white-space:nowrap}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tri .mini-card p{margin:0}
+.rtt-lbl{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.rtt-lbl b{font-family:"JetBrains Mono",monospace;color:var(--accent)}
+@media (max-width:720px){.tri{grid-template-columns:1fr}}
+section > .card + .card{margin-top:14px}
+.note a{color:var(--accent)}
+.devtools ol{margin:6px 0 0;padding-left:1.4em;font-size:14.5px}
+.devtools li{margin:4px 0}
+.stepper > .explain-box{margin:0 20px 18px}
+
+/* ===== 第8章 ===== */
+/* 8.1 全体 */
+.dc{display:flex;align-items:stretch;gap:4px;overflow-x:auto;padding:4px 2px}
+.dc-n{flex:1 1 0;min-width:86px;display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 6px;border-radius:10px;border:2px solid var(--line);background:var(--surface-2);font-size:12px;text-align:center;cursor:pointer;color:var(--ink);transition:all .2s}
+.dc-n .ic{font-size:24px}
+.dc-n b{font-size:12.5px}
+.dc-n.sel{border-color:var(--accent);box-shadow:var(--glow);background:var(--accent-soft)}
+.dc-n.srv{border-style:dashed}
+.dc-a{align-self:center;color:var(--ink-2);font-size:14px}
+
+/* 8.2 ファイアウォール */
+table.fw td,table.fw th{font-size:12.5px}
+table.fw td:not(.memo){font-family:"JetBrains Mono",monospace}
+table.fw td.memo{color:var(--ink-2);font-size:12px}
+table.fw tr.hit td{background:var(--accent-soft)}
+table.fw tr.hit.deny td{background:rgba(220,38,38,.12)}
+table.fw tr.skip td{opacity:.45}
+table.fw .allow{color:var(--ok);font-weight:700}
+table.fw .deny{color:var(--bad);font-weight:700}
+.fw-res{margin-top:12px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;font-size:14px}
+.fw-pkt{font-family:"JetBrains Mono",monospace;font-size:12.5px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2)}
+.fw-v{font-weight:700;padding:4px 12px;border-radius:6px}
+.fw-v.ok{color:var(--ok);border:1px solid var(--ok);background:var(--ok-soft)}
+.fw-v.ng{color:var(--bad);border:1px solid var(--bad);background:rgba(220,38,38,.1)}
+
+/* 8.3 DDoS */
+.dd canvas{width:100%;height:auto;display:block;border-radius:10px;background:var(--surface-2)}
+.dd-meters{display:flex;flex-wrap:wrap;gap:10px 28px;margin-top:12px;align-items:center}
+.dd-m{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--ink-2)}
+.dd-m .bar{width:180px;height:10px;border-radius:5px;background:var(--surface-2);border:1px solid var(--line);overflow:hidden}
+.dd-m .bar i{display:block;height:100%;width:0;transition:width .3s,background .3s}
+.dd-m b{font-family:"JetBrains Mono",monospace;font-size:16px;color:var(--ink)}
+
+/* 8.4 ロードバランサー */
+.lb{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:center;margin-top:6px}
+.lb-in{display:flex;flex-direction:column;align-items:center;gap:6px}
+.lb-box{width:92px;padding:10px 6px;border-radius:10px;border:2px solid var(--accent);background:var(--surface);text-align:center;font-size:12px;font-weight:700;box-shadow:var(--glow)}
+.lb-box .ic{display:block;font-size:22px}
+.lb-q{font-size:11.5px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+.lb-srvs{display:flex;flex-direction:column;gap:8px}
+.lb-s{display:grid;grid-template-columns:10em minmax(0,1fr) 5.5em;gap:10px;align-items:center;font-size:12.5px;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);transition:opacity .3s,border-color .3s}
+.lb-s b{font-family:"JetBrains Mono",monospace}
+.lb-s small{display:block;font-size:10.5px;color:var(--ink-2);font-weight:400}
+.lb-s.down{opacity:.5;border-color:var(--bad)}
+.lb-s.flash{border-color:var(--accent);box-shadow:var(--glow)}
+.lb-bar{height:12px;border-radius:6px;background:var(--surface);border:1px solid var(--line);overflow:hidden;display:flex}
+.lb-bar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s}
+.lb-s.busy .lb-bar i{background:var(--answer)}
+.lb-s button{font-size:11.5px;padding:3px 8px}
+
+/* 8.5 CDN */
+.cdnx svg{width:100%;height:auto;display:block;border-radius:10px;background:var(--surface-2)}
+.cdnx .nd{fill:var(--surface);stroke:var(--line);stroke-width:2;transition:all .3s}
+.cdnx .nd.on{stroke:var(--accent)}
+.cdnx .nd.ans{stroke:var(--answer)}
+.cdnx .lnk{stroke:var(--line);stroke-width:2.5;stroke-dasharray:6 5}
+.cdnx .t1{fill:var(--ink);font-size:12.5px;font-weight:700;font-family:"Noto Sans JP",sans-serif}
+.cdnx .t2{fill:var(--ink-2);font-size:10.5px;font-family:"Noto Sans JP",sans-serif}
+.cdnx .t3{fill:var(--accent);font-size:10.5px;font-family:"JetBrains Mono",monospace}
+.cdnx .t3.old{fill:var(--bad)}
+.cdn-log{margin-top:10px;font-size:12.5px;background:#0d1117;color:#c9d1d9;border-radius:8px;padding:10px 14px;min-height:4em;line-height:1.7;white-space:pre-wrap}
+.cdn-log .h{color:#7ee787}.cdn-log .m{color:#ffa657}.cdn-log .x{color:#ff7b72}
+
+/* 8.6 WAF */
+.waf{display:flex;flex-direction:column;gap:6px}
+.waf-r{display:grid;grid-template-columns:minmax(0,1fr) 7em;gap:10px;align-items:center;padding:6px 10px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);cursor:pointer;transition:all .2s}
+.waf-r code{font-size:12px;overflow-wrap:anywhere}
+.waf-r .v{font-size:12px;font-weight:700;text-align:right}
+.waf-r.ok .v{color:var(--ok)}
+.waf-r.ng{border-color:var(--bad)}
+.waf-r.ng .v{color:var(--bad)}
+.waf-r.danger{border-color:var(--bad);background:rgba(220,38,38,.12)}
+.waf-r.danger .v{color:var(--bad)}
+.waf-r.sel{box-shadow:var(--glow)}
+.waf-r code .hl{color:var(--bad);font-weight:700}
+
+@media (max-width:720px){
+  .dc{flex-wrap:wrap;justify-content:center}
+  .dc-n{flex:0 0 calc(33% - 6px);min-width:0}
+  .dc-a{display:none}
+  .lb{grid-template-columns:1fr}
+  .lb-in{flex-direction:row;justify-content:center}
+  .lb-s{grid-template-columns:6.5em minmax(0,1fr);}
+  .lb-s button{grid-column:1/3;justify-self:start}
+  .waf-r{grid-template-columns:1fr}
+  .waf-r .v{text-align:left}
+  .dd-m .bar{width:120px}
+  .cdnx svg{max-width:300px;margin:0 auto}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <nav class="top-nav"><a href="index.html">← 目次</a><a href="access.html">← 第7章 家からインターネットへ</a><a href="arrival.html">第9章 サーバー到着と帰り道 →</a></nav>
+  <div class="kicker">触って学ぶネットワーク ・ 第8章（試作）</div>
+  <h1>サーバー側の守りと分散</h1>
+  <p class="lead">インターネットを渡ってきた小包は、いきなりWebサーバーに届くわけではありません。人気のサイトの手前には、悪い小包を止める<b>門番</b>、たくさんのお客さんを振り分ける<b>案内係</b>、よく頼まれるものを近くに置いておく<b>倉庫</b>が待ち構えています。この章では、その仕組みを見ていきます。</p>
+</header>
+
+<section>
+  <h2><span class="num">8.1</span>サーバーの手前に並ぶ係</h2>
+  <p>大きなサイトでは、小包がWebサーバーにたどり着くまでに、いくつもの係を通ります。押して、それぞれの係の仕事を見てみましょう。</p>
+  <div class="card">
+    <div class="dc" id="dc"></div>
+    <div class="explain-box" id="dcExplain" aria-live="polite"></div>
+  </div>
+  <p>すべてのサイトにすべての係がいるわけではありません。小さなサイトなら、レンタルサーバーの1台がほとんどの役目をこなします。でも、どんなサイトでも「悪いものを止める」「たくさんのお客さんをさばく」「速く返す」という3つの悩みは同じです。</p>
+</section>
+
+<section>
+  <h2><span class="num">8.2</span>ファイアウォール ── 決まりにしたがって通す・止める</h2>
+  <p><b>ファイアウォール</b>は、小包の宛先の住所やポート番号を見て、<b>通すか止めるか</b>を決める門番です。決まり（ルール）を<b>上から順に</b>見て、最初に当てはまった行にしたがいます。どの行にも当てはまらなければ止めます。いろいろな小包を送ってみましょう。</p>
+  <div class="card">
+    <div class="presets" id="fwPkts"></div>
+    <div class="tbl-wrap"><table class="cmp fw" id="fwTable"></table></div>
+    <div class="fw-res" id="fwRes" aria-live="polite"></div>
+  </div>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>行きを覚えて、帰りを通す（ステートフル）</h3>
+      <p>今のファイアウォールは、<b>中から外へ出ていった通信を覚えておき</b>、その返事だけは通します。上の「サーバーが外のAPIに問い合わせた返事」がそれです。ルールに書かなくても、自分が頼んだものの返事は通れるので、決まりを簡単に保てます。第6章のNATと似た考え方です。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>「必要なものだけ開ける」が基本</h3>
+      <p>Webサーバーなら、外に開けるのは 443番（HTTPS）と、http から https へ案内するための80番くらいです。管理用の入り口（22番のSSHなど）は、会社の中など、決まった場所からだけに絞ります。開いている窓口が少ないほど、ねらわれる場所も減ります。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">8.3</span>DDoS ── 大群で押しよせる攻撃</h2>
+  <p>正しい形の小包でも、<b>世界中から一度に大量に</b>送りつけられると、サーバーはさばききれずに止まってしまいます。これが <b>DDoS攻撃</b>（分散型サービス妨害攻撃）です。乗っ取られた家庭のカメラやテレビなどが、何十万台もいっせいに攻撃に使われます。守りを切りかえて、攻撃を受けてみましょう。</p>
+  <div class="card">
+    <div class="ver-bar">
+      <div class="seg" id="ddMode">
+        <button data-m="none" class="on">守りなし</button>
+        <button data-m="cdn">世界中の拠点で受け止める</button>
+      </div>
+      <button class="primary" id="ddBtn">攻撃を始める</button>
+    </div>
+    <div class="dd">
+      <canvas id="ddCanvas" width="720" height="240"></canvas>
+    </div>
+    <div class="dd-meters">
+      <div class="dd-m"><span>サーバーの忙しさ</span><div class="bar"><i id="ddLoad"></i></div><b id="ddLoadT">0%</b></div>
+      <div class="dd-m"><span>ふつうのお客さんへの返事</span><b id="ddOk">—</b></div>
+    </div>
+    <div class="explain-box" id="ddExplain" aria-live="polite"></div>
+  </div>
+  <p>DDoS攻撃は年々大きくなっています。Cloudflare は2025年に、<b>1秒に31.4テラビット</b>という、公表されたものとしては最大級の攻撃を受け止めました（35秒間）。2026年4〜6月には、1Tbpsをこえる攻撃だけで805回あったと報告しています。1台のサーバーや1本の回線で受け止められる量ではないので、世界中に散らばった大きなネットワークで、<b>分けて受け止めて、悪いものだけを捨てる</b>のが今の守り方です。</p>
+  <p class="note">出典：<a href="https://blog.cloudflare.com/ddos-threat-report-2025-q4/" target="_blank" rel="noopener">Cloudflare（2026年2月5日）</a>、<a href="https://blog.cloudflare.com/ddos-threat-report-2026-h1/" target="_blank" rel="noopener">Cloudflare（2026年8月11日）</a></p>
+</section>
+
+<section>
+  <h2><span class="num">8.4</span>ロードバランサー ── お客さんを振り分ける案内係</h2>
+  <p>人気のサイトは、同じ中身のWebサーバーを何台も並べて、お客さんを分け合います。その振り分けをするのが<b>ロードバランサー</b>です。振り分け方を変えたり、サーバーを1台止めたりしてみましょう。</p>
+  <div class="card">
+    <div class="ver-bar">
+      <div class="seg" id="lbAlgo">
+        <button data-a="rr" class="on">順番に（ラウンドロビン）</button>
+        <button data-a="lc">すいている所へ</button>
+      </div>
+      <button class="primary" id="lbStart">お客さんを流す</button>
+      <button id="lbStop">止める</button>
+    </div>
+    <div class="lb" id="lb"></div>
+    <div class="explain-box" id="lbExplain" aria-live="polite"></div>
+  </div>
+  <p>ロードバランサーは、数秒ごとに各サーバーへ「元気？」と<b>健康チェック</b>をしていて、返事のないサーバーには振り分けません。おかげで、1台がこわれてもサイトは止まらず、点検のために1台ずつ止めて入れかえることもできます。</p>
+</section>
+
+<section>
+  <h2><span class="num">8.5</span>CDN ── よく頼まれるものを、近くの倉庫に</h2>
+  <p>第2章で、CDNは「近くのサーバーの住所」をDNSで答えると見ました。その近くのサーバー（<b>拠点</b>）は、元のサーバーから受け取ったファイルを<b>しばらく取っておき（キャッシュ）</b>、次のお客さんには自分で返します。東京のお客さんが、アメリカにある元のサーバーのページを見る場面で試してみましょう。</p>
+  <div class="card">
+    <div class="row-btns" style="margin-top:0">
+      <button class="primary" id="cdnReq">東京のお客さんがページを見る</button>
+      <button id="cdnTime">1時間すすめる</button>
+      <button id="cdnPurge">元のページを書きかえる</button>
+      <button id="cdnReset">最初から</button>
+    </div>
+    <div class="cdnx" id="cdnx"></div>
+    <div class="cdn-log mono" id="cdnLog"></div>
+    <div class="explain-box" id="cdnExplain" aria-live="polite"></div>
+  </div>
+  <p>どれくらい取っておいてよいかは、元のサーバーが返事の見出し <code>Cache-Control: max-age=3600</code>（3600秒＝1時間）などで指定します。ログインした人だけのページのように、<b>人によって中身が変わるもの</b>は、取っておいてはいけません（<code>Cache-Control: private</code>）。写真やCSSなど変わりにくいものは長く、ニュースのページは短く、と使い分けます。</p>
+  <p>HTTP Archive の2025年の調べでは、写真などはCDNから届くことが多い一方、ページの設計図にあたるHTMLは<b>35%</b>がCDN経由でした（スマホ）。HTMLは人によって中身が変わることが多く、元のサーバーから直接返されやすいためです。</p>
+</section>
+
+<section>
+  <h2><span class="num">8.6</span>WAF ── 手紙の中身まで読む門番</h2>
+  <p>ファイアウォールが見るのは、住所とポート番号（封筒の外側）だけでした。<b>WAF</b>（Webアプリケーションファイアウォール）は、HTTPSの鍵を開けたあとの<b>手紙の中身</b>を読み、悪だくみの書かれた頼みごとを止めます。とどいた頼みごとを見てみましょう。</p>
+  <div class="card">
+    <div class="ver-bar">
+      <label class="toggle"><input type="checkbox" id="wafOn" checked> WAFを使う</label>
+    </div>
+    <div class="waf" id="waf"></div>
+    <div class="explain-box" id="wafExplain" aria-live="polite"></div>
+  </div>
+  <p class="note">※ WAFは「よくある手口」の形を見つけて止める仕組みで、万能ではありません。いちばん大切なのは、Webアプリ自体を、悪い入力を受けても安全に動くように作ることです。</p>
+</section>
+
+<section>
+  <h2><span class="num">8.7</span>自分のPCで試してみよう</h2>
+  <p>CDNが返事を取っておいたかどうかは、返事の見出しでわかります。</p>
+  <div class="card">
+    <div class="seg wrap-seg">
+      <button data-os="mac" class="on">Mac</button>
+      <button data-os="win">Windows</button>
+    </div>
+    <div class="cmds" id="cmds"></div>
+  </div>
+  <h3 class="sub-h">実際の結果を読んでみよう</h3>
+  <p>下は、2026年10月18日に Mac で example.com の見出しを何度か取った、実際の結果です。行を押すと説明が出ます。</p>
+  <div class="card trace-card">
+    <div class="trace mono" id="real"></div>
+    <div class="trace-explain" id="realExplain" aria-live="polite"><span class="note">↑ 気になる行を押してみてください</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">8.8</span>まとめ</h2>
+  <div class="card summary">
+    <ul>
+      <li>大きなサイトの手前には、<b>CDN・ファイアウォール・ロードバランサー・WAF</b> などの係が並ぶ</li>
+      <li><b>ファイアウォール</b>は、住所とポート番号を見て、ルールを上から順に当てはめて通す・止めるを決める。出ていった通信の返事は覚えて通す（ステートフル）</li>
+      <li><b>DDoS攻撃</b>は大群で押しよせる攻撃。世界中の拠点で分けて受け止め、悪いものだけを捨てて守る</li>
+      <li><b>ロードバランサー</b>は、同じ中身のサーバーにお客さんを振り分ける。健康チェックで、こわれたサーバーをよける</li>
+      <li><b>CDN</b>の拠点は、元のサーバーのファイルを決められた時間だけ取っておき、近くのお客さんに速く返す</li>
+      <li><b>WAF</b>は、手紙の中身まで読んで、よくある悪だくみの頼みごとを止める</li>
+    </ul>
+  </div>
+  <p>いくつもの門をくぐり、小包はついにWebサーバーに届きました。最後の章では、サーバーが封筒を開けて中身を読み、返事を作って、あなたの画面に表示されるまでを見ていきます。</p>
+
+  <h2><span class="num">8.9</span>確認クイズ</h2>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<footer>
+  <div class="chap-nav"><a href="arrival.html">次の章：<b>第9章 サーバー到着と帰り道</b> →</a></div>
+  この教材の文章と図はオリジナルです。数値や出来事は2026年10月18日時点で確認したものです。<br>
+  参考：RFC 9111（HTTPのキャッシュ）、RFC 4987（SYNフラッド）、<a href="https://blog.cloudflare.com/ddos-threat-report-2025-q4/" target="_blank" rel="noopener">Cloudflare DDoS 報告（2025年10〜12月）</a>、<a href="https://blog.cloudflare.com/ddos-threat-report-2026-h1/" target="_blank" rel="noopener">Cloudflare DDoS 報告（2026年上半期）</a>、<a href="https://almanac.httparchive.org/en/2025/cdn" target="_blank" rel="noopener">HTTP Archive Web Almanac 2025（CDN）</a>、<a href="https://owasp.org/www-project-top-ten/" target="_blank" rel="noopener">OWASP Top 10</a>
+</footer>
+</div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* コマンド集（Mac / Windows の切り替えとコピー） */
+function setupCmds(C, boxId = 'cmds'){
+  const box = $(boxId);
+  function show(os){
+    document.querySelectorAll('[data-os]').forEach(b => b.classList.toggle('on', b.dataset.os === os));
+    box.innerHTML = C[os].map(([c, d]) => `<div class="cmd"><div class="cmd-line"><code>${esc(c)}</code><button data-c="${esc(c)}">コピー</button></div><div class="cmd-desc">${d}</div></div>`).join('') + (C[os + 'Note'] || '');
+    box.querySelectorAll('[data-c]').forEach(b => b.onclick = async () => {
+      try{ await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'コピーした'; }
+      catch(e){ b.textContent = '選択してコピーしてね'; }
+      setTimeout(() => b.textContent = 'コピー', 1500);
+    });
+  }
+  document.querySelectorAll('[data-os]').forEach(b => b.onclick = () => show(b.dataset.os));
+  show('mac');
+}
+
+/* 実際の結果を1行ずつ解説する欄。L=[[グループ, 行の文字]]、E={グループ:[見出し, 説明]}。グループ'c'は説明なしの行 */
+function setupTrace(id, exId, L, E){
+  const tr = $(id);
+  tr.innerHTML = L.map(([g, t]) => `<div class="ln ${g === 'c' ? 'cmt' : 'g'}" data-g="${g}" ${g === 'c' ? '' : 'tabindex="0" role="button"'}>${esc(t).replace(/^([a-zA-Z_-]+[:=])/, '<span class="k">$1</span>')}</div>`).join('');
+  function pick(g){
+    tr.querySelectorAll('.ln').forEach(l => l.classList.toggle('on', l.dataset.g === g));
+    $(exId).innerHTML = `<h4>${E[g][0]}</h4>${E[g][1]}`;
+  }
+  tr.querySelectorAll('.ln.g').forEach(l => {
+    l.onclick = () => pick(l.dataset.g);
+    l.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); pick(l.dataset.g); } };
+  });
+}
+
+/* 確認クイズ */
+function setupQuiz(QUIZ, id = 'quiz'){
+  const quizEl = $(id);
+  QUIZ.forEach((item, qi) => {
+    const d = document.createElement('div');
+    d.className = 'card q';
+    d.innerHTML = `<b>Q${qi + 1}. ${item.q}</b><div class="opts">${item.o.map((o, k) => `<button data-k="${k}">${o}</button>`).join('')}</div><div class="fb"></div>`;
+    d.querySelectorAll('.opts button').forEach(b => b.onclick = () => {
+      const k = +b.dataset.k;
+      d.querySelectorAll('.opts button').forEach(x => x.classList.remove('right', 'wrong'));
+      b.classList.add(k === item.a ? 'right' : 'wrong');
+      d.querySelector('.fb').innerHTML = (k === item.a ? '⭕ 正解！ ' + item.e : '❌ もう一度考えてみよう。');
+    });
+    quizEl.appendChild(d);
+  });
+}
+
+/* 1歩ずつ進める手順（最初から・戻る・次へ）。render(i) を呼ぶ */
+function setupStepper({first, prev, next, count, total, render}){
+  let i = 0;
+  const upd = () => { render(i); $(count).textContent = `${i + 1} / ${total}`; $(prev).disabled = i === 0; $(next).disabled = i === total - 1; };
+  $(first).onclick = () => { i = 0; upd(); };
+  $(prev).onclick = () => { if(i > 0){ i--; upd(); } };
+  $(next).onclick = () => { if(i < total - 1){ i++; upd(); } };
+  upd();
+}
+
+/* 点を折れ線にそって動かす（SVG） */
+function moveDot(svg, pts, dur, color, r = 6){
+  return new Promise(res => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', r); c.setAttribute('fill', color); c.style.filter = `drop-shadow(0 0 4px ${color})`;
+    svg.appendChild(c);
+    const seg = []; let total = 0;
+    for(let i = 1; i < pts.length; i++){ const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); total += d; }
+    const t0 = performance.now(), D = reduced() ? 1 : dur;
+    const step = now => {
+      let k = Math.min(1, (now - t0) / D), dist = k * total, i = 0;
+      while(i < seg.length - 1 && dist > seg[i]){ dist -= seg[i]; i++; }
+      const f = seg[i] ? dist / seg[i] : 0;
+      c.setAttribute('cx', pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f);
+      c.setAttribute('cy', pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f);
+      if(k < 1) requestAnimationFrame(step); else { c.remove(); res(); }
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+
+/* ---------- 8.1 サーバーの手前に並ぶ係 ---------- */
+(function(){
+  const N = [
+    ['🌐', 'CDNの拠点', '世界中に散らばった倉庫。よく頼まれるファイルを取っておいて、近くのお客さんに返します。DDoS攻撃も、ここで分けて受け止めます（8.3・8.5）。'],
+    ['🧱', 'ファイアウォール', 'データセンターの入り口の門番。住所とポート番号を見て、開けていない窓口への小包を止めます（8.2）。'],
+    ['🔐', 'TLSの終端', '多くの場合、ロードバランサーやCDNが <b>HTTPSの鍵を開けて</b>、中身を読める形にします（第4章）。ここから先は、データセンターの中の守られた道を通ります。'],
+    ['🛡️', 'WAF', '鍵を開けた手紙の中身を読み、悪だくみの頼みごとを止めます（8.6）。'],
+    ['⚖️', 'ロードバランサー', 'たくさんのWebサーバーに、お客さんを振り分けます（8.4）。'],
+    ['🖥️', 'Webサーバー', 'やっと到着。ここで頼みごとを読み、返事を作ります（第9章）。', 'srv'],
+  ];
+  const dc = $('dc');
+  dc.innerHTML = N.map(([ic, nm, , c], i) => (i ? '<span class="dc-a">→</span>' : '') + `<button class="dc-n${c ? ' ' + c : ''}" data-i="${i}"><span class="ic">${ic}</span><b>${nm}</b></button>`).join('');
+  const pick = i => { dc.querySelectorAll('.dc-n').forEach(b => b.classList.toggle('sel', +b.dataset.i === i)); $('dcExplain').innerHTML = `<b class="t">${N[i][1]}</b>${N[i][2]}`; };
+  dc.querySelectorAll('.dc-n').forEach(b => b.onclick = () => pick(+b.dataset.i));
+  pick(0);
+})();
+
+/* ---------- 8.2 ファイアウォール ---------- */
+(function(){
+  const R = [
+    ['すべて', 'TCP 443', '通す', 'HTTPS（Webのページ）'],
+    ['すべて', 'TCP 80', '通す', 'http（https へ案内するため）'],
+    ['198.51.100.0/24', 'TCP 22', '通す', 'SSH（会社からの管理だけ）'],
+    ['すべて', 'すべて', '止める', 'それ以外はぜんぶ止める'],
+  ];
+  const P = [
+    {lb:'Webを見に来たお客さん', src:'203.0.113.45', dst:'TCP 443', hit:0},
+    {lb:'http で来たお客さん', src:'203.0.113.45', dst:'TCP 80', hit:1},
+    {lb:'会社からの管理', src:'198.51.100.7', dst:'TCP 22', hit:2},
+    {lb:'外からの管理（あやしい）', src:'192.0.2.66', dst:'TCP 22', hit:3},
+    {lb:'データベースをねらう', src:'192.0.2.66', dst:'TCP 5432', hit:3},
+    {lb:'サーバーが外のAPIに問い合わせた返事', src:'203.0.113.200', dst:'TCP 49211', hit:-1},
+  ];
+  function show(i){
+    const p = P[i];
+    $('fwPkts').querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i));
+    $('fwTable').innerHTML = '<thead><tr><th>#</th><th>送り元</th><th>宛先（窓口）</th><th>どうする</th><th>メモ</th></tr></thead><tbody>' +
+      R.map((r, k) => {
+        const cls = p.hit === k ? 'hit' + (r[2] === '止める' ? ' deny' : '') : (p.hit >= 0 && k < p.hit) || p.hit < 0 ? 'skip' : '';
+        return `<tr class="${cls}"><td>${k + 1}</td><td>${r[0]}</td><td>${r[1]}</td><td class="${r[2] === '通す' ? 'allow' : 'deny'}">${r[2]}</td><td class="memo">${r[3]}</td></tr>`;
+      }).join('') + '</tbody>';
+    let v, why;
+    if(p.hit < 0){ v = ['ok', '通す（返事なので）']; why = 'ルールの表を見る前に、<b>「さっきサーバーから出ていった通信の返事だ」</b>と覚えていた表（ステートフル）で確かめて通しました。'; }
+    else if(R[p.hit][2] === '通す'){ v = ['ok', '通す']; why = `上から順に見て、<b>${p.hit + 1}行目</b>に当てはまったので通しました。${p.hit ? `1〜${p.hit}行目には当てはまりません。` : ''}`; }
+    else { v = ['ng', '止める']; why = p.dst === 'TCP 22' ? '22番（SSH）を通す3行目は、会社の住所（198.51.100.0/24）からだけでした。当てはまらないので、最後の「ぜんぶ止める」行で止めました。' : '開けていない窓口です。1〜3行目のどれにも当てはまらないので、最後の行で止めました。'; }
+    $('fwRes').innerHTML = `<span class="fw-pkt">${p.src} → ${p.dst}</span><span class="fw-v ${v[0]}">${v[1]}</span><span>${why}</span>`;
+  }
+  $('fwPkts').innerHTML = P.map((p, i) => `<button data-i="${i}">${p.lb}</button>`).join('');
+  $('fwPkts').querySelectorAll('button').forEach(b => b.onclick = () => show(+b.dataset.i));
+  show(0);
+})();
+
+/* ---------- 8.3 DDoS ---------- */
+(function(){
+  const cv = $('ddCanvas'), ctx = cv.getContext('2d');
+  if(cv.parentElement.clientWidth < 520){ cv.width = 360; cv.height = 300; }
+  const W = cv.width, H = cv.height;
+  let mode = 'none', dots = [], raf = null, running = false, t0 = 0, served = 0, asked = 0;
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  const EDGES = [[W * 0.5, H * 0.17], [W * 0.5, H * 0.5], [W * 0.5, H * 0.83]];
+  const SV = [W * 0.86, H * 0.5];
+  function spawn(){
+    const good = Math.random() < (running ? 0.08 : 1);
+    const y = 20 + Math.random() * (H - 40);
+    const target = mode === 'cdn' ? EDGES[Math.floor(Math.random() * 3)] : SV;
+    dots.push({x:10, y, tx:target[0], ty:target[1], good, stage:0, v:2 + Math.random() * 2});
+  }
+  function frame(now){
+    const el = (now - t0) / 1000;
+    if(running && el > 9){ running = false; $('ddBtn').disabled = false; $('ddBtn').textContent = 'もう一度'; }
+    const rate = running ? 9 : 0.35;
+    for(let k = 0; k < Math.floor(rate) + (Math.random() < rate % 1 ? 1 : 0); k++) spawn();
+    ctx.clearRect(0, 0, W, H);
+    ctx.font = '12px "Noto Sans JP", sans-serif'; ctx.textAlign = 'center';
+    ctx.fillStyle = css('--ink-2'); ctx.textAlign = 'left'; ctx.fillText(running ? '攻撃してくる機器の大群' : 'お客さん', 10, H - 8); ctx.textAlign = 'center';
+    if(mode === 'cdn') EDGES.forEach(([x, y], i) => { ctx.strokeStyle = css('--accent'); ctx.lineWidth = 2; ctx.strokeRect(x - 34, y - 16, 68, 32); ctx.fillStyle = css('--ink'); ctx.fillText('拠点' + (i + 1), x, y + 4); });
+    let load = 0;
+    const next = [];
+    for(const d of dots){
+      const dx = d.tx - d.x, dy = d.ty - d.y, dist = Math.hypot(dx, dy);
+      if(dist < 6){
+        if(d.stage === 0 && mode === 'cdn'){
+          if(!d.good) continue;                      // 拠点で悪いものを捨てる
+          d.stage = 1; d.tx = SV[0]; d.ty = SV[1]; next.push(d); continue;
+        }
+        if(d.good){ asked++; }
+        load++;
+        continue;
+      }
+      d.x += dx / dist * d.v * 2; d.y += dy / dist * d.v * 2;
+      ctx.fillStyle = d.good ? css('--ok') : css('--bad');
+      ctx.beginPath(); ctx.arc(d.x, d.y, d.good ? 3.4 : 2.4, 0, Math.PI * 2); ctx.fill();
+      next.push(d);
+    }
+    dots = next;
+    // サーバー
+    const cap = 3;
+    window.__ddLoad = (window.__ddLoad || 0) * 0.85 + load * 0.15 * 20;
+    const pct = Math.min(100, Math.round(window.__ddLoad / cap * 10));
+    const over = pct >= 100;
+    ctx.fillStyle = over ? 'rgba(220,38,38,.25)' : css('--surface');
+    ctx.strokeStyle = over ? css('--bad') : css('--accent'); ctx.lineWidth = 2;
+    const bw = W < 400 ? 44 : 44; ctx.fillRect(SV[0] - bw, SV[1] - 30, bw * 2, 60); ctx.strokeRect(SV[0] - bw, SV[1] - 30, bw * 2, 60);
+    ctx.fillStyle = css('--ink'); ctx.fillText(over ? '😵 止まった' : (W < 400 ? '🖥️' : '🖥️ サーバー'), SV[0], SV[1] + 5);
+    $('ddLoad').style.width = pct + '%'; $('ddLoad').style.background = pct > 80 ? css('--bad') : pct > 40 ? css('--answer') : css('--ok');
+    $('ddLoadT').textContent = pct + '%';
+    $('ddOk').textContent = over ? '返せない ✕' : '返せている ✓';
+    $('ddOk').style.color = over ? css('--bad') : css('--ok');
+    raf = requestAnimationFrame(frame);
+  }
+  function start(){
+    running = true; t0 = performance.now(); $('ddBtn').disabled = true;
+    $('ddExplain').innerHTML = mode === 'none'
+      ? '<b class="t">守りなし：サーバーに直接押しよせる</b>赤い点が攻撃、緑の点がふつうのお客さんです。サーバーは大群をさばききれず、<b>ふつうのお客さんにも返事ができなくなりました</b>。'
+      : '<b class="t">世界中の拠点で受け止める</b>攻撃は、近くの拠点にばらばらに届きます。拠点は攻撃の特徴を見分けて<b>悪いものだけを捨て</b>、ふつうのお客さんの頼みだけをサーバーに渡します。サーバーは落ち着いたままです。';
+  }
+  document.querySelectorAll('#ddMode button').forEach(b => b.onclick = () => {
+    mode = b.dataset.m; dots = []; window.__ddLoad = 0;
+    document.querySelectorAll('#ddMode button').forEach(x => x.classList.toggle('on', x === b));
+    $('ddExplain').innerHTML = mode === 'none' ? '守りなしにしました。「攻撃を始める」を押してください。' : '世界中の拠点（CDN）で受け止めるようにしました。「攻撃を始める」を押してください。';
+  });
+  $('ddBtn').onclick = start;
+  $('ddExplain').innerHTML = 'いまは、ふつうのお客さん（緑）がときどき来ているだけです。「攻撃を始める」を押してみましょう。';
+  if(reduced()){ $('ddExplain').innerHTML += '<br><span class="note">（動きを減らす設定のため、アニメーションをゆっくりにしています）</span>'; }
+  raf = requestAnimationFrame(frame);
+})();
+
+/* ---------- 8.4 ロードバランサー ---------- */
+(function(){
+  const S = [{nm:'Web1', w:0, up:true}, {nm:'Web2', w:0, up:true}, {nm:'Web3', w:0, up:true, slow:true}];
+  let algo = 'rr', rr = 0, timer = null, total = [0, 0, 0];
+  function draw(flash){
+    $('lb').innerHTML = `<div class="lb-in"><div class="lb-box"><span class="ic">⚖️</span>ロードバランサー</div><span class="lb-q">→ 振り分け</span></div><div class="lb-srvs">${S.map((s, i) =>
+      `<div class="lb-s${s.up ? '' : ' down'}${s.w >= 6 ? ' busy' : ''}${flash === i ? ' flash' : ''}"><b>${s.up ? '🖥️' : '💤'} ${s.nm}<small>${s.slow ? '処理が遅め' : 'ふつう'} ・ 受けた数 ${total[i]}</small></b><div class="lb-bar"><i style="width:${Math.min(100, s.w * 12)}%"></i></div><button data-i="${i}">${s.up ? '止める' : '動かす'}</button></div>`).join('')}</div>`;
+    $('lb').querySelectorAll('[data-i]').forEach(b => b.onclick = () => {
+      const s = S[+b.dataset.i]; s.up = !s.up; if(!s.up) s.w = 0;
+      draw();
+      $('lbExplain').innerHTML = s.up ? `<b class="t">${s.nm} が戻った</b>健康チェックに返事が来るようになったので、また振り分け先に入れました。` : `<b class="t">${s.nm} が止まった</b>健康チェックに返事がないので、ロードバランサーは ${s.nm} への振り分けをやめました。お客さんは残りのサーバーで受け止めるので、サイトは止まりません。`;
+    });
+  }
+  function tick(){
+    S.forEach(s => { if(s.w > 0) s.w = Math.max(0, s.w - (s.slow ? 0.35 : 1)); });
+    const live = S.map((s, i) => i).filter(i => S[i].up);
+    if(!live.length){ draw(); $('lbExplain').innerHTML = '<b class="t">全部止まった</b>振り分け先がないので、お客さんに返事ができません。'; return; }
+    let pick;
+    if(algo === 'rr'){ do { pick = rr++ % 3; } while(!S[pick].up); }
+    else pick = live.reduce((a, b) => S[b].w < S[a].w ? b : a);
+    S[pick].w += 1.6; total[pick]++;
+    draw(pick);
+  }
+  $('lbStart').onclick = () => {
+    clearInterval(timer); timer = setInterval(tick, reduced() ? 600 : 260);
+    $('lbExplain').innerHTML = algo === 'rr'
+      ? '<b class="t">順番に配る</b>Web1 → Web2 → Web3 と順番に配ります。簡単ですが、処理の遅い Web3 にも同じだけ配るので、<b>Web3 の仕事がたまっていきます</b>（バーがオレンジに）。'
+      : '<b class="t">すいている所へ配る</b>いま抱えている仕事がいちばん少ないサーバーに配ります。処理の遅い Web3 には自然と少なめに配られ、全体がならされます。';
+  };
+  $('lbStop').onclick = () => { clearInterval(timer); timer = null; };
+  document.querySelectorAll('#lbAlgo button').forEach(b => b.onclick = () => {
+    algo = b.dataset.a; document.querySelectorAll('#lbAlgo button').forEach(x => x.classList.toggle('on', x === b));
+    S.forEach(s => s.w = 0); total = [0, 0, 0]; draw();
+    if(timer) $('lbStart').onclick();
+    else $('lbExplain').innerHTML = '振り分け方を変えました。「お客さんを流す」を押してください。';
+  });
+  draw();
+  $('lbExplain').innerHTML = '「お客さんを流す」を押すと、お客さんが次々にやって来ます。Web3 は、ほかより処理が遅いサーバーです。';
+})();
+
+/* ---------- 8.5 CDN のキャッシュ ---------- */
+(function(){
+  const TTL = 3600;
+  let cache = null, clock = 0, ver = 1, run = 0, log = [];
+  const fmt = s => `${Math.floor(s / 3600)}時間${Math.floor(s % 3600 / 60)}分`;
+  let P;
+  const layout = () => {
+    const nar = $('cdnx').clientWidth < 520;
+    P = nar ? {vb:'0 0 260 345', u:[130, 45], e:[130, 165], o:[130, 285], ux:[130, 75], ex1:[130, 125], ex2:[130, 205], ox:[130, 255], l1:[150, 100], l2:[150, 230], clk:[8, 338], nar}
+            : {vb:'0 0 640 150', u:[65, 75], e:[320, 75], o:[578, 75], ux:[110, 75], ex1:[270, 75], ex2:[370, 75], ox:[530, 75], l1:[190, 66], l2:[450, 66], clk:[20, 140], nar};
+  };
+  const box = (c, w, h, cls, t1, t2, t3) => `<rect class="nd ${cls}" x="${c[0] - w / 2}" y="${c[1] - h / 2}" width="${w}" height="${h}" rx="10"/><text class="t1" x="${c[0]}" y="${c[1] - (t3 !== undefined ? 12 : 3)}" text-anchor="middle">${t1}</text><text class="t2" x="${c[0]}" y="${c[1] + (t3 !== undefined ? 4 : 15)}" text-anchor="middle">${t2}</text>${t3 !== undefined ? t3 : ''}`;
+  function draw(hl){
+    const left = cache ? TTL - (clock - cache.t) : 0;
+    const st = !cache ? '（空っぽ）' : left > 0 ? `版${cache.v} ・ 残り${Math.round(left / 60)}分` : `版${cache.v} ・ 期限切れ`;
+    const old = cache && cache.v !== ver;
+    layout();
+    $('cdnx').innerHTML = `<svg viewBox="${P.vb}" id="cdnSvg">
+      <line class="lnk" x1="${P.ux[0]}" y1="${P.ux[1]}" x2="${P.ex1[0]}" y2="${P.ex1[1]}"/><line class="lnk" x1="${P.ex2[0]}" y1="${P.ex2[1]}" x2="${P.ox[0]}" y2="${P.ox[1]}"/>
+      ${box(P.u, 90, 60, hl === 'u' ? 'on' : '', '👤 お客さん', '東京')}
+      ${box(P.e, 120, 80, hl === 'e' ? 'on' : hl === 'eh' ? 'ans' : '', '🏬 CDNの拠点', '東京', `<text class="t3${old ? ' old' : ''}" x="${P.e[0]}" y="${P.e[1] + 24}" text-anchor="middle">${st}</text>`)}
+      ${box(P.o, 110, 60, hl === 'o' ? 'ans' : '', '🏛️ 元のサーバー', 'アメリカ ・ 版' + ver)}
+      <text class="t2" x="${P.l1[0]}" y="${P.l1[1]}" text-anchor="${P.nar ? 'start' : 'middle'}">往復 2ms</text><text class="t2" x="${P.l2[0]}" y="${P.l2[1]}" text-anchor="${P.nar ? 'start' : 'middle'}">往復 120ms</text>
+      <text class="t2" x="${P.clk[0]}" y="${P.clk[1]}">時計：${fmt(clock)}</text>
+    </svg>`;
+    $('cdnLog').innerHTML = log.slice(-5).join('\n') || 'ここに記録が出ます。';
+  }
+  async function req(){
+    const me = ++run, svg = () => $('cdnSvg');
+    const fresh = cache && clock - cache.t < TTL;
+    draw('u');
+    await moveDot(svg(), [P.ux, P.ex1], 450, 'var(--accent)');
+    if(me !== run) return;
+    if(fresh){
+      draw('eh');
+      await moveDot(svg(), [P.ex1, P.ux], 450, 'var(--answer)');
+      log.push(`<span class="h">HIT</span>  拠点が取っておいた版${cache.v}を返した  かかった時間 約2ms` + (cache.v !== ver ? '  <span class="x">（元は版' + ver + 'に変わっているのに古いまま！）</span>' : ''));
+      $('cdnExplain').innerHTML = cache.v !== ver
+        ? '<b class="t">古いページが返った</b>元のサーバーのページは書きかわったのに、拠点はまだ期限内なので、取っておいた古い版を返してしまいました。急いで直したいときは、CDNに「取っておいた分を消して」と頼みます（パージ）。'
+        : '<b class="t">HIT：拠点が返した</b>拠点に取っておいた分があったので、アメリカまで行かずに<b>すぐ返せました</b>。元のサーバーの負担もありません。';
+    } else {
+      draw('e');
+      await moveDot(svg(), [P.ex2, P.ox], 900, 'var(--accent)');
+      if(me !== run) return;
+      draw('o');
+      await moveDot(svg(), [P.ox, P.ex2], 900, 'var(--answer)');
+      if(me !== run) return;
+      const expired = !!cache;
+      cache = {t:clock, v:ver};
+      draw('eh');
+      await moveDot(svg(), [P.ex1, P.ux], 450, 'var(--answer)');
+      log.push(`<span class="m">MISS</span>  ${expired ? '期限切れなので' : '持っていないので'}元のサーバーまで取りに行った  かかった時間 約122ms`);
+      $('cdnExplain').innerHTML = `<b class="t">MISS：元のサーバーまで取りに行った</b>拠点は${expired ? '取っておいた分の期限（1時間）が切れていた' : 'まだ何も持っていなかった'}ので、アメリカの元のサーバーまで取りに行きました。返事についていた <code>Cache-Control: max-age=3600</code> にしたがって、<b>1時間取っておきます</b>。もう一度押してみましょう。`;
+    }
+    draw();
+  }
+  $('cdnReq').onclick = req;
+  $('cdnTime').onclick = () => { run++; clock += 3600; draw(); $('cdnExplain').innerHTML = '1時間すすめました。取っておいた分は期限切れです。'; };
+  $('cdnPurge').onclick = () => { run++; ver++; draw(); $('cdnExplain').innerHTML = `元のサーバーのページを版${ver}に書きかえました。拠点が取っておいた分は、まだ古いままです。ページを見てみましょう。`; };
+  $('cdnReset').onclick = () => { run++; cache = null; clock = 0; ver = 1; log = []; draw(); $('cdnExplain').innerHTML = '最初の状態に戻しました。'; };
+  draw();
+  $('cdnExplain').innerHTML = '「東京のお客さんがページを見る」を2回続けて押してみましょう。';
+})();
+
+/* ---------- 8.6 WAF ---------- */
+(function(){
+  const R = [
+    {q:'GET /search?q=ねこ', bad:false, e:'ふつうの検索です。'},
+    {q:"GET /search?q=<span class=\"hl\">' OR '1'='1</span>", bad:true, n:'SQLインジェクション', e:'データベースへの命令をこっそり混ぜて、見てはいけないデータを引き出そうとする手口です。<code>\' OR \'1\'=\'1</code> は「どんな条件でも正しい」という意味になり、全員分のデータが出てきてしまうおそれがあります。'},
+    {q:'POST /comment  本文=すてきな写真ですね', bad:false, e:'ふつうのコメントの投稿です。'},
+    {q:'POST /comment  本文=<span class="hl">&lt;script&gt;fetch(…)&lt;/script&gt;</span>', bad:true, n:'クロスサイトスクリプティング', e:'コメントにプログラムを書きこみ、ほかの人がそのページを見たときに動かして、Cookie（第1章）などを盗もうとする手口です。'},
+    {q:'GET /images/<span class="hl">../../etc/passwd</span>', bad:true, n:'ディレクトリトラバーサル', e:'<code>../</code>（1つ上の階層へ）をくり返して、公開していないサーバーの中のファイルを読もうとする手口です。'},
+    {q:'GET /news/2026/10/18', bad:false, e:'ふつうのニュースのページです。'},
+  ];
+  let sel = 1;
+  function draw(){
+    const on = $('wafOn').checked;
+    $('waf').innerHTML = R.map((r, i) => {
+      const cls = !r.bad ? 'ok' : on ? 'ng' : 'danger';
+      const v = !r.bad ? '✓ 通す' : on ? '✕ 止めた' : '⚠ 通ってしまう';
+      return `<div class="waf-r ${cls}${i === sel ? ' sel' : ''}" data-i="${i}" tabindex="0" role="button"><code>${r.q}</code><span class="v">${v}</span></div>`;
+    }).join('');
+    $('waf').querySelectorAll('.waf-r').forEach(el => {
+      el.onclick = () => { sel = +el.dataset.i; draw(); };
+      el.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); sel = +el.dataset.i; draw(); } };
+    });
+    const r = R[sel];
+    $('wafExplain').innerHTML = r.bad
+      ? `<b class="t">${r.n}</b>${r.e}${on ? '<br>WAFは、こうした<b>よくある手口の形</b>を見つけて、Webサーバーに届く前に止めました。' : '<br><b style="color:var(--bad)">WAFがないので、そのままWebサーバーに届いてしまいました。</b>Webアプリの作りが甘いと、被害につながります。'}`
+      : `<b class="t">ふつうの頼みごと</b>${r.e}`;
+  }
+  $('wafOn').onchange = draw;
+  draw();
+})();
+
+/* ---------- 8.7 試そう ---------- */
+setupCmds({
+  mac:[
+    ['curl -sI https://www.example.com | grep -iE "age|cache|cf-ray"', '<code>cf-cache-status</code> が HIT なら、CDNの拠点が取っておいた分です。<code>age</code> は取っておいてからの秒数です。'],
+    ['curl -sI "https://www.example.com/?test=$RANDOM" | grep -i cache', 'URLの最後に毎回ちがう文字を付けると、拠点には「初めてのページ」に見えるので、MISS になります。'],
+    ['nc -vz -w 3 www.example.com 22', '22番（SSH）につながるか試します。ファイアウォールで止められていれば、時間切れになります。'],
+  ],
+  win:[
+    ['curl.exe -sI https://www.example.com', '<code>cf-cache-status</code> と <code>age</code> の行を探してみましょう。'],
+    ['Test-NetConnection www.example.com -Port 22', '22番につながるか試します。<code>TcpTestSucceeded : False</code> なら、止められています。'],
+  ],
+});
+setupTrace('real', 'realExplain', [
+  ['c', '$ curl -sI https://www.example.com （3回くり返し、抜き出し）'],
+  ['age', 'age: 4914'],
+  ['hit', 'cf-cache-status: HIT'],
+  ['ray', 'cf-ray: a4c5ce18cfd2fcb9-KIX'],
+  ['c', '$ curl -sI "https://www.example.com/?nocache=12345"'],
+  ['miss', 'cf-cache-status: MISS'],
+  ['c', '$ dig +short www.example.com A / AAAA'],
+  ['ips', '172.66.147.243'],
+  ['ips', '104.20.23.154'],
+  ['ips6', '2606:4700:10::6814:179a'],
+  ['ips6', '2606:4700:10::ac42:93f3'],
+], {
+  age:['取っておいてから約82分', '拠点がこの返事を取っておいてから、<b>4914秒（約82分）</b>たっています。3回とも同じ値なので、3回とも同じ取っておいた分が返ってきました。'],
+  hit:['HIT：拠点が返した', '8.5 の HIT と同じです。元のサーバーまで行かずに、拠点がすぐ返しました。'],
+  ray:['返事をした拠点：大阪', '最後の <code>KIX</code> は関西国際空港の記号で、<b>大阪の拠点</b>です。第1章で試したときは <code>NRT</code>（成田）でした。同じサイトでも、そのときの混み具合などで、答える拠点が変わります。'],
+  miss:['MISS：初めてのページ', 'URLの最後に <code>?nocache=…</code> を付けると、拠点にとっては別のページなので、取っておいた分がなく、元のサーバーまで取りに行きました。'],
+  ips:['IPv4の住所が2つ', 'example.com の住所は2つあります。どちらにつないでもよく、負担を分け合っています（DNSで振り分ける方法）。'],
+  ips6:['IPv6の住所も2つ', 'よく見ると、最後の部分 <code>6814:179a</code> は IPv4 の 104.20.23.154 を16進数で書いたもの、<code>ac42:93f3</code> は 172.66.147.243 です。IPv4とIPv6で、同じ拠点を指すように作られています。'],
+});
+
+/* ---------- 8.9 クイズ ---------- */
+setupQuiz([
+  {q:'ファイアウォールのルールが上から「443番を通す」「すべて止める」のとき、22番への小包は？', o:['通す','止める','どちらでもない'], a:1,
+   e:'上から順に見て、最初に当てはまった行にしたがいます。22番は1行目に当てはまらないので、2行目で止められます。'},
+  {q:'ステートフルなファイアウォールが、ルールに書かなくても通すのは？', o:['中から出ていった通信の返事','外から来たすべての小包','22番への小包'], a:0,
+   e:'出ていった通信を覚えておき、その返事だけは通します。'},
+  {q:'DDoS攻撃の守り方として、今よく使われているのは？', o:['サーバーを1台だけ強くする','世界中の拠点で分けて受け止め、悪いものだけ捨てる','すべての小包を通す'], a:1,
+   e:'数十テラビットもの攻撃は1か所では受け止められないので、世界中の大きなネットワークで分けて受け止めます。'},
+  {q:'ロードバランサーが、こわれたサーバーに振り分けないで済むのはなぜ？', o:['健康チェックをしているから','お客さんが教えてくれるから','サーバーが絶対にこわれないから'], a:0,
+   e:'数秒ごとに「元気？」と確かめ、返事のないサーバーには振り分けません。'},
+  {q:'CDNの拠点がファイルを取っておく時間を決めるのは？', o:['お客さんのブラウザ','元のサーバーの返事の Cache-Control','DNSサーバー'], a:1,
+   e:'元のサーバーが max-age などで「何秒まで取っておいてよいか」を指定します。'},
+  {q:'WAF が、ふつうのファイアウォールとちがうところは？', o:['住所とポート番号しか見ない','鍵を開けた手紙の中身まで読んで、悪だくみを見つける','CDNの拠点を作る'], a:1,
+   e:'SQLインジェクションのような、中身に書かれた手口を見つけて止めます。'},
+]);
+</script>
+</body>
+</html>

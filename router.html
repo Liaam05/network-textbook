@@ -1,0 +1,1183 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>スイッチとルーターの旅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaf2f8; --surface:#ffffff; --surface-2:#e1eff6; --ink:#0d1b2a; --ink-2:#4a5d75; --line:#c8d5e4;
+  --accent:#0891b2; --accent-soft:rgba(8,145,178,.12); --answer:#d97706; --answer-soft:rgba(217,119,6,.13); --ok:#15803d; --ok-soft:rgba(21,128,61,.12);
+  --ground:#e3ebf4; --zone-home:rgba(21,128,61,.09); --zone-isp:rgba(8,145,178,.1); --zone-net:rgba(217,119,6,.09);
+  --grid:rgba(8,145,178,.07); --glow:0 0 0 1px rgba(8,145,178,.4),0 0 16px rgba(8,145,178,.15); --on-accent:#ffffff;
+  --shadow:0 1px 2px rgba(13,27,42,.06),0 6px 18px rgba(13,27,42,.07);
+  --board-grid:rgba(8,145,178,.14); --board-edge:#b9cadc;
+  --z-home:rgba(21,128,61,.13); --z-home-edge:#15803d; --z-isp:rgba(8,145,178,.15); --z-isp-edge:#0e7490;
+  --z-net:rgba(217,119,6,.13); --z-net-edge:#b45309; --z-web:rgba(124,58,237,.11); --z-web-edge:#6d28d9;
+  --accent2:#7c3aed;
+  --wash:radial-gradient(1100px 620px at 0% 0%,rgba(8,145,178,.16),transparent 62%),radial-gradient(900px 560px at 100% 25%,rgba(124,58,237,.12),transparent 60%),radial-gradient(1000px 640px at 40% 100%,rgba(217,119,6,.10),transparent 60%);
+  --strip:linear-gradient(90deg,#06b6d4,#7c3aed 55%,#f59e0b);
+  --bar-bg:linear-gradient(90deg,rgba(8,145,178,.12),rgba(124,58,237,.09));
+  --primary-bg:linear-gradient(135deg,#0891b2,#4f46e5);
+  --num-bg:linear-gradient(135deg,#0891b2,#7c3aed); --num-fg:#ffffff;
+  --h1-grad:linear-gradient(90deg,#0d1b2a 20%,#0891b2 60%,#7c3aed);
+  --subh-bar:linear-gradient(#0891b2,#7c3aed);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.85;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:48px 0 12px}
+.kicker{font-size:13px;color:var(--ink-2);letter-spacing:.08em}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.35;margin:6px 0 12px}
+h2{font-size:clamp(20px,3.6vw,26px);margin:56px 0 8px;line-height:1.4}
+h2 .num{display:inline-block;font-size:14px;color:var(--accent);margin-right:8px;font-family:"JetBrains Mono",monospace}
+p{margin:.6em 0}
+.lead{font-size:17px;color:var(--ink-2)}
+b{color:var(--ink)}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.92em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.note{font-size:13px;color:var(--ink-2)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+button.primary:hover:not(:disabled){filter:brightness(1.08)}
+button.on{background:var(--accent-soft);border-color:var(--accent)}
+
+/* --- analogy --- */
+.analogy{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:12px}
+.analogy .box{text-align:center;padding:14px}
+.analogy .big{font-size:20px;font-weight:700}
+.analogy .arrow{font-size:22px;color:var(--ink-2)}
+
+/* --- domain tree --- */
+.domain-input{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.domain-input input{flex:1;min-width:220px;font:inherit;font-family:"JetBrains Mono",monospace;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{font-size:13px;padding:4px 10px}
+.stairs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.stair{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-left:calc(var(--k) * 22px);opacity:0;transform:translateX(-8px);animation:in .4s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.stair .blk{font-family:"JetBrains Mono",monospace;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.stair .blk .new{color:var(--accent);font-weight:600}
+.stair .desc{flex:1 1 10em;font-size:13px;color:var(--ink-2)}
+.domain-err{color:var(--answer);font-size:14px}
+
+/* --- stage --- */
+.stage-card{padding:0;overflow:hidden}
+.stage-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stage-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.stage-bar button,.stepper-bar button{white-space:nowrap}
+.counter{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-2);min-width:56px;text-align:center}
+.stage-wrap{position:relative;width:100%;overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage-wrap.dragging{cursor:grabbing}
+.stage{position:absolute;left:0;top:0;width:820px;height:600px;transform-origin:0 0;perspective:1500px;perspective-origin:50% 30%;
+  --ax:55deg; --az:-24deg}
+.plane{position:absolute;left:30px;top:50px;width:800px;height:520px;transform-style:preserve-3d;
+  transform:rotateX(var(--ax)) rotateZ(var(--az));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.dragging .plane,.dragging .anchor{transition:none!important}
+.plane > svg{position:absolute;inset:0;overflow:visible}
+.ground{fill:var(--ground)}
+.zone-home{fill:var(--zone-home)}.zone-isp{fill:var(--zone-isp)}.zone-net{fill:var(--zone-net)}
+.zone-label{font-size:16px;font-weight:700;letter-spacing:.04em}
+.board-gridline{stroke:var(--board-grid);stroke-width:1}
+.ground{stroke:var(--board-edge);stroke-width:2}
+.zone{stroke-width:2.5}
+.z-home{fill:var(--z-home);stroke:var(--z-home-edge)}.l-home{fill:var(--z-home-edge)}
+.z-isp{fill:var(--z-isp);stroke:var(--z-isp-edge)}.l-isp{fill:var(--z-isp-edge)}
+.z-net{fill:var(--z-net);stroke:var(--z-net-edge)}.l-net{fill:var(--z-net-edge)}
+.z-web{fill:var(--z-web);stroke:var(--z-web-edge)}.l-web{fill:var(--z-web-edge)}
+.link{stroke:var(--ink-2);stroke-opacity:.45;stroke-width:4;fill:none;stroke-linecap:round}
+.link.web{stroke-dasharray:2 10}
+.link.active{stroke:var(--accent);stroke-opacity:1;stroke-width:6;stroke-dasharray:10 8;animation:flow .6s linear infinite}
+.link.active.ans{stroke:var(--answer)}
+@keyframes flow{to{stroke-dashoffset:-18}}
+.shadow{fill:rgba(0,0,0,.18)}
+.anchor{position:absolute;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.node{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.node .icon{width:64px;height:64px;border-radius:16px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);transition:border-color .3s,box-shadow .3s,transform .3s}
+.node .icon svg{width:38px;height:38px;color:var(--ink-2)}
+.node.hl .icon{border-color:var(--accent);box-shadow:0 0 0 6px var(--accent-soft),var(--shadow);transform:translateY(-4px)}
+.node .lbl{font-size:15px;font-weight:700;white-space:nowrap;background:var(--surface);padding:0 8px;border-radius:6px;border:1px solid var(--line)}
+.node .sub{font-size:11px;color:var(--ink-2);white-space:nowrap;font-family:"JetBrains Mono",monospace}
+.bubble{position:absolute;bottom:136px;left:0;transform:translateX(-50%) scale(.6);opacity:0;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;padding:6px 12px;border-radius:12px;white-space:nowrap;transition:opacity .25s,transform .25s;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--ink)}
+.bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.packet-anchor{transition:none;transform:translateZ(var(--h,0px)) rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1))}
+.packet{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.packet .env{width:44px;height:30px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.packet.ans .env{background:var(--answer)}
+.packet.web .env{background:var(--ok)}
+.packet.hide{opacity:0}
+.drag-hint{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px 8px;pointer-events:none}
+
+.panels{display:grid;grid-template-columns:1.25fr .8fr 1.2fr;gap:14px;margin-top:14px;align-items:start}
+.explain{padding:18px 22px 22px;border-top:1px solid var(--line);background:var(--surface);min-height:190px}
+.explain h3{margin:0 0 4px;font-size:21px;line-height:1.5}
+.explain #stepText{font-size:16.5px}
+.timeline{display:flex;gap:4px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.timeline button{flex:0 0 auto;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.timeline button .n{font-family:"JetBrains Mono",monospace;font-size:11px;opacity:.7}
+.timeline button.done{color:var(--ink);border-color:var(--line);background:var(--surface-2)}
+.timeline button.cur{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:700}
+.timeline button.cur.ans{background:var(--answer);border-color:var(--answer)}
+.node{transition:opacity .35s}
+.node.dim{opacity:.55}
+.url-split{font-size:14px;margin:4px 0 10px;padding:8px 12px;border-radius:8px;background:var(--surface-2)}
+.url-split .dim-part{color:var(--ink-2);opacity:.6}
+.url-split .host-part{color:var(--accent);font-weight:600;background:var(--accent-soft);border-radius:4px;padding:0 2px}
+.explain .stepno{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+.explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.side{display:flex;flex-direction:column;gap:14px}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.msg{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6}
+.msg .head{display:inline-block;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:1px 8px;border-radius:6px;margin-bottom:6px}
+.msg .head.q{background:var(--accent-soft);color:var(--accent)}
+.msg .head.a{background:var(--answer-soft);color:var(--answer)}
+.msg table{border-collapse:collapse;width:100%}
+.msg td{padding:3px 0;vertical-align:top;border-top:1px dashed var(--line)}
+.msg td:first-child{width:5.5em;white-space:nowrap;color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding-right:8px}
+.msg .empty{color:var(--ink-2);font-family:"Noto Sans JP",sans-serif}
+.timer{font-family:"JetBrains Mono",monospace;font-size:28px;font-weight:600}
+.timer small{font-size:13px;color:var(--ink-2);font-weight:400}
+.history{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.history span{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--surface-2);border-radius:6px;padding:1px 8px}
+.cache-list{list-style:none;margin:0;padding:0;font-size:13px}
+.cache-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.cache-list li.flash{animation:flash 1.2s}
+@keyframes flash{0%{background:var(--ok-soft)}100%{background:transparent}}
+.cache-list .ttl{font-family:"JetBrains Mono",monospace;color:var(--ok);white-space:nowrap}
+.cache-list .gone{color:var(--ink-2);text-decoration:line-through}
+.cache-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cache-btns button{font-size:12px;padding:4px 10px}
+.clock{font-size:12px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+
+/* --- summary / quiz --- */
+.summary li{margin:6px 0}
+.quiz{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.q .opts button{text-align:left}
+.q .opts button.right{background:var(--ok-soft);border-color:var(--ok)}
+.q .opts button.wrong{background:var(--answer-soft);border-color:var(--answer)}
+.q .fb{font-size:14px;margin-top:6px;min-height:1.4em}
+footer{margin:64px 0 48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+footer a{color:var(--accent)}
+
+@media (max-width:720px){
+  .panels{grid-template-columns:1fr}
+  .explain{padding:16px}
+  .analogy{grid-template-columns:1fr}
+  .analogy .arrow{transform:rotate(90deg);text-align:center}
+  .drag-hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .plane,.anchor{transition:none}
+  .link.active{animation:none}
+}
+
+/* --- 共通パーツ --- */
+.sub-h{font-size:18px;margin:32px 0 6px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;font-size:14px;padding:6px 12px;border-radius:8px}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow);font-weight:700;color:var(--accent)}
+.wrap-seg{margin-bottom:12px}
+.row-btns{display:flex;gap:8px;margin-top:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.mini-card h3{margin:0 0 6px;font-size:16px}
+.mini-card p{font-size:14.5px}
+
+/* --- 2.3 PCの中 --- */
+.stepper{padding:0;overflow:hidden}
+.stepper-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stepper-bar .seg{background:var(--bg)}
+.stepper-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;padding:20px}
+.pc-stack{position:relative;border:2px dashed var(--line);border-radius:16px;padding:30px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.pc-frame-label{position:absolute;top:6px;left:14px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.layer{border:2px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface);transition:border-color .3s,background .3s,opacity .3s;position:relative}
+.layer .lname{font-weight:700;font-size:15px}
+.layer .lsub{font-size:12px;color:var(--ink-2)}
+.layer .lmem{position:absolute;right:12px;top:10px;font-size:11px;color:var(--ink-2)}
+.layer.on{border-color:var(--accent);background:var(--accent-soft)}
+.layer.skip{opacity:.35}
+.layer.skip .lname{text-decoration:line-through}
+.os-inner{display:flex;gap:8px;margin-top:8px}
+.mini{flex:1;font-size:12px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px;background:var(--surface-2);transition:all .3s}
+.mini.on{border-color:var(--accent);background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 0 0 3px var(--accent-soft)}
+.pc-out{text-align:center;font-size:13px;color:var(--ink-2);padding:6px;border-radius:10px;transition:all .3s}
+.pc-out.on{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.pc-chip{position:absolute;right:-12px;top:0;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:top .5s cubic-bezier(.3,.7,.2,1),background .3s}
+.pc-chip.lock{background:var(--ok)}
+.pc-explain h3{margin:0 0 6px;font-size:19px}
+.pc-explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.pkt-box{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pkt-box div{display:flex;border-top:1px dashed var(--line)}
+.pkt-box div:first-child{border-top:0}
+.pkt-box span{padding:4px 10px}
+.pkt-box span:first-child{width:7.5em;white-space:nowrap;flex:0 0 auto;background:var(--surface-2);color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px}
+
+/* --- 2.5 レコード --- */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font-family:"JetBrains Mono",monospace;font-weight:600;min-width:64px}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rec-q,.rec-a{font-size:13.5px;padding:8px 12px;border-radius:8px;overflow-x:auto;white-space:nowrap}
+.rec-q{background:var(--accent-soft);color:var(--accent)}
+.rec-a{background:var(--answer-soft);color:var(--answer);margin-top:6px}
+.rec-body h3{margin:14px 0 4px;font-size:18px}
+.parallel{display:flex;flex-direction:column;gap:8px}
+.lane{display:grid;grid-template-columns:4.5em 1fr 9em;gap:10px;align-items:center}
+.lane .who{font-size:12px;color:var(--ink-2)}
+.track{position:relative;height:30px;border-radius:8px;background:var(--surface-2)}
+.chip{position:absolute;top:3px;left:4px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;background:var(--accent);color:#fff;transition:left 1s cubic-bezier(.4,0,.2,1)}
+.chip.ans{background:var(--answer)}
+.res{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--answer);opacity:0;transition:opacity .3s}
+.res.show{opacity:1}
+
+/* --- 2.6 CDN --- */
+.cdn-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+#cdnMap{width:100%;height:auto;background:var(--surface-2);border-radius:12px}
+#cdnMap .grid{stroke:var(--line);stroke-width:1}
+#cdnMap .land{fill:var(--ground);stroke:var(--line);stroke-width:1}
+#cdnMap .edge{fill:var(--surface);stroke:var(--ink-2);stroke-width:2}
+#cdnMap .edge.pick{fill:var(--answer);stroke:var(--answer)}
+#cdnMap .origin{fill:var(--ink-2)}
+#cdnMap .me{fill:var(--accent)}
+#cdnMap .me-ring{fill:none;stroke:var(--accent);stroke-width:2;animation:ring 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+#cdnMap .route{stroke:var(--answer);stroke-width:3;stroke-dasharray:6 6;fill:none;animation:flow .6s linear infinite}
+#cdnMap .route.far{stroke:var(--ink-2);stroke-width:1.5;opacity:.6;animation:none}
+#cdnMap text{font-size:13px;fill:var(--ink);font-family:"Noto Sans JP",sans-serif}
+#cdnMap text.small{font-size:11px;fill:var(--ink-2)}
+.cdn-flow{font-size:12.5px;display:flex;flex-direction:column;gap:8px}
+.cdn-flow .f{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.cdn-flow .f b{font-family:"Noto Sans JP",sans-serif;font-size:12px;color:var(--ink-2);display:block;font-weight:500}
+.cdn-flow .f.hit{border-color:var(--answer);background:var(--answer-soft)}
+.cdn-flow .lat{font-family:"Noto Sans JP",sans-serif;font-size:13px}
+.cdn-flow .lat strong{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--answer)}
+
+/* --- 2.7 守る --- */
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.enc-view{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.enc-label{font-size:12px;font-weight:700;padding:6px 12px;background:var(--surface-2);color:var(--ink-2)}
+.enc-screen{background:#0d1117;color:#7ee787;font-size:12.5px;padding:12px;min-height:150px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.enc-screen .warn{color:#ffa657}
+.enc-screen .dim{color:#6e7681}
+.enc-grid h3{margin:0 0 6px;font-size:18px}
+.spec{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
+.spec td{padding:4px 8px;border-top:1px solid var(--line)}
+.spec td:first-child{color:var(--ink-2);width:5em}
+.race{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:10px;padding-right:96px}
+.race-row{display:grid;grid-template-columns:8.5em 1fr;gap:10px;align-items:center}
+.race-who{font-size:13px;font-weight:700;line-height:1.3}
+.race-who small{font-weight:400;color:var(--ink-2);font-size:11px}
+.race-track{position:relative;height:34px;background:var(--surface-2);border-radius:8px}
+.race-chip{position:absolute;left:4px;top:5px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;color:#fff;white-space:nowrap;transition:left .9s cubic-bezier(.4,0,.2,1),opacity .4s,transform .4s}
+.race-chip.fake{background:#c92a2a}
+.race-chip.real{background:var(--ok)}
+.race-chip.arrived{left:calc(100% - 136px)}
+.race-chip.rejected{opacity:.35;transform:rotate(-8deg)}
+.race-chip.rejected::after{content:" ✕"}
+.race-chip.accepted::after{content:" ✓"}
+.race-goal{position:absolute;right:0;top:0;bottom:0;width:86px;border:2px solid var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:11px;font-weight:700;background:var(--surface);padding:4px}
+.race-result{margin-top:12px;font-size:15px;min-height:1.5em}
+.race-result .bad{color:#e03131;font-weight:700}
+.race-result .good{color:var(--ok);font-weight:700}
+.chain{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.chain-step{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:13px;display:flex;flex-direction:column}
+.chain-step b{font-family:"JetBrains Mono",monospace}
+.chain-step span{color:var(--ink-2);font-size:12px}
+.chain-arrow{font-size:12px;color:var(--accent);padding-left:12px}
+
+/* --- 2.8 試す --- */
+.can-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.can-list li{position:relative;padding:8px 12px 8px 38px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:13.5px;line-height:1.6}
+.can-list li b{display:block;font-size:14.5px}
+.can-list li span{color:var(--ink-2)}
+.can-list li::before{position:absolute;left:12px;top:8px;font-weight:700;font-size:15px}
+.can-list li.yes::before{content:"✓";color:var(--ok)}
+.can-list li.no::before{content:"✕";color:var(--answer)}
+.cmds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.cmd{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmd-line{display:flex;align-items:center;gap:8px;background:#0d1117;padding:8px 8px 8px 12px}
+.cmd-line code{flex:1;color:#e6edf3;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.cmd-line code::before{content:"$ ";color:#6e7681}
+.cmd-line button{font-size:12px;padding:3px 10px;background:#21262d;color:#e6edf3;border-color:#30363d}
+.cmd-desc{font-size:13.5px;padding:8px 12px}
+.trace-card{padding:0;overflow:hidden}
+.trace{background:#0d1117;color:#c9d1d9;font-size:12px;padding:12px 0;overflow-x:auto;line-height:1.75}
+.trace .ln{padding:0 14px;white-space:pre;cursor:default}
+.trace .ln.g{cursor:pointer;border-left:3px solid transparent}
+.trace .ln.g:hover{background:#161b22}
+.trace .ln.g.on{background:#1f2a40;border-left-color:#6ea0ff}
+.trace .ln.recv{color:#7ee787}
+.trace .ln.cmt{color:#6e7681}
+.trace .ln .k{color:#ffa657}
+.trace-explain{padding:14px 18px;font-size:15px;border-top:1px solid var(--line);min-height:80px}
+.trace-explain h4{margin:0 0 4px;font-size:16px}
+
+@media (max-width:720px){
+  .pc-body,.cdn-grid,.enc-grid,.cols{grid-template-columns:1fr}
+  .pc-chip{right:6px}
+  .lane{grid-template-columns:1fr 7em}
+  .lane .who{display:none}
+  .stair{margin-left:calc(var(--k) * 12px)}
+  .rec-a{white-space:normal;overflow-wrap:anywhere}
+  .race{padding-right:0}
+  .race-row{grid-template-columns:6.5em 1fr}
+  .race-goal{position:static;width:auto;padding:8px}
+}
+
+/* ===== サイバー調の仕上げ ===== */
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.kicker::before{content:"▍";animation:blink 1.1s steps(1) infinite;margin-right:4px}
+@keyframes blink{50%{opacity:0}}
+h1{background:linear-gradient(90deg,var(--ink) 30%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .num{font-size:13px;padding:2px 8px;border:1px solid var(--accent);border-radius:4px;text-shadow:0 0 8px var(--accent-soft);vertical-align:3px}
+h2 .num::before{content:"// "}
+.card{position:relative;background:linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));border-color:var(--line);border-radius:10px}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2}
+.card::before{top:0;left:0;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-top-left-radius:10px}
+.card::after{bottom:0;right:0;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-bottom-right-radius:10px}
+button{border-radius:6px;background:transparent;transition:border-color .15s,box-shadow .15s,background .15s}
+button:hover:not(:disabled){border-color:var(--accent);box-shadow:var(--glow)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 0 16px var(--accent-soft)}
+button.on,.seg button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);box-shadow:none}
+.seg{border:1px solid var(--line);background:var(--bg)}
+.seg button.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.stage-bar,.stepper-bar{background:var(--surface-2)}
+.counter{color:var(--accent)}
+.node .icon{background:var(--surface);border-radius:12px}
+.node .icon svg{color:var(--accent)}
+.node.hl .icon{box-shadow:var(--glow);border-color:var(--accent)}
+.node .lbl{background:var(--surface);border-color:var(--line);border-radius:4px}
+.bubble{background:var(--accent);color:var(--on-accent);box-shadow:var(--glow)}
+.bubble::after{border-top-color:var(--accent)}
+.packet .env{box-shadow:0 0 18px var(--accent)}
+.packet.ans .env{box-shadow:0 0 18px var(--answer)}
+.link.active{filter:drop-shadow(0 0 4px var(--accent))}
+.link.active.ans{filter:drop-shadow(0 0 4px var(--answer))}
+.explain .stepno,.stepno{font-family:"JetBrains Mono",monospace;letter-spacing:.1em}
+.layer{border-radius:8px;overflow:hidden}
+.layer.on{box-shadow:var(--glow)}
+.layer.on::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);transform:translateX(-100%);animation:scan 1.8s linear infinite;pointer-events:none}
+@keyframes scan{to{transform:translateX(100%)}}
+.pc-stack{border-color:var(--accent-soft);border-radius:12px}
+.pc-frame-label{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.1em}
+.pc-chip{box-shadow:0 0 14px var(--accent);color:var(--on-accent)}
+.pc-chip.lock{box-shadow:0 0 14px var(--ok)}
+.timeline button.cur{color:var(--on-accent);box-shadow:0 0 12px var(--accent-soft)}
+.timer{color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+.tabs button.on{color:var(--on-accent);box-shadow:var(--glow)}
+.chip{color:var(--on-accent)}
+.stair .blk{border-radius:6px}
+.cache-list .ttl{text-shadow:0 0 8px var(--ok-soft)}
+.packet .env,.race-chip.real,.cdn-flow .f.hit{color:var(--on-accent)}
+.cdn-flow .f.hit{background:var(--answer);border-color:var(--answer)}
+.cdn-flow .f.hit b{color:var(--on-accent);opacity:.75}
+.enc-screen{background:#02050a;border-top:1px solid var(--line);text-shadow:0 0 6px rgba(126,231,135,.35)}
+.timeline{scrollbar-color:var(--line) transparent}
+.timeline::-webkit-scrollbar{height:6px}
+.timeline::-webkit-scrollbar-track{background:transparent}
+.timeline::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.zone{filter:drop-shadow(0 0 6px var(--board-grid))}
+
+/* 送信・受信している2台を強く、それ以外を弱く */
+.node .icon{position:relative}
+.node .role{position:absolute;top:-11px;right:-22px;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:4px;background:var(--accent);color:var(--on-accent);box-shadow:0 0 10px var(--accent);opacity:0;transition:opacity .25s}
+.node.send .role,.node.recv .role{opacity:1}
+.node.hl .icon{background:var(--accent-soft);border-width:2.5px}
+.node.hl .lbl{border-color:var(--accent);color:var(--ink);box-shadow:0 0 10px var(--accent-soft)}
+.node.hl .sub{color:var(--ink)}
+.node.ans .icon{border-color:var(--answer);background:var(--answer-soft);box-shadow:0 0 0 1px var(--answer),0 0 22px var(--answer-soft)}
+.node.ans .icon svg{color:var(--answer)}
+.node.ans .lbl{border-color:var(--answer)}
+.node.ans .role{background:var(--answer);box-shadow:0 0 10px var(--answer)}
+.node.dim{opacity:.28;filter:grayscale(.7)}
+.zone,.zone-label{transition:opacity .4s}
+.zone-dim{opacity:.35}
+
+/* 色のトークンで切り替える装飾（ダークでは控えめ・ライトでは色を足す） */
+body::before{content:"";position:fixed;inset:0;background:var(--wash);pointer-events:none;z-index:-1}
+h1{background-image:var(--h1-grad)}
+h2 .num{background:var(--num-bg);color:var(--num-fg)}
+.card{background-image:var(--strip),linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));background-size:100% 3px,auto;background-repeat:no-repeat}
+.stage-bar,.stepper-bar{background:var(--bar-bg)}
+button.primary,.timeline button.cur:not(.ans){background:var(--primary-bg);border-color:transparent}
+.sub-h{border-left:4px solid transparent;border-image:var(--subh-bar) 1;padding-left:10px}
+.summary li::marker{color:var(--accent2)}
+@media (prefers-reduced-motion: reduce){
+  .kicker::before,.layer.on::after{animation:none}
+}
+.top-nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:14px}
+.top-nav a{color:var(--ink-2);text-decoration:none}
+.top-nav a:hover{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none;color:var(--accent)}
+
+/* ===== 章をまたいで使う部品（第3章以降） ===== */
+:root{--bad:#dc2626;--c-port:#64748b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bad:#ff5c5c;--c-port:#94a3b8}}
+:root[data-theme="dark"]{--bad:#ff5c5c;--c-port:#94a3b8}
+.card a{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none}
+.chap-nav a:hover{text-decoration:underline}
+.ver-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.toggle input{accent-color:var(--answer);width:16px;height:16px}
+.tag{display:inline-block;font-family:"JetBrains Mono",monospace;padding:0 6px;border-radius:4px;font-size:11px}
+.tag.q{background:var(--accent-soft);color:var(--accent)}
+.tag.a{background:var(--answer-soft);color:var(--answer)}
+kbd{font-family:"JetBrains Mono",monospace;font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface-2)}
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.cmp{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+table.cmp th,table.cmp td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.cmp thead th{background:var(--surface-2);font-size:13px;color:var(--ink-2)}
+table.cmp tbody th{font-weight:700;white-space:nowrap;color:var(--ink-2);font-size:13px}
+table.cmp tr:last-child td,table.cmp tr:last-child th{border-bottom:0}
+.trace .ln .hk{color:#79c0ff}
+.explain-box{margin-top:12px;font-size:14.5px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;min-height:3em}
+.explain-box b.t{display:block;font-size:15.5px}
+.explain-box.ans{border-left-color:var(--answer)}
+.big-stat{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--ink-2)}
+.big-stat b{font-family:"JetBrains Mono",monospace;font-size:26px;color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+input[type=range]{accent-color:var(--accent);width:100%}
+
+/* あいさつの図（はしご型） */
+.hs-card{padding:0;overflow:hidden}
+.hs-ladder{padding:16px 20px 6px}
+.hs-ends{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.hs-end{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:14px}
+.hs-state{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:1px 8px;border-radius:4px;border:1px solid var(--line);color:var(--ink-2);transition:all .3s}
+.hs-state.est{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.hs-state.mid{border-color:var(--accent);color:var(--accent)}
+.hs-rows{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px 0;min-height:200px;background:linear-gradient(var(--line),var(--line)) 25% 0/2px 100% no-repeat,linear-gradient(var(--line),var(--line)) 75% 0/2px 100% no-repeat}
+.hs-row{position:relative;height:44px;opacity:0;animation:in .4s forwards}
+.hs-arrow{position:absolute;top:22px;left:25%;right:25%;height:2px;background:var(--c);box-shadow:0 0 8px var(--c)}
+.hs-arrow::after{content:"";position:absolute;top:-5px;border:6px solid transparent}
+.hs-row.r .hs-arrow::after{right:-2px;border-left:9px solid var(--c);border-right:0}
+.hs-row.l .hs-arrow::after{left:-2px;border-right:9px solid var(--c);border-left:0}
+.hs-lbl{position:absolute;top:0;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;white-space:nowrap;color:var(--c);background:var(--surface);padding:0 8px;border-radius:4px}
+.hs-num{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2);white-space:nowrap}
+.hs-row.q{--c:var(--accent)}.hs-row.a{--c:var(--answer)}.hs-row.d{--c:var(--ok)}
+.hs-explain{padding:4px 20px 18px;font-size:15px}
+.hs-explain h3{margin:0 0 4px;font-size:18px}
+
+@keyframes pin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (max-width:720px){.hs-lbl{font-size:11px}.hs-num{font-size:10px}}
+
+/* 小さなブラウザの画面 */
+.mini-browser{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column;min-height:150px}
+.mb-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.mb-dots{display:flex;gap:4px}.mb-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.mb-url{flex:1;min-width:0;font-size:11.5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mb-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;text-align:center;font-size:14px}
+.mb-page .big{font-size:26px;font-weight:700;line-height:1.2}
+.mb-page .sm{font-size:12px;color:var(--ink-2)}
+.mb-page.warn{background:rgba(220,38,38,.08)}
+.row-btns{flex-wrap:wrap}
+.row-btns button,.ver-bar button{white-space:nowrap}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tri .mini-card p{margin:0}
+.rtt-lbl{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.rtt-lbl b{font-family:"JetBrains Mono",monospace;color:var(--accent)}
+@media (max-width:720px){.tri{grid-template-columns:1fr}}
+section > .card + .card{margin-top:14px}
+.note a{color:var(--accent)}
+.devtools ol{margin:6px 0 0;padding-left:1.4em;font-size:14.5px}
+.devtools li{margin:4px 0}
+.stepper > .explain-box{margin:0 20px 18px}
+
+/* ===== 第6章 ===== */
+/* 6.1 スイッチ */
+.sw-pick{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;font-size:13.5px;margin-bottom:12px}
+.sw-pick .seg button{min-width:2.4em;font-family:"JetBrains Mono",monospace}
+.sw-stage{position:relative;height:250px;border-radius:12px;background:var(--surface-2);overflow:hidden}
+.sw-stage svg{position:absolute;inset:0;width:100%;height:100%}
+.sw-stage .cable{stroke:var(--line);stroke-width:3}
+.sw-stage .cable.on{stroke:var(--accent);filter:drop-shadow(0 0 4px var(--accent))}
+.sw-stage .cable.ans{stroke:var(--answer);filter:drop-shadow(0 0 4px var(--answer))}
+.sw-box{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:130px;height:46px;border-radius:10px;border:2px solid var(--accent);background:var(--surface);display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:var(--glow)}
+.sw-box small{display:block;font-weight:400;font-size:10px;color:var(--ink-2);text-align:center}
+.sw-pc{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11.5px;text-align:center;transition:opacity .3s}
+.sw-pc .ic{width:44px;height:44px;border-radius:10px;border:2px solid var(--line);display:grid;place-items:center;font-size:20px;background:var(--surface);transition:all .25s}
+.sw-pc b{font-family:"JetBrains Mono",monospace}
+.sw-pc .mac{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--ink-2)}
+.sw-pc .port{font-size:10px;color:var(--accent);font-weight:700}
+.sw-pc.got .ic{border-color:var(--ok);background:var(--ok-soft);box-shadow:0 0 14px var(--ok-soft)}
+.sw-pc.drop .ic{border-color:var(--ink-2);opacity:.6}
+.sw-pc.drop::after{content:"自分あてじゃない→捨てる";position:absolute;top:-16px;font-size:10px;color:var(--ink-2);white-space:nowrap}
+.sw-pc.from .ic{border-color:var(--accent);box-shadow:var(--glow)}
+.sw-bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.5fr);gap:14px;margin-top:12px;align-items:start}
+.sw-table{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface-2);min-height:80px}
+.sw-h{font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px}
+.sw-row{display:flex;justify-content:space-between;font-family:"JetBrains Mono",monospace;font-size:12px;animation:pin .35s}
+.sw-row b{color:var(--accent)}
+
+/* 6.2 ラベルの貼りかえ */
+.hop-body{padding:18px 20px}
+.hop-path{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.hop-n{display:flex;flex-direction:column;align-items:center;font-size:11.5px;gap:2px;text-align:center;min-width:64px}
+.hop-n .ic{width:40px;height:40px;border-radius:10px;border:2px solid var(--line);display:grid;place-items:center;font-size:19px;background:var(--surface);transition:all .3s}
+.hop-n.on .ic{border-color:var(--accent);box-shadow:var(--glow)}
+.hop-l{flex:1;min-width:24px;height:3px;border-radius:2px;background:var(--line);transition:all .3s}
+.hop-l.on{background:var(--accent);box-shadow:0 0 6px var(--accent)}
+.hop-labels{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hop-lb{border:2px solid var(--c);border-radius:10px;padding:8px 12px;background:color-mix(in srgb,var(--c) 8%,transparent);font-size:13px}
+.hop-lb h4{margin:0 0 4px;font-size:13px;color:var(--c)}
+.hop-lb div{display:flex;justify-content:space-between;gap:10px;font-family:"JetBrains Mono",monospace;font-size:12px;padding:2px 0;border-top:1px dashed var(--line)}
+.hop-lb div span{font-family:"Noto Sans JP",sans-serif;color:var(--ink-2)}
+.hop-lb div.chg b{color:var(--answer);animation:flash .8s}
+@keyframes flash{0%{background:var(--answer-soft)}100%{background:transparent}}
+.hop-lb.eth{--c:var(--answer)}.hop-lb.ipl{--c:var(--accent)}
+
+/* 6.3 最長一致 */
+table.lpm td,table.lpm th{font-family:"JetBrains Mono",monospace;font-size:12.5px}
+table.lpm thead th{font-family:"Noto Sans JP",sans-serif}
+table.lpm tr.m td{background:var(--accent-soft)}
+table.lpm tr.best td{background:var(--ok-soft);font-weight:700}
+table.lpm tr.best td:first-child::before{content:"▶ ";color:var(--ok)}
+table.lpm td.why{font-family:"Noto Sans JP",sans-serif;font-size:12px;color:var(--ink-2)}
+
+/* 6.4 TTL */
+.ttl-path{display:flex;align-items:center;gap:4px;margin:14px 0 10px;flex-wrap:nowrap;overflow-x:auto;padding:22px 2px 4px}
+.ttl-n{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;min-width:54px;text-align:center}
+.ttl-n .ic{width:38px;height:38px;border-radius:10px;border:2px solid var(--line);display:grid;place-items:center;font-size:17px;background:var(--surface);transition:all .25s}
+.ttl-n.die .ic{border-color:var(--bad);box-shadow:0 0 12px rgba(220,38,38,.35)}
+.ttl-n.pass .ic{border-color:var(--accent)}
+.ttl-n.arrive .ic{border-color:var(--ok);box-shadow:0 0 12px var(--ok-soft)}
+.ttl-n .badge{position:absolute;top:-20px;font-family:"JetBrains Mono",monospace;font-size:10.5px;font-weight:700;padding:1px 6px;border-radius:4px;background:var(--accent);color:var(--on-accent);opacity:0;transition:opacity .2s}
+.ttl-n .badge.show{opacity:1}
+.ttl-n .badge.zero{background:var(--bad);color:#fff}
+.ttl-l{flex:1;min-width:14px;height:3px;background:var(--line);border-radius:2px}
+.ttl-log{font-size:12.5px;background:#0d1117;color:#c9d1d9;border-radius:8px;padding:10px 14px;min-height:5.5em;line-height:1.7;white-space:pre-wrap}
+.ttl-log .x{color:#ff7b72}.ttl-log .g{color:#7ee787}
+
+/* 6.5 NAT */
+.nat-stage{margin-top:22px;display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center}
+.nat-in,.nat-out{border:2px dashed var(--line);border-radius:12px;padding:16px 10px 10px;display:flex;flex-direction:column;gap:8px;position:relative}
+.nat-h{position:absolute;top:-10px;left:10px;font-size:11px;font-weight:700;color:var(--ink-2);background:var(--surface);padding:0 6px}
+.nat-dev{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--surface);font-size:13px;transition:all .3s}
+.nat-dev code{font-size:11.5px}
+.nat-dev.on{border-color:var(--accent);box-shadow:var(--glow)}
+.nat-dev.ans{border-color:var(--answer);box-shadow:0 0 0 1px var(--answer)}
+.nat-router{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:12.5px;text-align:center}
+.nat-ic{width:52px;height:52px;border-radius:12px;border:2px solid var(--accent);display:grid;place-items:center;font-size:24px;background:var(--surface);box-shadow:var(--glow)}
+.nat-router code{font-size:11px}
+.nat-pkts{display:flex;flex-direction:column;gap:6px;margin:12px 0}
+.nat-pkt{display:grid;grid-template-columns:minmax(0,1fr) 1.6em minmax(0,1fr);align-items:center;gap:6px;font-family:"JetBrains Mono",monospace;font-size:12px;animation:pin .35s}
+.nat-pkt .lb{border:1px solid var(--c);border-radius:6px;padding:4px 8px;background:color-mix(in srgb,var(--c) 9%,transparent);overflow-wrap:anywhere}
+.nat-pkt .lb small{display:block;font-family:"Noto Sans JP",sans-serif;font-size:10.5px;color:var(--ink-2)}
+.nat-pkt .lb .ch{color:var(--answer);font-weight:700}
+.nat-pkt .ar{text-align:center;color:var(--ink-2)}
+.nat-pkt.q{--c:var(--accent)}.nat-pkt.a{--c:var(--answer)}.nat-pkt.x{--c:var(--bad)}
+table.nat-table td{font-family:"JetBrains Mono",monospace;font-size:12.5px}
+table.nat-table thead th{font-family:"Noto Sans JP",sans-serif}
+table.nat-table tr.new td{animation:flash 1s}
+
+/* 6.7 何役 */
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin-top:12px}
+.role{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface);font-size:13.5px;box-shadow:var(--shadow)}
+.role b{display:block;font-size:14.5px}
+.role b span{margin-right:6px}
+.role small{display:block;color:var(--ink-2);font-size:11.5px;margin-top:2px}
+.role a{color:var(--accent);font-size:12px}
+
+@media (max-width:720px){
+  .sw-stage{height:230px}
+  .sw-pc .mac{display:none}
+  .sw-bottom,.hop-labels{grid-template-columns:1fr}
+  .hop-path{flex-wrap:nowrap;gap:3px}
+  .hop-n{min-width:0;max-width:58px;font-size:9.5px;line-height:1.3}
+  .hop-n .ic{width:32px;height:32px;font-size:15px}
+  .hop-l{min-width:6px}
+  .nat-stage{grid-template-columns:1fr}
+  .nat-router{flex-direction:row;justify-content:center;gap:10px}
+  .nat-pkt{grid-template-columns:1fr;gap:2px}
+  .nat-pkt .ar{transform:rotate(90deg)}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <nav class="top-nav"><a href="index.html">← 目次</a><a href="ip.html">← 第5章 IPとイーサネット</a><a href="access.html">第7章 家からインターネットへ →</a></nav>
+  <div class="kicker">触って学ぶネットワーク ・ 第6章（試作）</div>
+  <h1>スイッチとルーター ── 次へ、次へと手渡す</h1>
+  <p class="lead">PCを出た小包は、いきなりサーバーへ飛んでいくわけではありません。<b>スイッチ</b>と<b>ルーター</b>という中継の機器が、ラベルを見ては次の機器へ手渡す、というバケツリレーをくり返して届けます。この章では、その中継の仕事を見ていきます。</p>
+</header>
+
+<section>
+  <h2><span class="num">6.1</span>スイッチ ── 名札を覚えて、必要な人にだけ渡す</h2>
+  <p>家や会社の中で、機器どうしをケーブルでつなぐのが<b>スイッチ</b>です。スイッチは、届いた小包の<b>送り元のMACアドレス</b>を見て「この人はこの差し込み口にいる」と覚え、次からはその口にだけ小包を出します。昔の<b>ハブ</b>は、何も覚えずに全員に配っていました。送り手と受け手を選んで、ちがいを見てみましょう。</p>
+  <div class="card">
+    <div class="ver-bar">
+      <div class="seg" id="swMode">
+        <button data-m="switch" class="on">スイッチ</button>
+        <button data-m="hub">ハブ（昔）</button>
+      </div>
+      <button id="swReset">覚えたことを消す</button>
+    </div>
+    <div class="sw-pick">
+      <span>送る人：</span><div class="seg" id="swFrom"></div>
+      <span>受け取る人：</span><div class="seg" id="swTo"></div>
+      <button class="primary" id="swSend">送る</button>
+    </div>
+    <div class="sw-stage" id="swStage"></div>
+    <div class="sw-bottom">
+      <div class="sw-table"><div class="sw-h">スイッチが覚えた表（MACアドレス表）</div><div id="swTable"></div></div>
+      <div class="explain-box" id="swExplain" aria-live="polite"></div>
+    </div>
+  </div>
+  <p>ハブは、同じ線を全員で使うので、2人が同時に送ると信号がぶつかって（衝突）送り直しになっていました。今のスイッチは差し込み口ごとに線が分かれ、<b>送ると受け取るを同時に</b>できます（全二重）。衝突の心配は、ほぼなくなりました。</p>
+</section>
+
+<section>
+  <h2><span class="num">6.2</span>ルーター ── イーサネットのラベルを貼りかえる</h2>
+  <p>スイッチは「同じネットワークの中」で小包を配ります。ネットワークとネットワークの<b>境目</b>で小包を受け取り、次のネットワークへ送り出すのが<b>ルーター</b>です。ルーターを通るたびに、ラベルがどう変わるかを見てみましょう。</p>
+  <div class="card stepper">
+    <div class="stepper-bar">
+      <div class="group"><button id="hopFirst">⟲ 最初から</button><button id="hopPrev">◀ 戻る</button></div>
+      <span class="counter" id="hopCount">1 / 4</span>
+      <div class="group"><button class="primary" id="hopNext">次へ ▶</button></div>
+    </div>
+    <div class="hop-body">
+      <div class="hop-path" id="hopPath"></div>
+      <div class="hop-labels" id="hopLabels"></div>
+      <div class="explain-box" id="hopExplain" aria-live="polite"></div>
+    </div>
+  </div>
+  <p>ポイントは、<b>IPのラベル（宛先の住所）は最後まで変わらない</b>のに、<b>イーサネットのラベルは区間ごとに貼りかえられる</b>ことです。手紙の宛先は東京のままでも、運ぶ人は「近所の郵便局まで」「次の局まで」とリレーしていく、というイメージです。</p>
+</section>
+
+<section>
+  <h2><span class="num">6.3</span>経路表 ── いちばんくわしい道案内を選ぶ</h2>
+  <p>ルーターは、小包のIPの宛先を見て、<b>経路表</b>から次の行き先を決めます。宛先に当てはまる行がいくつもあるときは、<b>いちばん範囲がせまい（プレフィックス長が長い）行</b>を選びます。これを<b>最長一致</b>と呼びます。宛先を入れて、ルーターの気持ちになってみましょう。</p>
+  <div class="card">
+    <div class="domain-input">
+      <input id="lpmIn" class="mono" value="203.0.113.10" aria-label="宛先IPアドレス" spellcheck="false" autocomplete="off">
+      <button class="primary" id="lpmBtn">道を選ぶ</button>
+    </div>
+    <div class="presets" id="lpmPresets">
+      <button data-ip="203.0.113.10">203.0.113.10</button>
+      <button data-ip="203.0.113.200">203.0.113.200</button>
+      <button data-ip="198.51.100.7">198.51.100.7</button>
+      <button data-ip="192.168.1.50">192.168.1.50</button>
+      <button data-ip="192.0.2.99">192.0.2.99</button>
+    </div>
+    <div class="tbl-wrap"><table class="cmp lpm" id="lpmTable"></table></div>
+    <div class="explain-box" id="lpmExplain" aria-live="polite"></div>
+  </div>
+  <p>インターネットの真ん中にいる大きなルーターの経路表には、IPv4だけで<b>100万をこえる行</b>があります（2026年8月の集計で約107万行）。ルーターは、この表を専用の部品で一瞬のうちに引いて、1秒に何億個もの小包をさばいています。経路表の中身がどうやって作られるのかは、第7章のBGPで見ます。</p>
+</section>
+
+<section>
+  <h2><span class="num">6.4</span>TTL ── 迷子の小包を消す仕組み</h2>
+  <p>第5章で見たIPのラベルの <b>TTL</b>（寿命）は、ルーターを1つ通るたびに1ずつ減ります。0になると、ルーターは小包を捨て、送り元に「寿命が切れました」と知らせます。経路表の設定ミスで道がぐるぐる回ってしまっても、小包が永遠にさまよわないための仕組みです。</p>
+  <p>この「知らせ」を逆手にとって、道のりを調べるのが <b>traceroute</b> です。わざとTTLを1、2、3…にして送り、どこで寿命が切れたかの知らせを集めます。</p>
+  <div class="card">
+    <div class="row-btns" style="margin-top:0">
+      <button class="primary" id="ttlBtn">TTL を1から順に送る</button>
+    </div>
+    <div class="ttl-path" id="ttlPath"></div>
+    <div class="ttl-log mono" id="ttlLog"></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">6.5</span>NAT ── 家の中の住所を、外の住所に付けかえる</h2>
+  <p>家の中の機器は、プライベートアドレス（192.168.x.x など）を使っていました。このままではインターネットに出られないので、家のルーターが、外に出る小包の送り元を<b>自分の外向きの住所</b>に付けかえます。これが <b>NAT</b> です。返事が戻ってきたら、表を見て元の機器に届けます。</p>
+  <div class="card">
+    <div class="row-btns" style="margin-top:0">
+      <button class="primary" data-nat="pc">PCがWebを見る</button>
+      <button data-nat="phone">スマホもWebを見る</button>
+      <button data-nat="back">返事が戻ってくる</button>
+      <button data-nat="evil">外から勝手に届く</button>
+      <button data-nat="reset">最初から</button>
+    </div>
+    <div class="nat-stage">
+      <div class="nat-in">
+        <div class="nat-h">家の中（192.168.1.0/24）</div>
+        <div class="nat-dev" id="natPc">💻 PC<br><code>192.168.1.23</code></div>
+        <div class="nat-dev" id="natPhone">📱 スマホ<br><code>192.168.1.31</code></div>
+      </div>
+      <div class="nat-router"><div class="nat-ic">📡</div><b>家のルーター</b><code>外：198.51.100.5</code></div>
+      <div class="nat-out"><div class="nat-h">インターネット</div><div class="nat-dev" id="natSv">🌐 Webサーバー<br><code>203.0.113.80</code></div></div>
+    </div>
+    <div class="nat-pkts" id="natPkts"></div>
+    <div class="tbl-wrap"><table class="cmp nat-table" id="natTable"></table></div>
+    <div class="explain-box" id="natExplain" aria-live="polite"></div>
+  </div>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>プロバイダの中でも NAT</h3>
+      <p>IPv4の住所が足りないため、プロバイダの中でもう一度NATをして、たくさんの家で1つの外の住所を分け合うこともあります（キャリアグレードNAT）。このとき家のルーターの外側には、<code>100.64.0.0/10</code> の住所が使われます（第5章 5.2 の「共有アドレス」）。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>IPv6 なら NAT はいらない</h3>
+      <p>IPv6は住所がほぼ無限にあるので、家の機器1台1台が世界で1つの住所を持てます。付けかえがいらないぶん、仕組みがすっきりします。そのかわり、「外から勝手に届くものは通さない」という守りは、ルーターのファイアウォールが受け持ちます。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">6.6</span>DHCP ── Wi-Fiにつないだら、住所が自動で配られる</h2>
+  <p>スマホをWi-Fiにつなぐと、何も設定しなくてもIPアドレスが決まります。家のルーターが <b>DHCP</b> という仕組みで、住所を<b>貸し出して</b>いるからです。まだ住所のない機器と、ルーターのやり取りを見てみましょう。</p>
+  <div class="card hs-card">
+    <div class="stepper-bar">
+      <div class="group"><button id="dhcpFirst">⟲ 最初から</button></div>
+      <span class="counter" id="dhcpCount">0 / 4</span>
+      <div class="group"><button class="primary" id="dhcpNext">次へ ▶</button></div>
+    </div>
+    <div class="hs-ladder">
+      <div class="hs-ends">
+        <div class="hs-end"><b>スマホ</b><span class="hs-state" id="dhcpStA">住所なし</span></div>
+        <div class="hs-end"><b>家のルーター</b><span class="hs-state">DHCPサーバー</span></div>
+      </div>
+      <div class="hs-rows" id="dhcpRows"></div>
+    </div>
+    <div class="hs-explain" id="dhcpExplain" aria-live="polite"></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">6.7</span>家のルーターは、ひとり何役？</h2>
+  <p>家にある「Wi-Fiルーター」の箱には、ここまでの章で出てきた仕事が、ぎゅっと詰めこまれています。</p>
+  <div class="roles" id="roles"></div>
+</section>
+
+<section>
+  <h2><span class="num">6.8</span>自分のPCで試してみよう</h2>
+  <p>自分の小包がどんな道を通っているか、traceroute で調べてみましょう。</p>
+  <div class="card">
+    <div class="seg wrap-seg">
+      <button data-os="mac" class="on">Mac</button>
+      <button data-os="win">Windows</button>
+    </div>
+    <div class="cmds" id="cmds"></div>
+  </div>
+  <h3 class="sub-h">実際の道のりを読んでみよう</h3>
+  <p>下は、2026年10月18日に Mac から example.com までの道のりを調べた、実際の結果です。プロバイダの機器の住所は伏せています。行を押すと説明が出ます。</p>
+  <div class="card trace-card">
+    <div class="trace mono" id="real"></div>
+    <div class="trace-explain" id="realExplain" aria-live="polite"><span class="note">↑ 気になる行を押してみてください</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">6.9</span>まとめ</h2>
+  <div class="card summary">
+    <ul>
+      <li><b>スイッチ</b>は、送り元のMACアドレスを覚えて（MACアドレス表）、必要な差し込み口にだけ小包を出す。知らない相手には全員に配る</li>
+      <li><b>ルーター</b>は、ネットワークの境目で小包を受け取り、次のネットワークへ送り出す。<b>イーサネットのラベルは区間ごとに貼りかえ</b>、IPのラベルの宛先は変わらない</li>
+      <li>次の行き先は<b>経路表</b>で決める。当てはまる行が複数あれば、範囲がいちばんせまい行（<b>最長一致</b>）を選ぶ</li>
+      <li><b>TTL</b> はルーターを通るたびに1減り、0で捨てられる。traceroute はこれを使って道のりを調べる</li>
+      <li><b>NAT</b> は、家の中の住所と外の住所を付けかえる。外から勝手に届く小包は通さない</li>
+      <li><b>DHCP</b> で、住所やルーター・DNSサーバーの情報が自動で貸し出される</li>
+    </ul>
+  </div>
+  <p>小包は、家のルーターを出ていきました。次の章では、家の外へ出て、光ファイバーとプロバイダを通り、世界のネットワークへつながっていく道を見ていきます。</p>
+
+  <h2><span class="num">6.10</span>確認クイズ</h2>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<footer>
+  <div class="chap-nav"><a href="access.html">次の章：<b>第7章 家からインターネットへ</b> →</a></div>
+  この教材の文章と図はオリジナルです。数値や出来事は2026年10月18日時点で確認したものです。<br>
+  参考：IEEE 802.1D（スイッチの学習）、<a href="https://seclists.org/nanog/2026/Aug/49" target="_blank" rel="noopener">経路表の週報（2026年8月15日）</a>、RFC 1812（ルーターの決まり）、RFC 792（ICMP）、RFC 3022（NAT）、RFC 6888（キャリアグレードNAT）、RFC 2131（DHCP）、RFC 8415（DHCPv6）
+</footer>
+</div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* コマンド集（Mac / Windows の切り替えとコピー） */
+function setupCmds(C, boxId = 'cmds'){
+  const box = $(boxId);
+  function show(os){
+    document.querySelectorAll('[data-os]').forEach(b => b.classList.toggle('on', b.dataset.os === os));
+    box.innerHTML = C[os].map(([c, d]) => `<div class="cmd"><div class="cmd-line"><code>${esc(c)}</code><button data-c="${esc(c)}">コピー</button></div><div class="cmd-desc">${d}</div></div>`).join('') + (C[os + 'Note'] || '');
+    box.querySelectorAll('[data-c]').forEach(b => b.onclick = async () => {
+      try{ await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'コピーした'; }
+      catch(e){ b.textContent = '選択してコピーしてね'; }
+      setTimeout(() => b.textContent = 'コピー', 1500);
+    });
+  }
+  document.querySelectorAll('[data-os]').forEach(b => b.onclick = () => show(b.dataset.os));
+  show('mac');
+}
+
+/* 実際の結果を1行ずつ解説する欄。L=[[グループ, 行の文字]]、E={グループ:[見出し, 説明]}。グループ'c'は説明なしの行 */
+function setupTrace(id, exId, L, E){
+  const tr = $(id);
+  tr.innerHTML = L.map(([g, t]) => `<div class="ln ${g === 'c' ? 'cmt' : 'g'}" data-g="${g}" ${g === 'c' ? '' : 'tabindex="0" role="button"'}>${esc(t).replace(/^([a-zA-Z_-]+[:=])/, '<span class="k">$1</span>')}</div>`).join('');
+  function pick(g){
+    tr.querySelectorAll('.ln').forEach(l => l.classList.toggle('on', l.dataset.g === g));
+    $(exId).innerHTML = `<h4>${E[g][0]}</h4>${E[g][1]}`;
+  }
+  tr.querySelectorAll('.ln.g').forEach(l => {
+    l.onclick = () => pick(l.dataset.g);
+    l.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); pick(l.dataset.g); } };
+  });
+}
+
+/* 確認クイズ */
+function setupQuiz(QUIZ, id = 'quiz'){
+  const quizEl = $(id);
+  QUIZ.forEach((item, qi) => {
+    const d = document.createElement('div');
+    d.className = 'card q';
+    d.innerHTML = `<b>Q${qi + 1}. ${item.q}</b><div class="opts">${item.o.map((o, k) => `<button data-k="${k}">${o}</button>`).join('')}</div><div class="fb"></div>`;
+    d.querySelectorAll('.opts button').forEach(b => b.onclick = () => {
+      const k = +b.dataset.k;
+      d.querySelectorAll('.opts button').forEach(x => x.classList.remove('right', 'wrong'));
+      b.classList.add(k === item.a ? 'right' : 'wrong');
+      d.querySelector('.fb').innerHTML = (k === item.a ? '⭕ 正解！ ' + item.e : '❌ もう一度考えてみよう。');
+    });
+    quizEl.appendChild(d);
+  });
+}
+
+/* 1歩ずつ進める手順（最初から・戻る・次へ）。render(i) を呼ぶ */
+function setupStepper({first, prev, next, count, total, render}){
+  let i = 0;
+  const upd = () => { render(i); $(count).textContent = `${i + 1} / ${total}`; $(prev).disabled = i === 0; $(next).disabled = i === total - 1; };
+  $(first).onclick = () => { i = 0; upd(); };
+  $(prev).onclick = () => { if(i > 0){ i--; upd(); } };
+  $(next).onclick = () => { if(i < total - 1){ i++; upd(); } };
+  upd();
+}
+
+/* 点を折れ線にそって動かす（SVG） */
+function moveDot(svg, pts, dur, color, r = 6){
+  return new Promise(res => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', r); c.setAttribute('fill', color); c.style.filter = `drop-shadow(0 0 4px ${color})`;
+    svg.appendChild(c);
+    const seg = []; let total = 0;
+    for(let i = 1; i < pts.length; i++){ const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); total += d; }
+    const t0 = performance.now(), D = reduced() ? 1 : dur;
+    const step = now => {
+      let k = Math.min(1, (now - t0) / D), dist = k * total, i = 0;
+      while(i < seg.length - 1 && dist > seg[i]){ dist -= seg[i]; i++; }
+      const f = seg[i] ? dist / seg[i] : 0;
+      c.setAttribute('cx', pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f);
+      c.setAttribute('cy', pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f);
+      if(k < 1) requestAnimationFrame(step); else { c.remove(); res(); }
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+
+/* ---------- 6.1 スイッチとハブ ---------- */
+(function(){
+  const P = [
+    {id:'A', x:16, y:22, mac:'…:53:0a', port:1}, {id:'B', x:84, y:22, mac:'…:53:0b', port:2},
+    {id:'C', x:16, y:78, mac:'…:53:0c', port:3}, {id:'D', x:84, y:78, mac:'…:53:0d', port:4},
+  ];
+  let mode = 'switch', from = 'A', to = 'C', table = {}, run = 0;
+  const st = $('swStage');
+  st.innerHTML = `<svg viewBox="0 0 100 100" preserveAspectRatio="none">${P.map(p => `<line class="cable" data-id="${p.id}" x1="50" y1="50" x2="${p.x}" y2="${p.y}" vector-effect="non-scaling-stroke"/>`).join('')}</svg>
+    <div class="sw-box" id="swBox">スイッチ<small>差し込み口 1〜4</small></div>
+    ${P.map(p => `<div class="sw-pc" data-id="${p.id}" style="left:${p.x}%;top:${p.y}%"><div class="ic">💻</div><b>${p.id}</b><span class="mac">${p.mac}</span><span class="port">口${p.port}</span></div>`).join('')}`;
+  const seg = (id, val, set) => { $(id).innerHTML = P.map(p => `<button data-v="${p.id}" class="${p.id === val ? 'on' : ''}">${p.id}</button>`).join(''); $(id).querySelectorAll('button').forEach(b => b.onclick = () => { set(b.dataset.v); seg(id, b.dataset.v, set); }); };
+  seg('swFrom', from, v => from = v); seg('swTo', to, v => to = v);
+  const clear = () => { st.querySelectorAll('.cable').forEach(c => c.setAttribute('class', 'cable')); st.querySelectorAll('.sw-pc').forEach(p => p.className = 'sw-pc'); };
+  const cab = (id, cls) => st.querySelector(`.cable[data-id="${id}"]`).setAttribute('class', 'cable ' + cls);
+  const pc = (id, cls) => st.querySelector(`.sw-pc[data-id="${id}"]`).classList.add(cls);
+  const port = id => P.find(p => p.id === id).port;
+  function drawTable(){
+    $('swTable').innerHTML = mode === 'hub' ? '<div class="arp-empty" style="font-size:12px;color:var(--ink-2)">ハブは何も覚えません。</div>'
+      : Object.keys(table).length ? Object.entries(table).map(([id, pt]) => `<div class="sw-row"><span>${P.find(p => p.id === id).mac}（${id}）</span><b>口${pt}</b></div>`).join('') : '<div style="font-size:12px;color:var(--ink-2)">（空っぽ）</div>';
+  }
+  async function deliver(s, d, cls){
+    clear(); cab(s, cls); pc(s, 'from');
+    let flood = mode === 'hub' || !(d in table);
+    if(mode === 'switch') table[s] = port(s);
+    if(flood){ P.filter(p => p.id !== s).forEach(p => { cab(p.id, cls); pc(p.id, p.id === d ? 'got' : 'drop'); }); }
+    else { cab(d, cls); pc(d, 'got'); }
+    drawTable();
+    return flood;
+  }
+  async function send(){
+    if(from === to){ $('swExplain').innerHTML = '送る人と受け取る人を、別の人にしてください。'; return; }
+    const me = ++run;
+    const flood = await deliver(from, to, 'on');
+    if(mode === 'hub') $('swExplain').innerHTML = `<b class="t">ハブ：全員に配る</b>ハブは何も覚えないので、${from} からの小包を、${to} 以外の全員にも配りました。受け取った人は、宛先のMACアドレスを見て「自分あてじゃない」と捨てます。むだが多く、のぞき見もされやすい仕組みでした。`;
+    else if(flood) $('swExplain').innerHTML = `<b class="t">知らない相手：全員に配る</b>スイッチはまず、送り元 ${from} が<b>口${port(from)}</b>にいることを覚えました。でも ${to} の場所はまだ知らないので、しかたなく全員に配ります。`;
+    else $('swExplain').innerHTML = `<b class="t">知っている相手：その口にだけ出す</b>${to} が<b>口${port(to)}</b>にいることを覚えていたので、そこにだけ小包を出しました。ほかの人の線は静かなままです。`;
+    if(mode === 'switch' && flood){
+      await sleep(reduced() ? 0 : 1700); if(me !== run) return;
+      await deliver(to, from, 'ans');
+      $('swExplain').innerHTML = `<b class="t">返事で、もう一方も覚えた</b>${to} からの返事（オレンジ）で、スイッチは ${to} が<b>口${port(to)}</b>にいることも覚えました。${from} の場所は覚えているので、返事は ${from} にだけ届きます。もう一度「送る」を押すと、今度は全員に配りません。`;
+    }
+  }
+  $('swSend').onclick = send;
+  $('swReset').onclick = () => { run++; table = {}; clear(); drawTable(); $('swExplain').innerHTML = '覚えたことを消しました。'; };
+  document.querySelectorAll('#swMode button').forEach(b => b.onclick = () => {
+    mode = b.dataset.m; run++; table = {}; clear(); drawTable();
+    document.querySelectorAll('#swMode button').forEach(x => x.classList.toggle('on', x === b));
+    $('swBox').innerHTML = mode === 'hub' ? 'ハブ<small>何も覚えない</small>' : 'スイッチ<small>差し込み口 1〜4</small>';
+    $('swExplain').innerHTML = mode === 'hub' ? 'ハブに切りかえました。「送る」を押してみましょう。' : 'スイッチに切りかえました。';
+  });
+  drawTable();
+  $('swExplain').innerHTML = '送る人と受け取る人を選んで「送る」を押してみましょう。最初、スイッチは何も知りません。';
+})();
+
+/* ---------- 6.2 ラベルの貼りかえ ---------- */
+(function(){
+  const N = [['💻', 'PC'], ['📡', '家のルーター'], ['🏢', 'プロバイダのルーター'], ['🔁', '途中のルーター'], ['🌐', 'Webサーバー']];
+  const S = [
+    {eth:['00:00:5e:00:53:01', '00:00:5e:00:53:23'], ip:['192.168.1.23', '203.0.113.10', 64], chg:[],
+     h:'区間1：PC → 家のルーター', e:'宛先のMACアドレスは<b>家のルーター</b>、送り元は<b>PC</b>。IPの宛先は、最終目的地の 203.0.113.10 です。'},
+    {eth:['00:00:5e:00:53:a1', '00:00:5e:00:53:02'], ip:['198.51.100.5', '203.0.113.10', 63], chg:['ed', 'es', 'is', 'ttl'],
+     h:'区間2：家のルーター → プロバイダ', e:'家のルーターは、イーサネットのラベルを<b>はがして新しく貼りました</b>。宛先はプロバイダのルーター、送り元は家のルーターの外側の口です。TTLは1減って63。<br>送り元のIPアドレスも変わっていますが、これは家のルーターの<b>NAT</b>（6.5）によるもので、家を出るときだけの特別な付けかえです。'},
+    {eth:['00:00:5e:00:53:b1', '00:00:5e:00:53:a2'], ip:['198.51.100.5', '203.0.113.10', 62], chg:['ed', 'es', 'ttl'],
+     h:'区間3：プロバイダ → 途中のルーター', e:'また貼りかえ。<b>IPのラベルは、TTL以外まったく変わっていません</b>。プロバイダのルーターは、宛先の 203.0.113.10 を経路表で引いて、次の行き先を決めました（6.3）。'},
+    {eth:['00:00:5e:00:53:10', '00:00:5e:00:53:b2'], ip:['198.51.100.5', '203.0.113.10', 55], chg:['ed', 'es', 'ttl'],
+     h:'最後の区間：→ Webサーバー', e:'途中のルーターをいくつも省略しました（TTLが55まで減っています）。最後のルーターが、宛先のWebサーバーのMACアドレスを書いて届けます。サーバーは、IPのラベルの宛先が自分なので受け取ります。'},
+  ];
+  setupStepper({first:'hopFirst', prev:'hopPrev', next:'hopNext', count:'hopCount', total:S.length, render:i => {
+    const s = S[i];
+    $('hopPath').innerHTML = N.map(([ic, nm], k) => (k ? `<div class="hop-l${k === i + 1 ? ' on' : ''}"></div>` : '') + `<div class="hop-n${k === i || k === i + 1 ? ' on' : ''}"><div class="ic">${ic}</div>${nm}</div>`).join('');
+    const row = (k, lb, v) => `<div class="${s.chg.includes(k) ? 'chg' : ''}"><span>${lb}</span><b>${v}</b></div>`;
+    $('hopLabels').innerHTML = `
+      <div class="hop-lb eth"><h4>イーサネットのラベル（区間ごとに貼りかえ）</h4>${row('ed', '宛先MAC', s.eth[0])}${row('es', '送り元MAC', s.eth[1])}</div>
+      <div class="hop-lb ipl"><h4>IPのラベル（宛先は最後まで同じ）</h4>${row('is', '送り元IP', s.ip[0])}${row('id', '宛先IP', s.ip[1])}${row('ttl', 'TTL', s.ip[2])}</div>`;
+    $('hopExplain').innerHTML = `<b class="t">${s.h}</b>${s.e}`;
+  }});
+})();
+
+/* ---------- 6.3 経路表と最長一致 ---------- */
+(function(){
+  const R = [
+    ['203.0.113.0/24', '10.0.0.2', 'お客さんの会社A'],
+    ['203.0.113.128/25', '10.0.0.6', '会社Aの中の、別の拠点'],
+    ['198.51.100.0/24', '10.0.0.10', 'お客さんの会社B'],
+    ['192.168.1.0/24', '直接つながっている', '管理用のネットワーク'],
+    ['0.0.0.0/0', '10.0.0.1', 'それ以外ぜんぶ（デフォルト）'],
+  ];
+  const toN = s => s.split('.').reduce((a, o) => (a << 8 >>> 0) + (+o), 0) >>> 0;
+  const match = (ip, pfx) => { const [net, len] = pfx.split('/'); const l = +len; return l === 0 || (ip >>> (32 - l)) === (toN(net) >>> (32 - l)); };
+  function run(){
+    const raw = $('lpmIn').value.trim();
+    if(!/^(\d{1,3}\.){3}\d{1,3}$/.test(raw) || raw.split('.').some(o => +o > 255)){ $('lpmExplain').innerHTML = 'IPv4アドレスを入れてください。'; return; }
+    const ip = toN(raw);
+    const m = R.map(r => match(ip, r[0]));
+    let best = -1, bl = -1;
+    R.forEach((r, i) => { const l = +r[0].split('/')[1]; if(m[i] && l > bl){ bl = l; best = i; } });
+    $('lpmTable').innerHTML = '<thead><tr><th>宛先（プレフィックス）</th><th>次に渡す相手</th><th>メモ</th><th>当てはまる？</th></tr></thead><tbody>' +
+      R.map((r, i) => `<tr class="${i === best ? 'best' : m[i] ? 'm' : ''}"><td>${r[0]}</td><td>${r[1]}</td><td class="why">${r[2]}</td><td class="why">${m[i] ? (i === best ? '◎ いちばんくわしい' : '○') : '—'}</td></tr>`).join('') + '</tbody>';
+    const n = m.filter(Boolean).length;
+    $('lpmExplain').innerHTML = `<b class="t">${raw} → ${R[best][1] === '直接つながっている' ? '直接届ける' : R[best][1] + ' に渡す'}</b>` +
+      (n > 1 ? `当てはまる行が${n}つありました。その中で範囲がいちばんせまい <b>${R[best][0]}</b>（/${bl}）を選びます。せまい行ほど、くわしい道案内だからです。` : '当てはまるのは、この1行だけでした。') +
+      (best === 4 ? ' どの行にも当てはまらない宛先は、<code>0.0.0.0/0</code>（どんな宛先にも当てはまる行）に従います。' : '');
+  }
+  $('lpmBtn').onclick = run;
+  $('lpmIn').addEventListener('keydown', e => { if(e.key === 'Enter') run(); });
+  $('lpmPresets').querySelectorAll('button').forEach(b => b.onclick = () => { $('lpmIn').value = b.dataset.ip; run(); });
+  run();
+})();
+
+/* ---------- 6.4 TTL と traceroute ---------- */
+(function(){
+  const N = [['💻', 'PC'], ['📡', '192.168.1.1'], ['🏢', '198.51.100.1'], ['🔁', '198.51.100.65'], ['🔁', '203.0.113.1'], ['🌐', '203.0.113.10']];
+  const MS = [null, '1.0', '3.2', '5.1', '6.4', '7.0'];
+  $('ttlPath').innerHTML = N.map(([ic, nm], k) => (k ? '<div class="ttl-l"></div>' : '') + `<div class="ttl-n"><span class="badge"></span><div class="ic">${ic}</div>${nm}</div>`).join('');
+  const nodes = [...$('ttlPath').querySelectorAll('.ttl-n')];
+  let run = 0;
+  async function play(){
+    const me = ++run, T = reduced() ? 0 : 380;
+    let log = '';
+    $('ttlLog').innerHTML = '';
+    for(let ttl = 1; ttl <= 5; ttl++){
+      nodes.forEach(n => { n.className = 'ttl-n'; n.querySelector('.badge').className = 'badge'; });
+      let t = ttl;
+      for(let k = 0; k < nodes.length; k++){
+        if(me !== run) return;
+        const b = nodes[k].querySelector('.badge');
+        if(k > 0 && k < nodes.length - 1) t--;
+        b.textContent = 'TTL ' + t; b.className = 'badge show' + (t === 0 ? ' zero' : '');
+        if(k === nodes.length - 1){ nodes[k].classList.add('arrive'); log += `TTL=${ttl}  <span class="g">${N[k][1]} に届いた！</span>  ${MS[k]} ms\n`; break; }
+        if(t === 0){ nodes[k].classList.add('die'); log += `TTL=${ttl}  ${N[k][1]} で寿命切れ → <span class="x">「寿命が切れました」の知らせ</span>  ${MS[k]} ms\n`; break; }
+        nodes[k].classList.add('pass');
+        await sleep(T);
+      }
+      $('ttlLog').innerHTML = log;
+      await sleep(T * 2.2);
+    }
+    $('ttlLog').innerHTML = log + '\n→ 知らせを送ってきたルーターを順に並べると、道のりがわかる！';
+  }
+  $('ttlBtn').onclick = play;
+  $('ttlLog').innerHTML = '「TTL を1から順に送る」を押すと、ここに traceroute の結果のようなものが並びます。';
+})();
+
+/* ---------- 6.5 NAT ---------- */
+(function(){
+  let rows = [], next = 40001;
+  const SV = '203.0.113.80:443';
+  function table(newI){
+    $('natTable').innerHTML = '<thead><tr><th>家の中の住所:ポート</th><th>外の住所:ポート（付けかえ後）</th><th>相手</th></tr></thead><tbody>' +
+      (rows.length ? rows.map((r, i) => `<tr class="${i === newI ? 'new' : ''}"><td>${r.in}</td><td>${r.out}</td><td>${SV}</td></tr>`).join('') : '<tr><td colspan="3" style="color:var(--ink-2);font-family:inherit">（まだ何もありません）</td></tr>') + '</tbody>';
+  }
+  const pkt = (cls, a, sa, b, sb) => `<div class="nat-pkt ${cls}"><div class="lb"><small>${sa}</small>${a}</div><span class="ar">→</span><div class="lb"><small>${sb}</small>${b}</div></div>`;
+  const hl = ids => ['natPc', 'natPhone', 'natSv'].forEach(id => { $(id).className = 'nat-dev' + (ids[id] ? ' ' + ids[id] : ''); });
+  const A = {
+    pc(){
+      const out = '198.51.100.5:' + next++; rows.push({in:'192.168.1.23:63553', out, who:'natPc'});
+      $('natPkts').innerHTML = pkt('q', `192.168.1.23:63553 → ${SV}`, '家の中（ルーターに入る前）', `<span class="ch">${out}</span> → ${SV}`, 'インターネット側（ルーターを出た後）');
+      hl({natPc:'on', natSv:'on'}); table(rows.length - 1);
+      return 'ルーターは、送り元の <code>192.168.1.23:63553</code> を、自分の外の住所 <code>198.51.100.5</code> と空いているポート番号に<b>付けかえ</b>、その組み合わせを表に書きとめました。';
+    },
+    phone(){
+      const out = '198.51.100.5:' + next++; rows.push({in:'192.168.1.31:63553', out, who:'natPhone'});
+      $('natPkts').innerHTML = pkt('q', `192.168.1.31:63553 → ${SV}`, '家の中', `<span class="ch">${out}</span> → ${SV}`, 'インターネット側');
+      hl({natPhone:'on', natSv:'on'}); table(rows.length - 1);
+      return 'スマホも、たまたまPCと<b>同じポート番号 63553</b> を使っていました。でもルーターが外側では別のポート番号を割り当てるので、外の住所は1つでも、だれあての返事かを区別できます。';
+    },
+    back(){
+      if(!rows.length) return 'まだだれも外に出ていないので、戻ってくる返事はありません。先に「PCがWebを見る」を押してください。';
+      const r = rows[0];
+      $('natPkts').innerHTML = pkt('a', `${SV} → ${r.out}`, 'インターネット側から届いた返事', `${SV} → <span class="ch">${r.in}</span>`, '家の中へ');
+      hl({[r.who]:'ans', natSv:'ans'}); table(0);
+      return `返事の宛先 <code>${r.out}</code> を表で引くと、<code>${r.in}</code> だとわかります。宛先を元に戻して、家の中の機器に届けました。`;
+    },
+    evil(){
+      $('natPkts').innerHTML = pkt('x', '203.0.113.66:5555 → 198.51.100.5:22', '外から勝手に届いた小包', '表にない → 捨てる', '家の中には入れない');
+      hl({});
+      return '家の中から頼んだ覚えのない小包は、表に当てはまる行がないので、<b>どの機器に届ければよいかわからず、捨てられます</b>。NATは、結果として外からの勝手な接続を防ぐ壁にもなっています。';
+    },
+    reset(){ rows = []; next = 40001; $('natPkts').innerHTML = ''; hl({}); table(); return '最初からやり直します。'; },
+  };
+  document.querySelectorAll('[data-nat]').forEach(b => b.onclick = () => { $('natExplain').innerHTML = A[b.dataset.nat](); });
+  table();
+  $('natExplain').innerHTML = 'ボタンを左から順に押してみましょう。';
+})();
+
+/* ---------- 6.6 DHCP ---------- */
+(function(){
+  const R = [
+    {d:'r', c:'q', l:'DHCP Discover', n:'0.0.0.0 → 全員あて', h:'① 「だれか、住所をください」', e:'まだ住所がないので、送り元は <code>0.0.0.0</code>、宛先は全員あて（<code>255.255.255.255</code>）にして叫びます。'},
+    {d:'l', c:'a', l:'DHCP Offer', n:'192.168.1.31 はどう？', h:'② 「この住所はどう？」', e:'ルーターは空いている住所を1つ選んで提案します。<b>サブネットマスク</b>（/24）、<b>ルーターの住所</b>（192.168.1.1）、<b>DNSサーバーの住所</b>、<b>貸し出す期間</b>も一緒に伝えます。'},
+    {d:'r', c:'q', l:'DHCP Request', n:'192.168.1.31 をください', h:'③ 「その住所を使います」', e:'スマホは提案を受け入れます。DHCPサーバーが複数あってもどれを選んだかわかるように、これも全員あてで送ります。'},
+    {d:'l', c:'a', l:'DHCP Ack', n:'どうぞ（例：24時間）', s:'192.168.1.31', h:'④ 「どうぞ」── 貸し出し完了', e:'これでスマホは 192.168.1.31 を使えるようになりました。貸し出し期間の半分ほどがたつと、自動で延長をお願いします。Wi-Fiから外れたまま期間が過ぎると、住所は返されて、ほかの機器に貸し出されます。'},
+  ];
+  let i = 0;
+  const reset = () => { i = 0; $('dhcpRows').innerHTML = ''; $('dhcpStA').textContent = '住所なし'; $('dhcpStA').className = 'hs-state'; $('dhcpCount').textContent = `0 / ${R.length}`; $('dhcpNext').disabled = false; $('dhcpExplain').innerHTML = '<span class="note">スマホが家のWi-Fiにつながった直後です。「次へ」を押してください。</span>'; };
+  $('dhcpNext').onclick = () => {
+    if(i >= R.length) return;
+    const r = R[i++];
+    $('dhcpRows').insertAdjacentHTML('beforeend', `<div class="hs-row ${r.d} ${r.c}"><span class="hs-lbl">${r.l}</span><div class="hs-arrow"></div><span class="hs-num">${r.n}</span></div>`);
+    if(r.s){ $('dhcpStA').textContent = r.s; $('dhcpStA').className = 'hs-state est'; }
+    $('dhcpExplain').innerHTML = `<h3>${r.h}</h3>${r.e}`;
+    $('dhcpCount').textContent = `${i} / ${R.length}`; $('dhcpNext').disabled = i >= R.length;
+  };
+  $('dhcpFirst').onclick = reset; reset();
+})();
+
+/* ---------- 6.7 ひとり何役 ---------- */
+$('roles').innerHTML = [
+  ['🧭', 'ルーター', '家のネットワークとプロバイダの間で、小包を中継する', '6.2'],
+  ['🔀', 'スイッチ', '背中の有線LANの差し込み口。MACアドレス表で配る', '6.1'],
+  ['📶', 'Wi-Fiの親機', '電波とイーサネットを、たがいに変換する', '第5章'],
+  ['🏷️', 'NAT', '家の中の住所と、外の住所を付けかえる', '6.5'],
+  ['📋', 'DHCPサーバー', '住所やルーター・DNSの情報を貸し出す', '6.6'],
+  ['📖', 'DNSの取り次ぎ', '家の中からの問い合わせを、プロバイダのキャッシュDNSサーバーへ', '第2章'],
+  ['🛡️', 'ファイアウォール', '外から勝手に届く小包を止める', '第8章'],
+  ['🔌', 'プロバイダへの接続', 'PPPoE や IPoE で、プロバイダにつなぐ手続きをする', '第7章'],
+].map(([ic, t, d, ref]) => `<div class="role"><b><span>${ic}</span>${t}</b>${d}<small>→ ${ref}</small></div>`).join('');
+
+/* ---------- 6.8 試そう ---------- */
+setupCmds({
+  mac:[
+    ['traceroute -n www.example.com', '道のりを調べます。<code>-n</code> は、ルーターの名前を調べずに数字で表示する（速くなる）という意味です。'],
+    ['traceroute -n -I www.example.com', 'ping と同じ ICMP という仕組みで調べます。結果が <code>*</code> ばかりのときに試してみましょう。'],
+    ['netstat -rn', 'PCの経路表です（IPv4とIPv6）。'],
+  ],
+  win:[
+    ['tracert -d www.example.com', '道のりを調べます。<code>-d</code> は数字で表示するという意味です。'],
+    ['pathping -n www.example.com', '道のりと、区間ごとに小包がどれくらいなくなるかを調べます（数分かかります）。'],
+    ['route print', 'PCの経路表です。'],
+  ],
+});
+setupTrace('real', 'realExplain', [
+  ['c', '$ traceroute -n -q 1 www.example.com'],
+  ['hdr', 'traceroute to www.example.com (172.66.147.243), 15 hops max, 40 byte packets'],
+  ['h1', ' 1  192.168.11.1      1.043 ms'],
+  ['h2', ' 2  172.16.64.1       1.720 ms'],
+  ['isp', ' 3  （プロバイダ）     4.692 ms'],
+  ['isp', ' 4  （プロバイダ）     2.796 ms'],
+  ['isp', ' 5  （プロバイダ）     4.968 ms'],
+  ['isp', ' 6  （プロバイダ）     4.934 ms'],
+  ['slow', ' 7  （つなぎ先）     89.393 ms'],
+  ['isp', ' 8  （つなぎ先）      5.551 ms'],
+  ['star', ' 9  *'],
+  ['cf', '10  103.22.201.21     6.895 ms'],
+  ['dst', '11  172.66.147.243   23.298 ms'],
+], {
+  hdr:['調べ始め', 'TTLを1から順に増やしながら、最大15個先まで調べます。example.com にはIPアドレスが2つあるので（第2章）、そのうちの1つを使っています。'],
+  h1:['1つ目：家のルーター', 'この家のルーターは 192.168.11.1。1ミリ秒で知らせが返ってきました。'],
+  h2:['2つ目も、プライベートアドレス', '172.16.x.x もプライベートアドレスです。光回線の機器（ホームゲートウェイ）と、家のルーターが2段になっていると考えられます。この場合、NATも2回かかっています。'],
+  isp:['プロバイダのルーター', 'ここからはプロバイダ（と、その先のつなぎ先）のルーターです（住所は伏せています）。どれも数ミリ秒で、日本の中を進んでいます。この区間の中身は、第7章で見ます。'],
+  slow:['ここだけ遅い？', '89ミリ秒と、ここだけ遅く見えます。でも次の8番目は5.5ミリ秒です。ルーターは小包を運ぶのが本業で、寿命切れの知らせを作るのは後回しにすることがあるため、こうした<b>見かけの遅さ</b>がよく出ます。'],
+  star:['* は返事なし', '寿命切れの知らせを返さない設定のルーターもあります。小包そのものは、ちゃんと先へ運ばれています。'],
+  cf:['CDNのネットワークへ', '103.22.200.0/22 は、Cloudflare（CDN）が公開している住所の範囲です。ここで example.com を運んでいる会社のネットワークに入りました。'],
+  dst:['到着', '11番目で example.com に着きました。家から数えて11の機器を通っています。'],
+});
+
+/* ---------- 6.10 クイズ ---------- */
+setupQuiz([
+  {q:'スイッチが覚えるのは、どの組み合わせ？', o:['IPアドレスと住所','送り元のMACアドレスと差し込み口','サイトの名前とIPアドレス'], a:1,
+   e:'届いた小包の送り元を見て「この人はこの口にいる」と覚えます。'},
+  {q:'ルーターを通るたびに貼りかえられるのは？', o:['イーサネットのラベル','IPのラベルの宛先','TCPのポート番号'], a:0,
+   e:'イーサネットのラベルは「すぐ隣まで」用。IPの宛先は最後まで変わりません（家を出るときのNATは別）。'},
+  {q:'宛先 203.0.113.200 に当てはまるのが 203.0.113.0/24・203.0.113.128/25・0.0.0.0/0 のとき、選ばれるのは？', o:['203.0.113.0/24','203.0.113.128/25','0.0.0.0/0'], a:1,
+   e:'範囲がいちばんせまい（プレフィックス長が長い）/25 を選びます。最長一致です。'},
+  {q:'TTL が0になった小包はどうなる？', o:['そのまま宛先へ届く','捨てられて、送り元に知らせが返る','送り元に送り返される'], a:1,
+   e:'迷子の小包が永遠にさまよわないための仕組み。traceroute はこの知らせを使います。'},
+  {q:'外から勝手に届いた小包を、家のルーター（NAT）はどうする？', o:['全員に配る','PCに届ける','表に当てはまらないので捨てる'], a:2,
+   e:'家の中から頼んだ覚えのない小包は、届け先がわからないので捨てられます。'},
+  {q:'DHCPで配られないものは？', o:['IPアドレス','DNSサーバーの住所','MACアドレス'], a:2,
+   e:'MACアドレスは機器が持っている名札です。DHCPは、住所・ルーター・DNSなどの情報を貸し出します。'},
+]);
+</script>
+</body>
+</html>
