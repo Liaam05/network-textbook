@@ -1,0 +1,1509 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DNSの旅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaf2f8; --surface:#ffffff; --surface-2:#e1eff6; --ink:#0d1b2a; --ink-2:#4a5d75; --line:#c8d5e4;
+  --accent:#0891b2; --accent-soft:rgba(8,145,178,.12); --answer:#d97706; --answer-soft:rgba(217,119,6,.13); --ok:#15803d; --ok-soft:rgba(21,128,61,.12);
+  --ground:#e3ebf4; --zone-home:rgba(21,128,61,.09); --zone-isp:rgba(8,145,178,.1); --zone-net:rgba(217,119,6,.09);
+  --grid:rgba(8,145,178,.07); --glow:0 0 0 1px rgba(8,145,178,.4),0 0 16px rgba(8,145,178,.15); --on-accent:#ffffff;
+  --shadow:0 1px 2px rgba(13,27,42,.06),0 6px 18px rgba(13,27,42,.07);
+  --board-grid:rgba(8,145,178,.14); --board-edge:#b9cadc;
+  --z-home:rgba(21,128,61,.13); --z-home-edge:#15803d; --z-isp:rgba(8,145,178,.15); --z-isp-edge:#0e7490;
+  --z-net:rgba(217,119,6,.13); --z-net-edge:#b45309; --z-web:rgba(124,58,237,.11); --z-web-edge:#6d28d9;
+  --accent2:#7c3aed;
+  --wash:radial-gradient(1100px 620px at 0% 0%,rgba(8,145,178,.16),transparent 62%),radial-gradient(900px 560px at 100% 25%,rgba(124,58,237,.12),transparent 60%),radial-gradient(1000px 640px at 40% 100%,rgba(217,119,6,.10),transparent 60%);
+  --strip:linear-gradient(90deg,#06b6d4,#7c3aed 55%,#f59e0b);
+  --bar-bg:linear-gradient(90deg,rgba(8,145,178,.12),rgba(124,58,237,.09));
+  --primary-bg:linear-gradient(135deg,#0891b2,#4f46e5);
+  --num-bg:linear-gradient(135deg,#0891b2,#7c3aed); --num-fg:#ffffff;
+  --h1-grad:linear-gradient(90deg,#0d1b2a 20%,#0891b2 60%,#7c3aed);
+  --subh-bar:linear-gradient(#0891b2,#7c3aed);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.85;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:48px 0 12px}
+.kicker{font-size:13px;color:var(--ink-2);letter-spacing:.08em}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.35;margin:6px 0 12px}
+h2{font-size:clamp(20px,3.6vw,26px);margin:56px 0 8px;line-height:1.4}
+h2 .num{display:inline-block;font-size:14px;color:var(--accent);margin-right:8px;font-family:"JetBrains Mono",monospace}
+p{margin:.6em 0}
+.lead{font-size:17px;color:var(--ink-2)}
+b{color:var(--ink)}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.92em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.note{font-size:13px;color:var(--ink-2)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+button.primary:hover:not(:disabled){filter:brightness(1.08)}
+button.on{background:var(--accent-soft);border-color:var(--accent)}
+
+/* --- analogy --- */
+.analogy{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:12px}
+.analogy .box{text-align:center;padding:14px}
+.analogy .big{font-size:20px;font-weight:700}
+.analogy .arrow{font-size:22px;color:var(--ink-2)}
+
+/* --- domain tree --- */
+.domain-input{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.domain-input input{flex:1;min-width:220px;font:inherit;font-family:"JetBrains Mono",monospace;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{font-size:13px;padding:4px 10px}
+.stairs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.stair{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-left:calc(var(--k) * 22px);opacity:0;transform:translateX(-8px);animation:in .4s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.stair .blk{font-family:"JetBrains Mono",monospace;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.stair .blk .new{color:var(--accent);font-weight:600}
+.stair .desc{flex:1 1 10em;font-size:13px;color:var(--ink-2)}
+.domain-err{color:var(--answer);font-size:14px}
+
+/* --- stage --- */
+.stage-card{padding:0;overflow:hidden}
+.stage-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stage-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.stage-bar button,.stepper-bar button{white-space:nowrap}
+.counter{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-2);min-width:56px;text-align:center}
+.stage-wrap{position:relative;width:100%;overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage-wrap.dragging{cursor:grabbing}
+.stage{position:absolute;left:0;top:0;width:820px;height:600px;transform-origin:0 0;perspective:1500px;perspective-origin:50% 30%;
+  --ax:55deg; --az:-24deg}
+.plane{position:absolute;left:30px;top:50px;width:800px;height:520px;transform-style:preserve-3d;
+  transform:rotateX(var(--ax)) rotateZ(var(--az));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.dragging .plane,.dragging .anchor{transition:none!important}
+.plane > svg{position:absolute;inset:0;overflow:visible}
+.ground{fill:var(--ground)}
+.zone-home{fill:var(--zone-home)}.zone-isp{fill:var(--zone-isp)}.zone-net{fill:var(--zone-net)}
+.zone-label{font-size:16px;font-weight:700;letter-spacing:.04em}
+.board-gridline{stroke:var(--board-grid);stroke-width:1}
+.ground{stroke:var(--board-edge);stroke-width:2}
+.zone{stroke-width:2.5}
+.z-home{fill:var(--z-home);stroke:var(--z-home-edge)}.l-home{fill:var(--z-home-edge)}
+.z-isp{fill:var(--z-isp);stroke:var(--z-isp-edge)}.l-isp{fill:var(--z-isp-edge)}
+.z-net{fill:var(--z-net);stroke:var(--z-net-edge)}.l-net{fill:var(--z-net-edge)}
+.z-web{fill:var(--z-web);stroke:var(--z-web-edge)}.l-web{fill:var(--z-web-edge)}
+.link{stroke:var(--ink-2);stroke-opacity:.45;stroke-width:4;fill:none;stroke-linecap:round}
+.link.web{stroke-dasharray:2 10}
+.link.active{stroke:var(--accent);stroke-opacity:1;stroke-width:6;stroke-dasharray:10 8;animation:flow .6s linear infinite}
+.link.active.ans{stroke:var(--answer)}
+@keyframes flow{to{stroke-dashoffset:-18}}
+.shadow{fill:rgba(0,0,0,.18)}
+.anchor{position:absolute;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.node{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.node .icon{width:64px;height:64px;border-radius:16px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);transition:border-color .3s,box-shadow .3s,transform .3s}
+.node .icon svg{width:38px;height:38px;color:var(--ink-2)}
+.node.hl .icon{border-color:var(--accent);box-shadow:0 0 0 6px var(--accent-soft),var(--shadow);transform:translateY(-4px)}
+.node .lbl{font-size:15px;font-weight:700;white-space:nowrap;background:var(--surface);padding:0 8px;border-radius:6px;border:1px solid var(--line)}
+.node .sub{font-size:11px;color:var(--ink-2);white-space:nowrap;font-family:"JetBrains Mono",monospace}
+.bubble{position:absolute;bottom:136px;left:0;transform:translateX(-50%) scale(.6);opacity:0;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;padding:6px 12px;border-radius:12px;white-space:nowrap;transition:opacity .25s,transform .25s;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--ink)}
+.bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.packet-anchor{transition:none;transform:translateZ(var(--h,0px)) rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1))}
+.packet{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.packet .env{width:44px;height:30px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.packet.ans .env{background:var(--answer)}
+.packet.web .env{background:var(--ok)}
+.packet.hide{opacity:0}
+.drag-hint{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px 8px;pointer-events:none}
+
+.panels{display:grid;grid-template-columns:1.25fr .8fr 1.2fr;gap:14px;margin-top:14px;align-items:start}
+.explain{padding:18px 22px 22px;border-top:1px solid var(--line);background:var(--surface);min-height:190px}
+.explain h3{margin:0 0 4px;font-size:21px;line-height:1.5}
+.explain #stepText{font-size:16.5px}
+.timeline{display:flex;gap:4px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.timeline button{flex:0 0 auto;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.timeline button .n{font-family:"JetBrains Mono",monospace;font-size:11px;opacity:.7}
+.timeline button.done{color:var(--ink);border-color:var(--line);background:var(--surface-2)}
+.timeline button.cur{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:700}
+.timeline button.cur.ans{background:var(--answer);border-color:var(--answer)}
+.node{transition:opacity .35s}
+.node.dim{opacity:.55}
+.url-split{font-size:14px;margin:4px 0 10px;padding:8px 12px;border-radius:8px;background:var(--surface-2)}
+.url-split .dim-part{color:var(--ink-2);opacity:.6}
+.url-split .host-part{color:var(--accent);font-weight:600;background:var(--accent-soft);border-radius:4px;padding:0 2px}
+.explain .stepno{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+.explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.side{display:flex;flex-direction:column;gap:14px}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.msg{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6}
+.msg .head{display:inline-block;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:1px 8px;border-radius:6px;margin-bottom:6px}
+.msg .head.q{background:var(--accent-soft);color:var(--accent)}
+.msg .head.a{background:var(--answer-soft);color:var(--answer)}
+.msg table{border-collapse:collapse;width:100%}
+.msg td{padding:3px 0;vertical-align:top;border-top:1px dashed var(--line)}
+.msg td:first-child{width:5.5em;white-space:nowrap;color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding-right:8px}
+.msg .empty{color:var(--ink-2);font-family:"Noto Sans JP",sans-serif}
+.timer{font-family:"JetBrains Mono",monospace;font-size:28px;font-weight:600}
+.timer small{font-size:13px;color:var(--ink-2);font-weight:400}
+.history{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.history span{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--surface-2);border-radius:6px;padding:1px 8px}
+.cache-list{list-style:none;margin:0;padding:0;font-size:13px}
+.cache-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.cache-list li.flash{animation:flash 1.2s}
+@keyframes flash{0%{background:var(--ok-soft)}100%{background:transparent}}
+.cache-list .ttl{font-family:"JetBrains Mono",monospace;color:var(--ok);white-space:nowrap}
+.cache-list .gone{color:var(--ink-2);text-decoration:line-through}
+.cache-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cache-btns button{font-size:12px;padding:4px 10px}
+.clock{font-size:12px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+
+/* --- summary / quiz --- */
+.summary li{margin:6px 0}
+.quiz{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.q .opts button{text-align:left}
+.q .opts button.right{background:var(--ok-soft);border-color:var(--ok)}
+.q .opts button.wrong{background:var(--answer-soft);border-color:var(--answer)}
+.q .fb{font-size:14px;margin-top:6px;min-height:1.4em}
+footer{margin:64px 0 48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+footer a{color:var(--accent)}
+
+@media (max-width:720px){
+  .panels{grid-template-columns:1fr}
+  .explain{padding:16px}
+  .analogy{grid-template-columns:1fr}
+  .analogy .arrow{transform:rotate(90deg);text-align:center}
+  .drag-hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .plane,.anchor{transition:none}
+  .link.active{animation:none}
+}
+
+/* --- 共通パーツ --- */
+.sub-h{font-size:18px;margin:32px 0 6px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;font-size:14px;padding:6px 12px;border-radius:8px}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow);font-weight:700;color:var(--accent)}
+.wrap-seg{margin-bottom:12px}
+.row-btns{display:flex;gap:8px;margin-top:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.mini-card h3{margin:0 0 6px;font-size:16px}
+.mini-card p{font-size:14.5px}
+
+/* --- 2.3 PCの中 --- */
+.stepper{padding:0;overflow:hidden}
+.stepper-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stepper-bar .seg{background:var(--bg)}
+.stepper-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;padding:20px}
+.pc-stack{position:relative;border:2px dashed var(--line);border-radius:16px;padding:30px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.pc-frame-label{position:absolute;top:6px;left:14px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.layer{border:2px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface);transition:border-color .3s,background .3s,opacity .3s;position:relative}
+.layer .lname{font-weight:700;font-size:15px}
+.layer .lsub{font-size:12px;color:var(--ink-2)}
+.layer .lmem{position:absolute;right:12px;top:10px;font-size:11px;color:var(--ink-2)}
+.layer.on{border-color:var(--accent);background:var(--accent-soft)}
+.layer.skip{opacity:.35}
+.layer.skip .lname{text-decoration:line-through}
+.os-inner{display:flex;gap:8px;margin-top:8px}
+.mini{flex:1;font-size:12px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px;background:var(--surface-2);transition:all .3s}
+.mini.on{border-color:var(--accent);background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 0 0 3px var(--accent-soft)}
+.pc-out{text-align:center;font-size:13px;color:var(--ink-2);padding:6px;border-radius:10px;transition:all .3s}
+.pc-out.on{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.pc-chip{position:absolute;right:-12px;top:0;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:top .5s cubic-bezier(.3,.7,.2,1),background .3s}
+.pc-chip.lock{background:var(--ok)}
+.pc-explain h3{margin:0 0 6px;font-size:19px}
+.pc-explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.pkt-box{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pkt-box div{display:flex;border-top:1px dashed var(--line)}
+.pkt-box div:first-child{border-top:0}
+.pkt-box span{padding:4px 10px}
+.pkt-box span:first-child{width:7.5em;white-space:nowrap;flex:0 0 auto;background:var(--surface-2);color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px}
+
+/* --- 2.5 レコード --- */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font-family:"JetBrains Mono",monospace;font-weight:600;min-width:64px}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rec-q,.rec-a{font-size:13.5px;padding:8px 12px;border-radius:8px;overflow-x:auto;white-space:nowrap}
+.rec-q{background:var(--accent-soft);color:var(--accent)}
+.rec-a{background:var(--answer-soft);color:var(--answer);margin-top:6px}
+.rec-body h3{margin:14px 0 4px;font-size:18px}
+.parallel{display:flex;flex-direction:column;gap:8px}
+.lane{display:grid;grid-template-columns:4.5em 1fr 9em;gap:10px;align-items:center}
+.lane .who{font-size:12px;color:var(--ink-2)}
+.track{position:relative;height:30px;border-radius:8px;background:var(--surface-2)}
+.chip{position:absolute;top:3px;left:4px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;background:var(--accent);color:#fff;transition:left 1s cubic-bezier(.4,0,.2,1)}
+.chip.ans{background:var(--answer)}
+.res{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--answer);opacity:0;transition:opacity .3s}
+.res.show{opacity:1}
+
+/* --- 2.6 CDN --- */
+.cdn-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+#cdnMap{width:100%;height:auto;background:var(--surface-2);border-radius:12px}
+#cdnMap .grid{stroke:var(--line);stroke-width:1}
+#cdnMap .land{fill:var(--ground);stroke:var(--line);stroke-width:1}
+#cdnMap .edge{fill:var(--surface);stroke:var(--ink-2);stroke-width:2}
+#cdnMap .edge.pick{fill:var(--answer);stroke:var(--answer)}
+#cdnMap .origin{fill:var(--ink-2)}
+#cdnMap .me{fill:var(--accent)}
+#cdnMap .me-ring{fill:none;stroke:var(--accent);stroke-width:2;animation:ring 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+#cdnMap .route{stroke:var(--answer);stroke-width:3;stroke-dasharray:6 6;fill:none;animation:flow .6s linear infinite}
+#cdnMap .route.far{stroke:var(--ink-2);stroke-width:1.5;opacity:.6;animation:none}
+#cdnMap text{font-size:13px;fill:var(--ink);font-family:"Noto Sans JP",sans-serif}
+#cdnMap text.small{font-size:11px;fill:var(--ink-2)}
+.cdn-flow{font-size:12.5px;display:flex;flex-direction:column;gap:8px}
+.cdn-flow .f{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.cdn-flow .f b{font-family:"Noto Sans JP",sans-serif;font-size:12px;color:var(--ink-2);display:block;font-weight:500}
+.cdn-flow .f.hit{border-color:var(--answer);background:var(--answer-soft)}
+.cdn-flow .lat{font-family:"Noto Sans JP",sans-serif;font-size:13px}
+.cdn-flow .lat strong{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--answer)}
+
+/* --- 2.7 守る --- */
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.enc-view{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.enc-label{font-size:12px;font-weight:700;padding:6px 12px;background:var(--surface-2);color:var(--ink-2)}
+.enc-screen{background:#0d1117;color:#7ee787;font-size:12.5px;padding:12px;min-height:150px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.enc-screen .warn{color:#ffa657}
+.enc-screen .dim{color:#6e7681}
+.enc-grid h3{margin:0 0 6px;font-size:18px}
+.spec{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
+.spec td{padding:4px 8px;border-top:1px solid var(--line)}
+.spec td:first-child{color:var(--ink-2);width:5em}
+.race{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:10px;padding-right:96px}
+.race-row{display:grid;grid-template-columns:8.5em 1fr;gap:10px;align-items:center}
+.race-who{font-size:13px;font-weight:700;line-height:1.3}
+.race-who small{font-weight:400;color:var(--ink-2);font-size:11px}
+.race-track{position:relative;height:34px;background:var(--surface-2);border-radius:8px}
+.race-chip{position:absolute;left:4px;top:5px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;color:#fff;white-space:nowrap;transition:left .9s cubic-bezier(.4,0,.2,1),opacity .4s,transform .4s}
+.race-chip.fake{background:#c92a2a}
+.race-chip.real{background:var(--ok)}
+.race-chip.arrived{left:calc(100% - 136px)}
+.race-chip.rejected{opacity:.35;transform:rotate(-8deg)}
+.race-chip.rejected::after{content:" ✕"}
+.race-chip.accepted::after{content:" ✓"}
+.race-goal{position:absolute;right:0;top:0;bottom:0;width:86px;border:2px solid var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:11px;font-weight:700;background:var(--surface);padding:4px}
+.race-result{margin-top:12px;font-size:15px;min-height:1.5em}
+.race-result .bad{color:#e03131;font-weight:700}
+.race-result .good{color:var(--ok);font-weight:700}
+.chain{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.chain-step{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:13px;display:flex;flex-direction:column}
+.chain-step b{font-family:"JetBrains Mono",monospace}
+.chain-step span{color:var(--ink-2);font-size:12px}
+.chain-arrow{font-size:12px;color:var(--accent);padding-left:12px}
+
+/* --- 2.8 試す --- */
+.can-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.can-list li{position:relative;padding:8px 12px 8px 38px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:13.5px;line-height:1.6}
+.can-list li b{display:block;font-size:14.5px}
+.can-list li span{color:var(--ink-2)}
+.can-list li::before{position:absolute;left:12px;top:8px;font-weight:700;font-size:15px}
+.can-list li.yes::before{content:"✓";color:var(--ok)}
+.can-list li.no::before{content:"✕";color:var(--answer)}
+.cmds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.cmd{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmd-line{display:flex;align-items:center;gap:8px;background:#0d1117;padding:8px 8px 8px 12px}
+.cmd-line code{flex:1;color:#e6edf3;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.cmd-line code::before{content:"$ ";color:#6e7681}
+.cmd-line button{font-size:12px;padding:3px 10px;background:#21262d;color:#e6edf3;border-color:#30363d}
+.cmd-desc{font-size:13.5px;padding:8px 12px}
+.trace-card{padding:0;overflow:hidden}
+.trace{background:#0d1117;color:#c9d1d9;font-size:12px;padding:12px 0;overflow-x:auto;line-height:1.75}
+.trace .ln{padding:0 14px;white-space:pre;cursor:default}
+.trace .ln.g{cursor:pointer;border-left:3px solid transparent}
+.trace .ln.g:hover{background:#161b22}
+.trace .ln.g.on{background:#1f2a40;border-left-color:#6ea0ff}
+.trace .ln.recv{color:#7ee787}
+.trace .ln.cmt{color:#6e7681}
+.trace .ln .k{color:#ffa657}
+.trace-explain{padding:14px 18px;font-size:15px;border-top:1px solid var(--line);min-height:80px}
+.trace-explain h4{margin:0 0 4px;font-size:16px}
+
+@media (max-width:720px){
+  .pc-body,.cdn-grid,.enc-grid,.cols{grid-template-columns:1fr}
+  .pc-chip{right:6px}
+  .lane{grid-template-columns:1fr 7em}
+  .lane .who{display:none}
+  .stair{margin-left:calc(var(--k) * 12px)}
+  .rec-a{white-space:normal;overflow-wrap:anywhere}
+  .race{padding-right:0}
+  .race-row{grid-template-columns:6.5em 1fr}
+  .race-goal{position:static;width:auto;padding:8px}
+}
+
+/* ===== サイバー調の仕上げ ===== */
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.kicker::before{content:"▍";animation:blink 1.1s steps(1) infinite;margin-right:4px}
+@keyframes blink{50%{opacity:0}}
+h1{background:linear-gradient(90deg,var(--ink) 30%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .num{font-size:13px;padding:2px 8px;border:1px solid var(--accent);border-radius:4px;text-shadow:0 0 8px var(--accent-soft);vertical-align:3px}
+h2 .num::before{content:"// "}
+.card{position:relative;background:linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));border-color:var(--line);border-radius:10px}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2}
+.card::before{top:0;left:0;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-top-left-radius:10px}
+.card::after{bottom:0;right:0;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-bottom-right-radius:10px}
+button{border-radius:6px;background:transparent;transition:border-color .15s,box-shadow .15s,background .15s}
+button:hover:not(:disabled){border-color:var(--accent);box-shadow:var(--glow)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 0 16px var(--accent-soft)}
+button.on,.seg button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);box-shadow:none}
+.seg{border:1px solid var(--line);background:var(--bg)}
+.seg button.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.stage-bar,.stepper-bar{background:var(--surface-2)}
+.counter{color:var(--accent)}
+.node .icon{background:var(--surface);border-radius:12px}
+.node .icon svg{color:var(--accent)}
+.node.hl .icon{box-shadow:var(--glow);border-color:var(--accent)}
+.node .lbl{background:var(--surface);border-color:var(--line);border-radius:4px}
+.bubble{background:var(--accent);color:var(--on-accent);box-shadow:var(--glow)}
+.bubble::after{border-top-color:var(--accent)}
+.packet .env{box-shadow:0 0 18px var(--accent)}
+.packet.ans .env{box-shadow:0 0 18px var(--answer)}
+.link.active{filter:drop-shadow(0 0 4px var(--accent))}
+.link.active.ans{filter:drop-shadow(0 0 4px var(--answer))}
+.explain .stepno,.stepno{font-family:"JetBrains Mono",monospace;letter-spacing:.1em}
+.layer{border-radius:8px;overflow:hidden}
+.layer.on{box-shadow:var(--glow)}
+.layer.on::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);transform:translateX(-100%);animation:scan 1.8s linear infinite;pointer-events:none}
+@keyframes scan{to{transform:translateX(100%)}}
+.pc-stack{border-color:var(--accent-soft);border-radius:12px}
+.pc-frame-label{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.1em}
+.pc-chip{box-shadow:0 0 14px var(--accent);color:var(--on-accent)}
+.pc-chip.lock{box-shadow:0 0 14px var(--ok)}
+.timeline button.cur{color:var(--on-accent);box-shadow:0 0 12px var(--accent-soft)}
+.timer{color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+.tabs button.on{color:var(--on-accent);box-shadow:var(--glow)}
+.chip{color:var(--on-accent)}
+.stair .blk{border-radius:6px}
+.cache-list .ttl{text-shadow:0 0 8px var(--ok-soft)}
+.packet .env,.race-chip.real,.cdn-flow .f.hit{color:var(--on-accent)}
+.cdn-flow .f.hit{background:var(--answer);border-color:var(--answer)}
+.cdn-flow .f.hit b{color:var(--on-accent);opacity:.75}
+.enc-screen{background:#02050a;border-top:1px solid var(--line);text-shadow:0 0 6px rgba(126,231,135,.35)}
+.timeline{scrollbar-color:var(--line) transparent}
+.timeline::-webkit-scrollbar{height:6px}
+.timeline::-webkit-scrollbar-track{background:transparent}
+.timeline::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.zone{filter:drop-shadow(0 0 6px var(--board-grid))}
+
+/* 送信・受信している2台を強く、それ以外を弱く */
+.node .icon{position:relative}
+.node .role{position:absolute;top:-11px;right:-22px;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:4px;background:var(--accent);color:var(--on-accent);box-shadow:0 0 10px var(--accent);opacity:0;transition:opacity .25s}
+.node.send .role,.node.recv .role{opacity:1}
+.node.hl .icon{background:var(--accent-soft);border-width:2.5px}
+.node.hl .lbl{border-color:var(--accent);color:var(--ink);box-shadow:0 0 10px var(--accent-soft)}
+.node.hl .sub{color:var(--ink)}
+.node.ans .icon{border-color:var(--answer);background:var(--answer-soft);box-shadow:0 0 0 1px var(--answer),0 0 22px var(--answer-soft)}
+.node.ans .icon svg{color:var(--answer)}
+.node.ans .lbl{border-color:var(--answer)}
+.node.ans .role{background:var(--answer);box-shadow:0 0 10px var(--answer)}
+.node.dim{opacity:.28;filter:grayscale(.7)}
+.zone,.zone-label{transition:opacity .4s}
+.zone-dim{opacity:.35}
+
+/* 色のトークンで切り替える装飾（ダークでは控えめ・ライトでは色を足す） */
+body::before{content:"";position:fixed;inset:0;background:var(--wash);pointer-events:none;z-index:-1}
+h1{background-image:var(--h1-grad)}
+h2 .num{background:var(--num-bg);color:var(--num-fg)}
+.card{background-image:var(--strip),linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));background-size:100% 3px,auto;background-repeat:no-repeat}
+.stage-bar,.stepper-bar{background:var(--bar-bg)}
+button.primary,.timeline button.cur:not(.ans){background:var(--primary-bg);border-color:transparent}
+.sub-h{border-left:4px solid transparent;border-image:var(--subh-bar) 1;padding-left:10px}
+.summary li::marker{color:var(--accent2)}
+@media (prefers-reduced-motion: reduce){
+  .kicker::before,.layer.on::after{animation:none}
+}
+.top-nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:14px}
+.top-nav a{color:var(--ink-2);text-decoration:none}
+.top-nav a:hover{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none;color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <nav class="top-nav"><a href="index.html">← 目次</a><a href="browser.html">← 第1章 ブラウザ</a><a href="tcp.html">第3章 TCP →</a></nav>
+  <div class="kicker">触って学ぶネットワーク ・ 第2章（試作）</div>
+  <h1>DNS ── 名前から住所を探す旅</h1>
+  <p class="lead">ブラウザに <code>www.example.com</code> と打ちこんでから、ページが表示されるまでの、ほんの0.1秒ほどの間に、世界中のサーバーをめぐる「問い合わせの旅」が起きています。ボタンを押して、その旅を1歩ずつ追いかけてみましょう。</p>
+</header>
+
+<section>
+  <h2><span class="num">2.1</span>名前と数字、なぜ2つあるの？</h2>
+  <p>インターネット上のコンピュータは、<b>IPアドレス</b>という数字の住所で相手を見分けています。でも <code>192.0.2.10</code> のような数字は、人間には覚えにくいですよね。</p>
+  <p>そこで人間は <code>www.example.com</code> という<b>名前（ドメイン名）</b>を使い、コンピュータは裏側でそれを数字に変換してから通信します。この変換を担当しているのが <b>DNS</b>（Domain Name System）です。スマホの連絡先アプリで、名前をタップすると電話番号に発信されるのと似ています。</p>
+  <div class="analogy">
+    <div class="card box"><div class="note">人間が使う</div><div class="big mono">www.example.com</div></div>
+    <div class="arrow">→ DNS →</div>
+    <div class="card box"><div class="note">コンピュータが使う</div><div class="big mono">192.0.2.10</div></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2.2</span>名前は「右から」読む</h2>
+  <p>ドメイン名は、ドットで区切られた階層になっています。住所を「日本 → 東京都 → 千代田区…」と大きい方から絞りこむように、ドメイン名は<b>右側ほど大きな区分</b>です。一番右には、ふだんは書かない「<code>.</code>（ルート）」が隠れています。</p>
+  <p>好きなドメイン名を入れて、階層に分けてみましょう。ふだん見ているサイトのURLをそのまま貼りつけても大丈夫です。</p>
+  <div class="card">
+    <div class="domain-input">
+      <input id="domainIn" value="www.example.co.jp" aria-label="ドメイン名" spellcheck="false" autocomplete="off">
+      <button class="primary" id="domainBtn">分解する</button>
+    </div>
+    <div class="presets">
+      <button data-d="www.example.com">www.example.com</button>
+      <button data-d="mail.example.co.jp">mail.example.co.jp</button>
+      <button data-d="lab.cs.example.ac.jp">lab.cs.example.ac.jp</button>
+      <button data-d="https://www.example.com/news/index.html">URLを入れてもOK</button>
+    </div>
+    <div class="stairs" id="stairs"></div>
+  </div>
+  <p>DNSのサーバーも、この階層ごとに担当が分かれています。ルートの担当は <code>.com</code> や <code>.jp</code> の担当を知っていて、<code>.com</code> の担当は <code>example.com</code> の担当を知っている、という具合です。次の旅で、この「担当から担当へ」のリレーを実際に見てみます。</p>
+</section>
+
+<section>
+  <h2><span class="num">2.3</span>まずはPCの中で起きること</h2>
+  <p>旅に出る前に、PCの中をのぞいてみましょう。ブラウザは自分でDNSのメッセージを作るのではなく、ふつうは<b>OS（WindowsやmacOS）にお願い</b>します。いろいろなアプリが同じ仕組みを使えるように、名前を調べる機能はOSの部品として用意されているのです。</p>
+  <div class="card stepper" id="pcStepper">
+    <div class="stepper-bar">
+      <div class="seg" role="group" aria-label="方式">
+        <button data-mode="classic" class="on">ふつうのDNS</button>
+        <button data-mode="doh">ブラウザが暗号化DNSを使う場合</button>
+      </div>
+      <div class="group">
+        <button class="sp-reset">⟲ 最初から</button>
+        <button class="sp-prev">◀ 戻る</button>
+        <span class="counter sp-count">1 / 1</span>
+        <button class="sp-next primary">次へ ▶</button>
+      </div>
+    </div>
+    <div class="pc-body">
+      <div class="pc-stack">
+        <div class="pc-frame-label">あなたのPC</div>
+        <div class="layer" data-l="browser"><div class="lname">ブラウザ</div><div class="lsub">Chrome・Safari・Edge など</div><div class="lmem">記憶：数分だけ</div></div>
+        <div class="layer" data-l="os"><div class="lname">OS（ソケットライブラリとリゾルバ）</div><div class="lsub mono">getaddrinfo()</div>
+          <div class="os-inner">
+            <div class="mini" data-l="hosts">hostsファイル</div>
+            <div class="mini" data-l="oscache">OSの記憶</div>
+          </div>
+        </div>
+        <div class="layer" data-l="nic"><div class="lname">LANアダプタ（Wi-Fi・有線）</div><div class="lsub">電気や電波の信号にして送り出す</div></div>
+        <div class="pc-out" data-l="net">↓ ネットワークへ ── <span style="white-space:nowrap">キャッシュDNSサーバー</span></div>
+      </div>
+      <div class="pc-explain" aria-live="polite">
+        <h3 class="sp-title"></h3>
+        <div class="sp-text"></div>
+        <div class="sp-pkt"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2.4</span>問い合わせの旅を追いかけよう</h2>
+  <p>「次へ」を押すと、問い合わせ（<span style="color:var(--accent);font-weight:700">水色</span>）と返事（<span style="color:var(--answer);font-weight:700">オレンジ</span>）が1つずつ動きます。図はドラッグで回転できます。</p>
+
+  <div class="card stage-card">
+    <div class="stage-bar">
+      <div class="group">
+        <button id="resetBtn" title="最初から">⟲ 最初から</button>
+        <button id="prevBtn">◀ 戻る</button>
+        <span class="counter" id="counter">1 / 1</span>
+        <button id="nextBtn" class="primary">次へ ▶</button>
+        <button id="autoBtn">自動再生</button>
+      </div>
+      <div class="group">
+        <button id="view3d" class="on">立体</button>
+        <button id="view2d">平面</button>
+      </div>
+    </div>
+    <div class="timeline" id="timeline"></div>
+    <div class="stage-wrap" id="stageWrap">
+      <div class="stage" id="stage">
+        <div class="plane" id="plane">
+          <svg width="800" height="520" viewBox="0 0 800 520" aria-hidden="true">
+            <defs>
+              <pattern id="boardGrid" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M40 0H0V40" fill="none" class="board-gridline"/></pattern>
+            </defs>
+            <rect class="ground" x="0" y="0" width="800" height="520" rx="28"/>
+            <rect x="0" y="0" width="800" height="520" rx="28" fill="url(#boardGrid)"/>
+            <rect id="zone-home" class="zone z-home" x="20" y="300" width="228" height="200" rx="18"/>
+            <rect id="zone-isp" class="zone z-isp" x="262" y="170" width="176" height="170" rx="18"/>
+            <rect id="zone-net" class="zone z-net" x="470" y="20" width="310" height="480" rx="18"/>
+            <rect id="zone-web" class="zone z-web" x="20" y="20" width="200" height="200" rx="18"/>
+            <text id="zlabel-home" class="zone-label l-home" x="36" y="486">あなたの家</text>
+            <text id="zlabel-isp" class="zone-label l-isp" x="276" y="328">プロバイダ</text>
+            <text id="zlabel-net" class="zone-label l-net" x="486" y="486">世界中の担当DNSサーバー</text>
+            <text id="zlabel-web" class="zone-label l-web" x="36" y="206">Webサイト</text>
+            <path id="l-pc-res" class="link" d="M130 400 L330 260"/>
+            <path id="l-res-root" class="link" d="M330 260 L580 90"/>
+            <path id="l-res-tld" class="link" d="M330 260 L700 250"/>
+            <path id="l-res-auth" class="link" d="M330 260 L610 420"/>
+            <path id="l-pc-web" class="link web" d="M130 400 L120 120"/>
+            <ellipse class="shadow" id="pshadow" cx="130" cy="400" rx="18" ry="10" opacity="0"/>
+          </svg>
+        </div>
+      </div>
+      <div class="drag-hint">ドラッグで回転</div>
+    </div>
+    <div class="explain" aria-live="polite">
+      <div class="stepno" id="stepNo">STEP 1</div>
+      <h3 id="stepTitle"></h3>
+      <div id="stepText"></div>
+      <div class="tip" id="stepTip" hidden></div>
+    </div>
+  </div>
+
+  <div class="panels">
+      <div class="card">
+        <div class="panel-title">いま運ばれているメッセージ</div>
+        <div class="msg" id="msg"><span class="empty">（まだ何も送っていません）</span></div>
+      </div>
+      <div class="card">
+        <div class="panel-title">かかった時間 <span class="note">目安</span></div>
+        <div class="timer" id="timer">0<small> ミリ秒</small></div>
+        <div class="history" id="history"></div>
+      </div>
+      <div class="card">
+        <div class="panel-title">キャッシュDNSサーバーの記憶 <span class="clock" id="clock"></span></div>
+        <ul class="cache-list" id="cacheList"></ul>
+        <div class="cache-btns">
+          <button data-adv="3600">1時間すすめる</button>
+          <button data-adv="86400">1日すすめる</button>
+          <button id="clearCache">記憶を消す</button>
+        </div>
+      </div>
+  </div>
+  <p class="note">※ <code>192.0.2.x</code> と <code>ns1.example.com</code> は説明用の例です。ルートサーバー <code>a.root-servers.net</code>（198.41.0.4）と <code>.com</code> のサーバー <code>a.gtld-servers.net</code>（192.5.6.30）は実在の値です。時間はわかりやすくした目安です。</p>
+</section>
+
+<section>
+  <h2><span class="num">2.5</span>DNSが答えるのはIPアドレスだけじゃない</h2>
+  <p>DNSには、名前ごとにいろいろな種類の情報が登録されています。この1件1件を<b>レコード</b>と呼び、問い合わせのときに「どの種類が欲しいか」を指定します。旅で使ったのは、IPv4アドレスを表す <b>A</b> レコードでした。</p>
+  <p>種類を切りかえて、同じ <code>example.com</code> でも答えが変わる様子を見てみましょう。</p>
+  <div class="card">
+    <div class="tabs" id="recTabs" role="tablist"></div>
+    <div class="rec-body">
+      <div class="rec-q mono" id="recQ"></div>
+      <div class="rec-a mono" id="recA"></div>
+      <h3 id="recTitle"></h3>
+      <div id="recText"></div>
+    </div>
+  </div>
+
+  <h3 class="sub-h">ブラウザは3つの質問を同時に送っている</h3>
+  <p>今のブラウザは、Webサイトを開くとき <b>A</b>（IPv4）、<b>AAAA</b>（IPv6）、<b>HTTPS</b> の3種類をほぼ同時に問い合わせます。答えが出そろうのを待たずに、つなぎ始められるものから始めます。</p>
+  <div class="card">
+    <div class="parallel" id="parallel">
+      <div class="lane"><span class="who">ブラウザ</span><div class="track"><span class="chip q" data-t="A">A？</span></div><span class="res" data-r="A"></span></div>
+      <div class="lane"><span class="who">ブラウザ</span><div class="track"><span class="chip q" data-t="AAAA">AAAA？</span></div><span class="res" data-r="AAAA"></span></div>
+      <div class="lane"><span class="who">ブラウザ</span><div class="track"><span class="chip q" data-t="HTTPS">HTTPS？</span></div><span class="res" data-r="HTTPS"></span></div>
+    </div>
+    <div class="row-btns"><button class="primary" id="parallelBtn">同時に問い合わせる</button></div>
+    <p class="note" id="parallelNote">IPv6とIPv4の両方の住所がわかったら、<b>IPv6を少しだけ先に試し、うまくいかなければすぐIPv4も試して、早くつながった方を使います</b>。この工夫は「Happy Eyeballs（ハッピーアイボールズ）」と呼ばれ、IPv6の調子が悪い場所でも利用者を待たせません。</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2.6</span>住んでいる場所で、答えが変わる</h2>
+  <p>大きなWebサイトは、世界中に<b>コピーを置いたサーバー（CDN）</b>を用意しています。東京の人には東京のサーバー、ロンドンの人にはロンドンのサーバーを案内すれば、データが届くまでの距離が短くなって速くなります。この案内に、DNSが使われています。</p>
+  <p>あなたの居場所を選んで、<code>www.shop.example</code> を調べてみましょう。</p>
+  <div class="card">
+    <div class="seg wrap-seg" id="cityBtns" role="group" aria-label="居場所"></div>
+    <div class="cdn-grid">
+      <svg id="cdnMap" viewBox="0 0 720 340" role="img" aria-label="CDNのサーバーの位置"></svg>
+      <div class="cdn-flow mono" id="cdnFlow"></div>
+    </div>
+  </div>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>どうやって居場所を知るの？</h3>
+      <p>CDNの担当DNSサーバーに直接届くのは、あなたのPCではなく<b>キャッシュDNSサーバーのIPアドレス</b>です。だから、キャッシュDNSサーバーの場所から利用者の場所を推測しています。遠くの公開DNSサーバーを使うと推測がずれることがあるため、利用者のおおまかな場所（IPアドレスの一部）を添えて問い合わせる仕組み（<b>EDNS Client Subnet</b>）もあります。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>もう1つの方法：エニーキャスト</h3>
+      <p>世界中のサーバーに<b>同じIPアドレス</b>を付けて、ネットワークの経路の仕組みで一番近いところに届ける方法もあります。旅に出てきたルートサーバーや、公開DNSの <code>1.1.1.1</code>・<code>8.8.8.8</code> がこの方式です。ルートサーバーは13の名前しかないのに、実際には<b>世界中の2,047か所</b>（2026年10月17日時点）で動いています。</p>
+    </div>
+  </div>
+  <p class="note">※ <code>shop.example</code> と <code>203.0.113.x</code> などは説明用の例です。ちなみに本物の <code>example.com</code> も、2026年10月時点ではCDN（Cloudflare）の上で動いていて、<code>www.example.com</code> を調べるとIPアドレスが2つ返ってきます。</p>
+</section>
+
+<section>
+  <h2><span class="num">2.7</span>DNSを守る仕組み</h2>
+  <p>DNSは1980年代に作られた仕組みで、もともとは<b>メッセージが暗号化されておらず、本物かどうかを確かめる方法もありません</b>でした。そのため、今では2つの守りが加わっています。</p>
+
+  <h3 class="sub-h">守り1：のぞき見されないように暗号化する</h3>
+  <p>カフェのWi-Fiで、同じネットワークにいる人があなたの通信をのぞいていたとします。方式を切りかえて、その人に何が見えるかを比べてみましょう。</p>
+  <div class="card">
+    <div class="seg wrap-seg" id="encBtns" role="group" aria-label="DNSの方式"></div>
+    <div class="enc-grid">
+      <div class="enc-view">
+        <div class="enc-label">のぞき見する人に見えるもの</div>
+        <div class="enc-screen mono" id="encScreen"></div>
+      </div>
+      <div>
+        <h3 id="encTitle"></h3>
+        <div id="encText"></div>
+        <table class="spec" id="encSpec"></table>
+      </div>
+    </div>
+    <p class="note">暗号化されるのは <b>PC と キャッシュDNSサーバーの間</b>だけです。キャッシュDNSサーバー自身には、あなたが調べた名前がすべて見えています。だから「どのキャッシュDNSサーバーを使うか」は、信頼できる相手を選ぶことが大切です。</p>
+  </div>
+
+  <h3 class="sub-h">守り2：偽の返事を見破る（DNSSEC）</h3>
+  <p>悪い人が、本物より先に<b>偽の返事</b>をキャッシュDNSサーバーに送りこんだらどうなるでしょう。偽の答えを信じて記憶してしまうと、そのキャッシュDNSサーバーを使う全員が、TTLの間ずっと偽のサイトに案内されてしまいます（<b>キャッシュポイズニング</b>）。</p>
+  <div class="card">
+    <div class="seg" role="group" aria-label="DNSSEC">
+      <button data-sec="off" class="on">DNSSECなし</button>
+      <button data-sec="on">DNSSECあり</button>
+    </div>
+    <div class="race" id="race">
+      <div class="race-row"><span class="race-who">偽の返事<br><small>悪い人から</small></span><div class="race-track"><span class="race-chip fake">203.0.113.66</span></div></div>
+      <div class="race-row"><span class="race-who">本物の返事<br><small>example.com の担当から</small></span><div class="race-track"><span class="race-chip real">192.0.2.10</span></div></div>
+      <div class="race-goal">キャッシュDNSサーバー</div>
+    </div>
+    <div class="row-btns"><button class="primary" id="raceBtn">返事を送る</button></div>
+    <div class="race-result" id="raceResult" aria-live="polite"></div>
+  </div>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>信頼のリレー</h3>
+      <div class="chain">
+        <div class="chain-step"><b>ルート</b><span>大本の鍵（KSK）は、キャッシュDNSサーバーが最初から持っている</span></div>
+        <div class="chain-arrow">↓ 「.com の鍵はこれ」と署名つきで保証</div>
+        <div class="chain-step"><b>.com</b><span>DSレコード＝下の担当の鍵の指紋</span></div>
+        <div class="chain-arrow">↓ 「example.com の鍵はこれ」と保証</div>
+        <div class="chain-step"><b>example.com</b><span>答えに署名（RRSIG）を付けて返す</span></div>
+      </div>
+      <p class="note">上の階層が下の階層の鍵を保証していくので、一番上の鍵さえ信じられれば、全部を確かめられます。旅のルートと同じ順番です。ルートの鍵も、安全のために数年に一度交換されます。最近では2026年10月に、2018年から使われてきた鍵が新しい鍵に替わりました。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>DNSSECにできること・できないこと</h3>
+      <ul class="can-list">
+        <li class="yes"><b>本物かどうかを確かめる</b><span>答えが正しい担当から来て、途中で書き換えられていないことを、署名で確かめられます。</span></li>
+        <li class="yes"><b>「存在しない」も証明する</b><span>「その名前はありません」という返事にも署名が付くので、偽の「ありません」でじゃまされることも防げます。</span></li>
+        <li class="no"><b>中身は隠さない</b><span>署名は付きますが、暗号化はしません。のぞき見を防ぐには、守り1の DoT・DoH・DoQ と組み合わせます。</span></li>
+        <li class="no"><b>両方がそろわないと働かない</b><span>ドメインの持ち主が署名し、キャッシュDNSサーバーが確かめる設定になっていて、はじめて守られます。署名していないドメインもまだ多くあります。</span></li>
+        <li class="no"><b>サイトの中身までは保証しない</b><span>保証するのは「名前と住所の組み合わせが本物」ということだけです。そのサイト自体が安全かどうかは別の話です。</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2.8</span>自分のPCで試してみよう</h2>
+  <p>ここまでの話は、あなたのPCでも確かめられます。ターミナル（Windowsは PowerShell）を開いて、次のコマンドを打ってみましょう。</p>
+  <div class="card">
+    <div class="seg" role="group" aria-label="OS">
+      <button data-os="mac" class="on">Mac</button>
+      <button data-os="win">Windows</button>
+    </div>
+    <div class="cmds" id="cmds"></div>
+  </div>
+
+  <h3 class="sub-h">旅をそのまま再現する <code>dig +trace</code></h3>
+  <p>Macで <code>dig +trace www.example.com</code> を実行すると、キャッシュDNSサーバーにまかせず、<b>あなたのPC自身がルートから順に旅をします</b>。下は2026年10月17日に実際に実行した結果です（長い行は省略しています）。気になる行を押すと、説明が出ます。</p>
+  <div class="card trace-card">
+    <div class="trace mono" id="trace"></div>
+    <div class="trace-explain" id="traceExplain" aria-live="polite"><span class="note">↑ 気になる行を押してみてください</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">2.9</span>まとめ</h2>
+  <div class="card summary">
+    <ul>
+      <li>PCは自分で調べ回らず、<b>キャッシュDNSサーバー</b>に「最後まで調べて」とお願いする（再帰問い合わせ）</li>
+      <li>キャッシュDNSサーバーは、<b>ルート → .com → example.com</b> と、担当から担当へ順に聞いていく</li>
+      <li>途中のサーバーは答えそのものではなく、「次はここに聞いて」と<b>紹介</b>してくれる</li>
+      <li>一度調べた答えは <b>TTL</b>（有効期限）の間だけ覚えておくので、2回目からはとても速い</li>
+      <li>ブラウザはふつう <b>OSのリゾルバ</b>（<code>getaddrinfo()</code>）に頼む。OSは hostsファイル → 記憶 → キャッシュDNSサーバーの順に確認し、<b>UDPの53番ポート</b>で問い合わせる</li>
+      <li>DNSには <b>A・AAAA・CNAME・MX・NS・TXT・HTTPS</b> などの種類があり、ブラウザは A・AAAA・HTTPS を同時に聞く</li>
+      <li>CDNは、問い合わせ元の場所を見て<b>近くのサーバーの住所</b>を答える</li>
+      <li><b>暗号化（DoT・DoH・DoQ）</b>でのぞき見を、<b>DNSSEC</b>で偽の返事を防ぐ</li>
+    </ul>
+  </div>
+
+  <h2><span class="num">2.10</span>確認クイズ</h2>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<footer>
+  <div class="chap-nav"><a href="tcp.html">次の章：<b>第3章 TCP ── つないで、確実に届ける</b> →</a></div>
+  この教材の文章と図はオリジナルです。数値や出来事は2026年10月17日時点で確認したものです。<br>
+  参考：RFC 1034 / 1035（DNS）、RFC 7858（DoT）、RFC 8484（DoH）、RFC 9250（DoQ）、RFC 9156（QNAMEミニマイゼーション）、RFC 9460（HTTPSレコード）、RFC 8305（Happy Eyeballs）、RFC 7871（EDNS Client Subnet）、RFC 4033〜4035（DNSSEC）、<a href="https://root-servers.org/" target="_blank" rel="noopener">root-servers.org</a>、<a href="https://www.icann.org/en/blogs/details/preparing-for-the-root-zone-ksk-rollover-what-you-need-to-know-27-07-2026-en" target="_blank" rel="noopener">ICANN</a>
+</footer>
+</div>
+
+<script>
+/* ---------- 2.2 ドメインの階層 ---------- */
+const esc = t => t.replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+(function(){
+  const input = document.getElementById('domainIn');
+  const out = document.getElementById('stairs');
+  function render(){
+    let text = input.value.trim(), raw = text, urlNote = '';
+    out.innerHTML = '';
+    if(/^[a-z][a-z0-9+.-]*:\/\//i.test(text) || /[\/?#:]/.test(text) || /[^\x00-\x7f]/.test(text)){
+      try{
+        const u = new URL(/^[a-z][a-z0-9+.-]*:\/\//i.test(text) ? text : 'http://' + text);
+        raw = u.hostname;
+        if(raw !== text.toLowerCase()){
+          const i = text.toLowerCase().indexOf(raw);
+          urlNote = i >= 0
+            ? `<div class="url-split">URLから、DNSで調べる<b>名前の部分</b>だけを取り出しました：<br><span class="mono"><span class="dim-part">${esc(text.slice(0, i))}</span><span class="host-part">${esc(text.slice(i, i + raw.length))}</span><span class="dim-part">${esc(text.slice(i + raw.length))}</span></span></div>`
+            : `<div class="url-split">URLから名前の部分 <span class="mono host-part">${esc(raw)}</span> を取り出しました。日本語などの文字は、DNSの中では <code>xn--</code> で始まる英数字に変換されて扱われます。</div>`;
+        }
+      }catch(e){ raw = ''; }
+    }
+    raw = raw.toLowerCase().replace(/\.$/,'');
+    if(/^\d{1,3}(\.\d{1,3}){3}$/.test(raw) || raw.startsWith('[')){
+      out.innerHTML = urlNote + `<div class="domain-err">これはドメイン名ではなく<b>IPアドレス</b>そのものです。最初から数字の住所がわかっているので、DNSで調べる必要はありません。</div>`;
+      return;
+    }
+    const labels = raw.split('.');
+    const valid = raw.length > 0 && raw.length <= 253 && labels.every(l => /^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$/.test(l));
+    if(!valid){ out.innerHTML = '<div class="domain-err">ドメイン名かURLを入力してください（例：www.example.com や https://www.example.com/）</div>'; return; }
+    out.innerHTML = urlNote;
+    const rows = [{name:'.', add:'.', desc:'ルート：すべての出発点'}];
+    for(let i = labels.length - 1; i >= 0; i--){
+      const name = labels.slice(i).join('.') + '.';
+      const depth = labels.length - i;
+      let desc;
+      if(depth === 1) desc = 'トップレベルドメイン（TLD）：国や種類の大きな区分';
+      else if(i === 0) desc = '目的の名前：ここのIPアドレスが知りたい';
+      else desc = `第${depth}レベルドメイン`;
+      rows.push({name, add: labels[i], desc});
+    }
+    rows.forEach((r, k) => {
+      const el = document.createElement('div');
+      el.className = 'stair';
+      el.style.setProperty('--k', k);
+      el.style.animationDelay = (k * 90) + 'ms';
+      const rest = r.name === '.' ? '' : r.name.slice(r.add.length);
+      el.innerHTML = r.name === '.'
+        ? `<span class="blk"><span class="new">.</span></span><span class="desc">${r.desc}</span>`
+        : `<span class="blk"><span class="new">${r.add}</span>${rest}</span><span class="desc">${r.desc}</span>`;
+      out.appendChild(el);
+    });
+  }
+  document.getElementById('domainBtn').onclick = render;
+  input.addEventListener('keydown', e => { if(e.key === 'Enter') render(); });
+  document.querySelectorAll('.presets button').forEach(b => b.onclick = () => { input.value = b.dataset.d; render(); });
+  render();
+})();
+
+/* ---------- 2.3 DNSの旅 ---------- */
+const ICON_PC = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>';
+const ICON_SV = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><rect x="4" y="3" width="16" height="7" rx="1.5"/><rect x="4" y="14" width="16" height="7" rx="1.5"/><path d="M8 6.5h.01M8 17.5h.01M12 6.5h5M12 17.5h5"/></svg>';
+const ICON_WEB = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.5 3 14.5 0 18M12 3c-3 3.5-3 14.5 0 18"/></svg>';
+
+const NODES = {
+  pc:   {x:130, y:400, label:'あなたのPC', sub:'スタブリゾルバ', icon:ICON_PC},
+  res:  {x:330, y:260, label:'キャッシュDNSサーバー', sub:'フルサービスリゾルバ', icon:ICON_SV},
+  root: {x:580, y:90,  label:'ルートサーバー', sub:'a.root-servers.net', icon:ICON_SV},
+  tld:  {x:700, y:250, label:'.com のサーバー', sub:'a.gtld-servers.net', icon:ICON_SV},
+  auth: {x:610, y:420, label:'example.com のサーバー', sub:'ns1.example.com', icon:ICON_SV},
+  web:  {x:120, y:120, label:'Webサーバー', sub:'192.0.2.10', icon:ICON_WEB},
+};
+const LINKS = {'pc-res':'l-pc-res','res-root':'l-res-root','res-tld':'l-res-tld','res-auth':'l-res-auth','pc-web':'l-pc-web'};
+const linkId = (a,b) => LINKS[a+'-'+b] || LINKS[b+'-'+a];
+
+const plane = document.getElementById('plane');
+const nodeEls = {}, bubbleEls = {};
+for(const [k,n] of Object.entries(NODES)){
+  const a = document.createElement('div');
+  a.className = 'anchor';
+  a.style.left = n.x + 'px'; a.style.top = n.y + 'px';
+  a.innerHTML = `<div class="node" id="n-${k}"><div class="icon">${n.icon}<span class="role"></span></div><div class="lbl">${n.label}</div><div class="sub">${n.sub}</div></div><div class="bubble"></div>`;
+  plane.appendChild(a);
+  nodeEls[k] = a.querySelector('.node');
+  bubbleEls[k] = a.querySelector('.bubble');
+}
+const pAnchor = document.createElement('div');
+pAnchor.className = 'anchor packet-anchor';
+pAnchor.innerHTML = '<div class="packet hide" id="packet"><div class="env">?</div></div>';
+plane.appendChild(pAnchor);
+const packet = document.getElementById('packet');
+const pshadow = document.getElementById('pshadow');
+
+/* キャッシュ（シミュレーション内の時計で管理） */
+let clock = 0;
+const TTL = {com:172800, ex:86400, a:3600};
+const cache = {com:null, ex:null, a:null}; // 期限の時刻
+const CACHE_LABEL = {
+  com:'.com の担当 → a.gtld-servers.net',
+  ex:'example.com の担当 → ns1.example.com',
+  a:'www.example.com → 192.0.2.10',
+};
+const valid = k => cache[k] !== null && cache[k] > clock;
+const fmt = s => {
+  const d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60);
+  if(d) return h ? `${d}日${h}時間` : `${d}日`;
+  if(h) return `${h}時間`;
+  return m ? `${m}分` : `${s}秒`;
+};
+let flashKeys = [];
+function renderCache(){
+  const ul = document.getElementById('cacheList');
+  const keys = Object.keys(cache).filter(k => cache[k] !== null);
+  document.getElementById('clock').textContent = clock ? `+${fmt(clock)}経過` : '';
+  if(!keys.length){ ul.innerHTML = '<li><span class="note">（空っぽ。まだ何も覚えていません）</span></li>'; return; }
+  ul.innerHTML = keys.map(k => valid(k)
+    ? `<li class="${flashKeys.includes(k) ? 'flash' : ''}"><span class="mono">${CACHE_LABEL[k]}</span><span class="ttl">残り${fmt(cache[k] - clock)}</span></li>`
+    : `<li><span class="mono gone">${CACHE_LABEL[k]}</span><span class="note">期限切れ</span></li>`).join('');
+  flashKeys = [];
+}
+
+/* メッセージ */
+const Q_ROWS = rd => [['質問','www.example.com  A'], ['意味','IPv4アドレスを教えて'], ['フラグ', rd ? 'RD=1（最後まで調べてね）' : 'RD=0（わかる範囲でいいよ）']];
+const M = {
+  q_pc:   {t:'q', h:'問い合わせ ： PC → キャッシュDNS', rows:Q_ROWS(true)},
+  q_root: {t:'q', h:'問い合わせ ： キャッシュDNS → ルート', rows:Q_ROWS(false)},
+  q_tld:  {t:'q', h:'問い合わせ ： キャッシュDNS → .com', rows:Q_ROWS(false)},
+  q_auth: {t:'q', h:'問い合わせ ： キャッシュDNS → example.com', rows:Q_ROWS(false)},
+  a_root: {t:'a', h:'返事 ： ルート → キャッシュDNS', rows:[['回答','（なし）'], ['紹介','com.  NS  a.gtld-servers.net.'], ['その住所','a.gtld-servers.net.  A  192.5.6.30']]},
+  a_tld:  {t:'a', h:'返事 ： .com → キャッシュDNS', rows:[['回答','（なし）'], ['紹介','example.com.  NS  ns1.example.com.'], ['その住所','ns1.example.com.  A  192.0.2.53']]},
+  a_auth: {t:'a', h:'返事 ： example.com → キャッシュDNS', rows:[['回答','www.example.com.  A  192.0.2.10'], ['有効期限','TTL = 3600秒（1時間）'], ['フラグ','AA=1（担当者の正式な答え）']]},
+  a_pc:   {t:'a', h:'返事 ： キャッシュDNS → PC', rows:[['回答','www.example.com.  A  192.0.2.10']]},
+};
+
+let steps = [], idx = 0, runCommitted = false;
+const history = [];
+
+function buildRun(){
+  const hasA = valid('a'), hasEx = valid('ex'), hasCom = valid('com');
+  const S = [];
+  S.push({at:'pc', short:'URL入力', title:'URLを入力した',
+    text:'ブラウザに <code>www.example.com</code> と入力しました。でもデータを届けるには、相手の<b>IPアドレス</b>が必要です。まずは名前を数字に変換しなければなりません。',
+    tip: hasA ? '今回は、同じ家の別のスマホが少し前に同じサイトを見たあと、という設定です。' : null});
+  S.push({at:'pc', bubble:['pc','IPアドレスがわからない…'], short:'PCの係', title:'PCは自分では調べ回らない',
+    text:'PCのOSには<b>スタブリゾルバ</b>という小さな問い合わせ係が入っています。ただし世界中を自分で調べ回ることはせず、決まった相手に「調べておいて」とお願いするだけです。',
+    tip:'実際にはブラウザやOSも、少しの間は答えを覚えています。ここでは空っぽだったとして進めます。'});
+  S.push({move:['pc','res','q'], msg:'q_pc', ms:5, title:'キャッシュDNSサーバーにお願いする',
+    text:'お願いする相手は、プロバイダや会社が用意している<b>キャッシュDNSサーバー</b>です。PCは「最後まで調べて、答えだけちょうだい」と頼みます。これを<b>再帰問い合わせ</b>といいます。',
+    tip:'どのキャッシュDNSサーバーに聞くかは、ネットにつないだときに自動で設定されます。自分で 8.8.8.8 や 1.1.1.1 などの公開サーバーを指定することもできます。'});
+
+  if(hasA){
+    S.push({at:'res', bubble:['res','覚えてる！'], short:'記憶にあった！', title:'記憶（キャッシュ）にあった！',
+      text:`キャッシュDNSサーバーは、少し前に同じ名前を調べて答えを覚えていました。有効期限（TTL）はあと <b>${fmt(cache.a - clock)}</b>。世界中に聞きに行かず、すぐに答えを返せます。`});
+    S.push({move:['res','pc','a'], msg:'a_pc', ms:5, title:'すぐに答えが返ってきた',
+      text:'ルートにも .com にも行かずに済みました。最初のアクセスと比べて、右の時間を見てください。<b>キャッシュ</b>のおかげで、とても速くなっています。'});
+  } else {
+    let startText, startTip = null;
+    if(hasEx){ startText = '<code>www.example.com</code> の答えは期限切れでした。でも <b>example.com の担当サーバー</b>は覚えています。ルートと .com をとばして、直接聞きに行けます。'; }
+    else if(hasCom){ startText = '答えも example.com の担当も期限切れでした。でも <b>.com の担当サーバー</b>はまだ覚えています。ルートはとばして、.com のサーバーから聞きます。'; }
+    else { startText = '記憶は空っぽ。手がかりがないので、すべての出発点である<b>ルートサーバー</b>から順に聞いていきます。'; startTip = 'ルートサーバーの住所だけは、キャッシュDNSサーバーが最初から設定ファイルで知っています。'; }
+    S.push({at:'res', bubble:['res','覚えてないな…'], short:'記憶を確認', title:'まず記憶（キャッシュ）を確認', text:startText, tip:startTip});
+
+    if(!hasEx && !hasCom){
+      S.push({move:['res','root','q'], msg:'q_root', ms:15, title:'ルートサーバーに聞く',
+        text:'「<code>www.example.com</code> のIPアドレスを知っていますか？」と、ルートサーバーに聞きます。キャッシュDNSサーバーは、ここから先は自分で順番に聞いて回ります。これを<b>反復問い合わせ</b>といいます。',
+        tip:'最近のキャッシュDNSサーバーの多くは、プライバシーを守るため、ルートには「.com の担当は？」と必要な部分だけを聞く工夫（QNAMEミニマイゼーション）もしています。'});
+      S.push({move:['root','res','a'], msg:'a_root', ms:15, bubble:['root','.com はあっちだよ'], title:'ルートは「紹介」してくれる',
+        text:'ルートサーバーは <code>www.example.com</code> の答えを知りません。でも「<b>.com のことなら、このサーバーに聞いて</b>」と担当を紹介してくれます。ルートは何でも知っている物知りではなく、案内係なのです。',
+        tip:'ルートサーバーには a〜m の13の名前があり、同じ住所のサーバーが世界中の2,047か所（2026年10月17日時点）に置かれています。近くのサーバーが答えるので速いのです。'});
+    }
+    if(!hasEx){
+      S.push({move:['res','tld','q'], msg:'q_tld', ms:20, title:'.com のサーバーに聞く',
+        text:'紹介された .com のサーバーに、同じ質問をします。'});
+      S.push({move:['tld','res','a'], msg:'a_tld', ms:20, bubble:['tld','example.com はそこ'], title:'また紹介される',
+        text:'.com のサーバーも答えそのものは知りません。でも「<b>example.com なら ns1.example.com が担当だよ</b>」と、もう1段下の担当を教えてくれます。'});
+    }
+    S.push({move:['res','auth','q'], msg:'q_auth', ms:30, title:'example.com のサーバーに聞く',
+      text:'いよいよ、<code>example.com</code> を管理している担当サーバー（<b>権威DNSサーバー</b>）に聞きます。'});
+    S.push({move:['auth','res','a'], msg:'a_auth', ms:30, bubble:['auth','192.0.2.10 です'], title:'ついに答えがわかった',
+      text:'担当サーバーは自分の管理する名前なので、答えを知っています。「<b>www.example.com は 192.0.2.10</b>」。あわせて「この答えは1時間有効」という<b>TTL</b>も届きます。'});
+    S.push({at:'res', bubble:['res','メモしておこう'], commit:{com:!hasCom, ex:!hasEx, a:true}, short:'記憶する', title:'答えを覚えておく',
+      text:'キャッシュDNSサーバーは、ここまでに知ったことを<b>TTLの間だけ記憶</b>します。右下の「記憶」に追加されました。次に誰かが同じ名前を聞いてきたら、すぐ答えられます。',
+      tip:'答えごとに有効期限が違うのがポイントです。.com の担当はめったに変わらないので2日、www の住所は変わる可能性があるので1時間、のように設定されています。'});
+    S.push({move:['res','pc','a'], msg:'a_pc', ms:5, title:'PCに答えを届ける',
+      text:'最後に、調べた答えをPCに返します。PCから見れば、お願いを1回しただけで答えが返ってきたことになります。'});
+  }
+  S.push({move:['pc','web','web'], final:true, title:'これでWebサーバーに会いに行ける',
+    text:'IPアドレス <code>192.0.2.10</code> がわかったので、ようやくWebサーバーに向けてデータを送れます。ここから先は、相手とつながって確実にデータを届ける <b>TCP</b> の出番です（第3章）。',
+    tip:'「1時間すすめる」や「1日すすめる」を押してからもう一度旅をすると、記憶の一部だけが残っていて、途中から聞きに行く様子が見られます。'});
+  const NAME = {pc:'PC', res:'キャッシュDNS', root:'ルート', tld:'.com', auth:'example.com', web:'Web'};
+  S.forEach(x => { if(x.move) x.short = `${NAME[x.move[0]]} → ${NAME[x.move[1]]}`; });
+  return S;
+}
+function renderTimeline(){
+  const tl = document.getElementById('timeline');
+  tl.innerHTML = steps.map((x, k) => `<button data-k="${k}" class="${k < idx ? 'done' : k === idx ? 'cur' + (x.move && x.move[2] === 'a' ? ' ans' : '') : ''}"><span class="n">${k + 1}</span>${x.short}</button>`).join('');
+  tl.querySelectorAll('button').forEach(b => b.onclick = () => { stopAuto(); show(+b.dataset.k, false); });
+  const cur = tl.children[idx];
+  if(cur) tl.scrollLeft = cur.offsetLeft - tl.clientWidth / 2 + cur.offsetWidth / 2;
+}
+
+/* 表示 */
+let anim = null;
+function place(x, y, h){
+  pAnchor.style.left = x + 'px'; pAnchor.style.top = y + 'px';
+  pAnchor.style.setProperty('--h', h + 'px');
+  pshadow.setAttribute('cx', x); pshadow.setAttribute('cy', y);
+}
+function setPacketKind(kind){
+  packet.className = 'packet' + (kind === 'a' ? ' ans' : kind === 'web' ? ' web' : '');
+  packet.querySelector('.env').textContent = kind === 'q' ? '質問' : kind === 'a' ? '返事' : 'HTTP';
+}
+function animateMove(from, to, kind, done){
+  const A = NODES[from], B = NODES[to];
+  setPacketKind(kind);
+  pshadow.setAttribute('opacity', 1);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const dur = reduce ? 1 : 1100;
+  const t0 = performance.now();
+  cancelAnimationFrame(anim);
+  const tick = now => {
+    let t = Math.min(1, (now - t0) / dur);
+    const e = t < .5 ? 2*t*t : 1 - Math.pow(-2*t + 2, 2) / 2;
+    place(A.x + (B.x - A.x) * e, A.y + (B.y - A.y) * e, 70 + Math.sin(Math.PI * e) * 60);
+    if(t < 1) anim = requestAnimationFrame(tick); else done && done();
+  };
+  anim = requestAnimationFrame(tick);
+}
+function showBubble([node, text]){ bubbleEls[node].textContent = text; bubbleEls[node].classList.add('show'); }
+function elapsed(i){ return steps.slice(0, i + 1).reduce((s, x) => s + (x.ms || 0), 0); }
+
+function show(i, animate){
+  idx = i;
+  const s = steps[i];
+  Object.values(nodeEls).forEach(n => { n.classList.remove('hl', 'send', 'recv', 'ans'); n.querySelector('.role').textContent = ''; });
+  const involved = s.move ? s.move.slice(0, 2) : [s.at];
+  for(const [k, n] of Object.entries(nodeEls)) n.classList.toggle('dim', !involved.includes(k));
+  const ZONE = {pc:'home', res:'isp', root:'net', tld:'net', auth:'net', web:'web'};
+  const activeZones = involved.map(k => ZONE[k]);
+  ['home','isp','net','web'].forEach(z => { document.getElementById('zone-' + z).classList.toggle('zone-dim', !activeZones.includes(z)); document.getElementById('zlabel-' + z).classList.toggle('zone-dim', !activeZones.includes(z)); });
+  Object.values(bubbleEls).forEach(b => b.classList.remove('show'));
+  document.querySelectorAll('.link').forEach(l => l.classList.remove('active', 'ans'));
+
+  if(s.move){
+    const [from, to, kind] = s.move;
+    const tone = kind === 'a' ? 'ans' : null;
+    [[from, 'send', '送信'], [to, 'recv', '受信']].forEach(([k, cls, label]) => {
+      nodeEls[k].classList.add('hl', cls); if(tone) nodeEls[k].classList.add(tone);
+      nodeEls[k].querySelector('.role').textContent = label;
+    });
+    const l = document.getElementById(linkId(from, to));
+    l.classList.add('active'); if(kind === 'a') l.classList.add('ans');
+    const after = () => {
+      if(idx !== i) return;
+      setTimeout(() => { if(idx === i) packet.classList.add('hide'); }, animate ? 250 : 0);
+      if(s.bubble) showBubble(s.bubble);
+    };
+    if(animate) animateMove(from, to, kind, after);
+    else { cancelAnimationFrame(anim); setPacketKind(kind); pshadow.setAttribute('opacity', 1); place(NODES[to].x, NODES[to].y, 70); after(); }
+  } else {
+    cancelAnimationFrame(anim);
+    packet.classList.add('hide'); pshadow.setAttribute('opacity', 0);
+    if(s.at) nodeEls[s.at].classList.add('hl');
+    if(s.bubble) setTimeout(() => { if(idx === i) showBubble(s.bubble); }, animate ? 150 : 0);
+  }
+
+  if(s.commit && !runCommitted){
+    runCommitted = true;
+    for(const k of ['com','ex','a']) if(s.commit[k]){ cache[k] = clock + TTL[k]; flashKeys.push(k); }
+    renderCache();
+  }
+  if(s.final && animate && !s.recorded){
+    s.recorded = true;
+    history.push(elapsed(i));
+    renderHistory();
+  }
+
+  document.getElementById('stepNo').textContent = `STEP ${i + 1}`;
+  document.getElementById('stepTitle').textContent = s.title;
+  document.getElementById('stepText').innerHTML = s.text;
+  const tip = document.getElementById('stepTip');
+  tip.hidden = !s.tip; tip.innerHTML = s.tip ? '💡 ' + s.tip : '';
+
+  const msgEl = document.getElementById('msg');
+  if(s.msg){
+    const m = M[s.msg];
+    msgEl.innerHTML = `<span class="head ${m.t}">${m.h}</span><table>${m.rows.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('')}</table>`;
+  } else if(s.final){
+    msgEl.innerHTML = '<span class="empty">DNSの仕事はここまで。この先はWebサーバーとのやりとりです。</span>';
+  } else if(i === 0){
+    msgEl.innerHTML = '<span class="empty">（まだ何も送っていません）</span>';
+  }
+  document.getElementById('timer').innerHTML = `${elapsed(i)}<small> ミリ秒</small>`;
+  document.getElementById('counter').textContent = `${i + 1} / ${steps.length}`;
+  renderTimeline();
+  document.getElementById('prevBtn').disabled = i === 0;
+  document.getElementById('nextBtn').disabled = i === steps.length - 1;
+  if(i === steps.length - 1) stopAuto();
+}
+function renderHistory(){
+  document.getElementById('history').innerHTML = history.map((ms, k) => `<span>${k + 1}回目 ${ms}ms</span>`).join('');
+}
+function newRun(){
+  steps = buildRun(); runCommitted = false;
+  stopAuto();
+  show(0, false);
+  place(NODES.pc.x, NODES.pc.y, 70);
+}
+
+let autoTimer = null;
+function stopAuto(){ clearInterval(autoTimer); autoTimer = null; document.getElementById('autoBtn').classList.remove('on'); document.getElementById('autoBtn').textContent = '自動再生'; }
+document.getElementById('autoBtn').onclick = () => {
+  if(autoTimer){ stopAuto(); return; }
+  if(idx === steps.length - 1) newRun();
+  const b = document.getElementById('autoBtn');
+  b.classList.add('on'); b.textContent = '一時停止';
+  autoTimer = setInterval(() => { if(idx < steps.length - 1) show(idx + 1, true); else stopAuto(); }, 3200);
+};
+document.getElementById('nextBtn').onclick = () => { stopAuto(); if(idx < steps.length - 1) show(idx + 1, true); };
+document.getElementById('prevBtn').onclick = () => { stopAuto(); if(idx > 0) show(idx - 1, false); };
+document.getElementById('resetBtn').onclick = newRun;
+document.querySelectorAll('[data-adv]').forEach(b => b.onclick = () => { clock += +b.dataset.adv; renderCache(); newRun(); });
+document.getElementById('clearCache').onclick = () => { for(const k in cache) cache[k] = null; renderCache(); newRun(); };
+document.addEventListener('keydown', e => {
+  if(e.target.tagName === 'INPUT') return;
+  if(e.key === 'ArrowRight') document.getElementById('nextBtn').click();
+  if(e.key === 'ArrowLeft') document.getElementById('prevBtn').click();
+});
+
+/* 視点：拡大縮小・立体/平面・ドラッグ回転 */
+const stage = document.getElementById('stage'), wrap = document.getElementById('stageWrap');
+let ax = 55, az = -24;
+function applyView(){ stage.style.setProperty('--ax', ax + 'deg'); stage.style.setProperty('--az', az + 'deg'); }
+function fit(){
+  const s = Math.min(1, wrap.clientWidth / 820);
+  stage.style.transform = `scale(${s})`;
+  wrap.style.height = (600 * s) + 'px';
+}
+addEventListener('resize', fit); fit(); applyView();
+const v3 = document.getElementById('view3d'), v2 = document.getElementById('view2d');
+v3.onclick = () => { ax = 55; az = -24; applyView(); v3.classList.add('on'); v2.classList.remove('on'); };
+v2.onclick = () => { ax = 0; az = 0; applyView(); v2.classList.add('on'); v3.classList.remove('on'); };
+let drag = null;
+wrap.addEventListener('pointerdown', e => { drag = {x:e.clientX, y:e.clientY, ax, az}; wrap.classList.add('dragging'); wrap.setPointerCapture(e.pointerId); });
+wrap.addEventListener('pointermove', e => {
+  if(!drag) return;
+  az = Math.max(-70, Math.min(30, drag.az + (e.clientX - drag.x) * 0.3));
+  ax = Math.max(0, Math.min(68, drag.ax - (e.clientY - drag.y) * 0.3));
+  applyView();
+  v3.classList.toggle('on', ax > 0); v2.classList.toggle('on', ax === 0 && az === 0);
+});
+const endDrag = () => { drag = null; wrap.classList.remove('dragging'); };
+wrap.addEventListener('pointerup', endDrag); wrap.addEventListener('pointercancel', endDrag);
+
+renderCache();
+newRun();
+
+
+/* ---------- 2.3 PCの中 ---------- */
+(function(){
+  const root = document.getElementById('pcStepper');
+  const PKT_UDP = [['方式','UDP'], ['宛先','キャッシュDNSサーバー（DHCPでもらった住所）'], ['宛先ポート','53'], ['中身','www.example.com の A は？']];
+  const PKT_DOH = [['方式','HTTPS（暗号化）'], ['宛先','DoHに対応したキャッシュDNSサーバー'], ['宛先ポート','443（Webと同じ）'], ['中身','🔒 外からは読めない']];
+  const MODES = {
+    classic: [
+      {l:'browser', title:'ブラウザがまず自分の記憶を見る',
+       text:'ブラウザは、最近調べた名前の答えを少しの間だけ覚えています。見つかればここで終わりです。今回は見つからなかったとします。'},
+      {l:'os', chip:'質問', title:'OSに調べてもらう',
+       text:'ブラウザは、OSに用意された <code>getaddrinfo()</code> という関数を呼び出して、「<code>www.example.com</code> の住所を調べて」と頼みます。このように、アプリがネットワークを使うための部品の集まりを<b>ソケットライブラリ</b>と呼び、その中で名前を調べる係を<b>リゾルバ</b>と呼びます。',
+       tip:'昔は <code>gethostbyname()</code> という関数がよく使われていました。しかしIPv4しか扱えないため、今はIPv6にも対応した <code>getaddrinfo()</code> が使われています。'},
+      {l:'hosts', chip:'質問', title:'hostsファイルを確認する',
+       text:'OSはまず<b>hostsファイル</b>を見ます。「この名前はこの住所」と手で書いておけるメモ帳のようなファイルで、ここに書いてあればDNSには聞きません。開発中のテストなどで使われます。',
+       tip:'Macでは <code>/etc/hosts</code>、Windowsでは <code>C:\\Windows\\System32\\drivers\\etc\\hosts</code> にあります。'},
+      {l:'oscache', chip:'質問', title:'OSの記憶を確認する',
+       text:'次に、OSが覚えている過去の答えを確認します。ブラウザ以外のアプリが調べた答えも、ここに残っています。今回は見つからなかったので、いよいよ外へ聞きに行きます。'},
+      {l:'os', chip:'質問', pkt:PKT_UDP, title:'DNSのメッセージを作る',
+       text:'リゾルバは「<code>www.example.com</code> の A レコードは？」という<b>DNSメッセージ</b>を作り、宛先に<b>キャッシュDNSサーバーのIPアドレス</b>を書きます。この宛先は、ネットにつないだときにルーターなどから自動でもらっています（<b>DHCP</b>）。',
+       tip:'DNSのメッセージは小さく、1往復で済むので、ふつうは手軽な <b>UDP</b> の <b>53番ポート</b>で送ります。答えが大きくて入りきらないときは、確実に届ける <b>TCP</b> でやり直します。'},
+      {l:'nic', chip:'質問', pkt:PKT_UDP, title:'LANアダプタから送り出す',
+       text:'メッセージはLANアダプタで電気や電波の信号に変えられ、ネットワークへ出ていきます。この部分は第5章でくわしく見ます。'},
+      {l:'net', chip:'質問', title:'ここから旅がはじまる',
+       text:'この先が、次の 2.4 で追いかける「問い合わせの旅」です。答えが返ってくると、OSは答えを記憶してからブラウザに渡します。'},
+    ],
+    doh: [
+      {l:'browser', title:'ブラウザがまず自分の記憶を見る',
+       text:'ここまではふつうのDNSと同じです。見つからなかったとします。'},
+      {l:'browser', chip:'🔒 質問', lock:true, pkt:PKT_DOH, title:'ブラウザが自分でメッセージを作る',
+       text:'暗号化DNSの設定が有効なとき、ブラウザはOSに頼まず、<b>自分でDNSメッセージを作ります</b>。そしてWebページと同じ <b>HTTPS</b> で暗号化して送ります。これを <b>DNS over HTTPS（DoH）</b>と呼びます。',
+       tip:'Chromeの「セキュアDNS」は、いま使っているキャッシュDNSサーバーが暗号化に対応していれば、自動で暗号化に切り替えます。Firefox や Edge にも同じような設定があります。'},
+      {l:'os', skip:true, chip:'🔒 質問', lock:true, title:'OSのリゾルバは通らない',
+       text:'この場合、OSのリゾルバを使った問い合わせは行われません。OSから見ると、ふつうのHTTPSの通信（443番ポート）が1本あるだけです。',
+       tip:'会社のネットワークでは、社内だけで使う名前を調べるためにOSの設定が必要なことがあります。そのため、管理者がブラウザのこの機能を止めている場合もあります。'},
+      {l:'nic', chip:'🔒 質問', lock:true, pkt:PKT_DOH, title:'LANアダプタから送り出す',
+       text:'暗号化されたまま、信号になって出ていきます。'},
+      {l:'net', chip:'🔒 質問', lock:true, title:'暗号化されたまま届く',
+       text:'DoHに対応したキャッシュDNSサーバーに届きます。そこから先の旅は、ふつうのDNSと同じです。暗号化の効果は 2.7 でくわしく見ます。'},
+    ],
+  };
+  let mode = 'classic', i = 0;
+  const stack = root.querySelector('.pc-stack');
+  const chip = document.createElement('div'); chip.className = 'pc-chip'; stack.appendChild(chip);
+  const el = l => root.querySelector(`[data-l="${l}"]`);
+  function render(){
+    const steps = MODES[mode], s = steps[i];
+    root.querySelectorAll('[data-l]').forEach(x => x.classList.remove('on', 'skip'));
+    const target = el(s.l);
+    target.classList.add(s.skip ? 'skip' : 'on');
+    if(s.l === 'hosts' || s.l === 'oscache') el('os').classList.add('on');
+    if(mode === 'doh' && i >= 2) el('os').classList.add('skip');
+    chip.hidden = !s.chip;
+    if(s.chip){
+      chip.textContent = s.chip; chip.classList.toggle('lock', !!s.lock);
+      const ref = (s.skip ? el('nic') : target);
+      const top = s.skip ? target.offsetTop + target.offsetHeight / 2 - 12 : ref.offsetTop + (s.l === 'hosts' || s.l === 'oscache' ? el('os').offsetTop : 0) + ref.offsetHeight / 2 - 12;
+      chip.style.top = top + 'px';
+    }
+    root.querySelector('.sp-title').textContent = s.title;
+    root.querySelector('.sp-text').innerHTML = s.text + (s.tip ? `<div class="tip">💡 ${s.tip}</div>` : '');
+    root.querySelector('.sp-pkt').innerHTML = s.pkt ? `<div class="pkt-box">${s.pkt.map(r => `<div><span>${r[0]}</span><span>${r[1]}</span></div>`).join('')}</div>` : '';
+    root.querySelector('.sp-count').textContent = `${i + 1} / ${steps.length}`;
+    root.querySelector('.sp-prev').disabled = i === 0;
+    root.querySelector('.sp-reset').disabled = i === 0;
+    root.querySelector('.sp-next').disabled = i === steps.length - 1;
+  }
+  root.querySelector('.sp-reset').onclick = () => { i = 0; render(); };
+  root.querySelector('.sp-prev').onclick = () => { if(i > 0){ i--; render(); } };
+  root.querySelector('.sp-next').onclick = () => { if(i < MODES[mode].length - 1){ i++; render(); } };
+  root.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => {
+    mode = b.dataset.mode; i = 0;
+    root.querySelectorAll('[data-mode]').forEach(x => x.classList.toggle('on', x === b));
+    render();
+  });
+  addEventListener('resize', render);
+  render();
+})();
+
+/* ---------- 2.5 レコードの種類 ---------- */
+(function(){
+  const R = [
+    {t:'A', q:'www.example.com  A', a:'www.example.com.  3600  IN  A  192.0.2.10', h:'IPv4アドレス',
+     x:'いちばん基本のレコードで、旅で調べたのもこれです。IPv4アドレスは <code>192.0.2.10</code> のように、0〜255の数字4つで表す32ビットの住所です。'},
+    {t:'AAAA', q:'www.example.com  AAAA', a:'www.example.com.  3600  IN  AAAA  2001:db8::10', h:'IPv6アドレス',
+     x:'IPv6の住所です。IPv6アドレスは128ビットで、IPv4（32ビット）の<b>4倍の長さ</b>があるので、Aを4つ並べた名前になっています。IPv4の住所は世界中でほぼ配り終わってしまったため、IPv6への移行が進んでいて、日本でもIPv6でつながる家庭が増えています。'},
+    {t:'CNAME', q:'shop.example.com  A', a:'shop.example.com.  300  IN  CNAME  shop.cdn.example.net.\nshop.cdn.example.net.  60  IN  A  203.0.113.10', h:'別名（ニックネーム）',
+     x:'「この名前の本当の名前はあっち」と、別の名前を指すレコードです。リゾルバは、本当の名前の住所をあらためて調べます。2.6 で見るCDNを使うときによく登場します。'},
+    {t:'MX', q:'example.com  MX', a:'example.com.  3600  IN  MX  10 mail1.example.com.\nexample.com.  3600  IN  MX  20 mail2.example.com.', h:'メールの配達先',
+     x:'<code>@example.com</code> 宛てのメールを、どのサーバーに届ければよいかを表します。数字は優先順位で、<b>小さいほうが優先</b>です。mail1 が止まっていたら mail2 に届けます。'},
+    {t:'NS', q:'example.com  NS', a:'example.com.  86400  IN  NS  ns1.example.com.\nexample.com.  86400  IN  NS  ns2.example.com.', h:'担当のDNSサーバー',
+     x:'旅の途中で、ルートや .com のサーバーが「次はここに聞いて」と紹介してくれたのが、この NS レコードです。故障に備えて、担当は2台以上置くのが決まりです。'},
+    {t:'TXT', q:'example.com  TXT', a:'example.com.  3600  IN  TXT  "v=spf1 include:_spf.mail.example.net -all"', h:'自由なメモ',
+     x:'文字を自由に書けるレコードです。いまは主に、<b>なりすましメールを防ぐ設定</b>（SPF など）や、「このドメインの持ち主は自分です」とサービスに証明するために使われています。'},
+    {t:'HTTPS', q:'www.example.com  HTTPS', a:'www.example.com.  3600  IN  HTTPS  1 . alpn="h3,h2" ipv4hint=192.0.2.10', h:'つなぎ方のヒント（新しいレコード）',
+     x:'2023年に規格になった新しいレコードです（RFC 9460）。「このサイトは最新の HTTP/3 で話せます」といった<b>つなぎ方のヒント</b>を、つなぐ前に教えてくれます。手探りで試す手間が減るので、表示が速くなります。主要なブラウザはすでにこのレコードを問い合わせています。'},
+  ];
+  const tabs = document.getElementById('recTabs');
+  tabs.innerHTML = R.map((r, k) => `<button role="tab" data-k="${k}">${r.t}</button>`).join('');
+  function show(k){
+    const r = R[k];
+    tabs.querySelectorAll('button').forEach((b, j) => { b.classList.toggle('on', j === k); b.setAttribute('aria-selected', j === k); });
+    document.getElementById('recQ').textContent = '質問： ' + r.q + ' ？';
+    document.getElementById('recA').innerHTML = r.a.split('\n').map(l => '答え： ' + esc(l)).join('<br>');
+    document.getElementById('recTitle').textContent = `${r.t} レコード ── ${r.h}`;
+    document.getElementById('recText').innerHTML = r.x;
+  }
+  tabs.querySelectorAll('button').forEach(b => b.onclick = () => show(+b.dataset.k));
+  show(0);
+
+  const ANS = {A:'192.0.2.10', AAAA:'2001:db8::10', HTTPS:'h3, h2 に対応'};
+  const DUR = {A:900, AAAA:1050, HTTPS:1200};
+  document.getElementById('parallelBtn').onclick = () => {
+    const box = document.getElementById('parallel');
+    box.querySelectorAll('.chip').forEach(c => { c.style.transition = 'none'; c.style.left = '4px'; c.classList.remove('ans'); c.textContent = c.dataset.t + '？'; });
+    box.querySelectorAll('.res').forEach(r => { r.classList.remove('show'); r.textContent = ''; });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      box.querySelectorAll('.chip').forEach(c => {
+        const t = c.dataset.t, track = c.parentElement;
+        c.style.transition = `left ${DUR[t]}ms cubic-bezier(.4,0,.2,1)`;
+        c.style.left = (track.clientWidth - c.offsetWidth - 4) + 'px';
+        setTimeout(() => {
+          c.classList.add('ans'); c.textContent = t + ' ✓';
+          c.style.transition = 'none'; c.style.left = (track.clientWidth - c.offsetWidth - 4) + 'px';
+          const r = box.querySelector(`[data-r="${t}"]`); r.textContent = ANS[t]; r.classList.add('show');
+        }, DUR[t]);
+      });
+    }));
+  };
+})();
+
+/* ---------- 2.6 CDN ---------- */
+(function(){
+  const P = (lon, lat) => [(lon + 180) * 2, (90 - lat) * 340 / 180];
+  const LAND = [
+    [[-165,65],[-140,70],[-95,72],[-75,62],[-55,50],[-70,43],[-80,30],[-82,25],[-97,20],[-90,15],[-80,8],[-105,22],[-115,30],[-125,40],[-125,50],[-150,60]],
+    [[-80,8],[-60,10],[-35,-6],[-40,-22],[-55,-35],[-68,-55],[-75,-45],[-72,-18],[-82,-3]],
+    [[-10,36],[-10,44],[-5,50],[5,58],[10,64],[25,71],[60,72],[100,78],[140,73],[180,68],[170,60],[160,52],[142,50],[130,42],[122,30],[120,22],[108,12],[105,8],[100,14],[98,8],[92,22],[80,8],[72,20],[58,24],[50,30],[35,36],[28,40],[15,38],[0,38]],
+    [[-17,15],[-15,28],[-5,36],[10,37],[32,31],[43,12],[51,12],[40,-15],[32,-28],[20,-35],[13,-20],[9,4],[-8,5]],
+    [[114,-22],[130,-12],[142,-11],[153,-26],[150,-37],[140,-38],[130,-32],[116,-35]],
+    [[130,31],[136,34],[141,36],[142,43],[140,41],[133,35]],
+  ];
+  const EDGES = [
+    {id:'tyo', name:'東京', lon:139.7, lat:35.7, ip:'203.0.113.10'},
+    {id:'sin', name:'シンガポール', lon:103.8, lat:1.35, ip:'203.0.113.20'},
+    {id:'lon', name:'ロンドン', lon:-0.1, lat:51.5, ip:'203.0.113.30'},
+    {id:'nyc', name:'ニューヨーク', lon:-74, lat:40.7, ip:'203.0.113.40'},
+    {id:'sao', name:'サンパウロ', lon:-46.6, lat:-23.5, ip:'203.0.113.50'},
+    {id:'syd', name:'シドニー', lon:151.2, lat:-33.9, ip:'203.0.113.60'},
+  ];
+  const ORIGIN = {name:'元のサーバー（米国西海岸）', lon:-122.4, lat:37.8};
+  const CITIES = [
+    {name:'東京', lon:139.7, lat:35.7}, {name:'大阪', lon:135.5, lat:34.7}, {name:'シンガポール', lon:103.8, lat:1.35},
+    {name:'ロンドン', lon:-0.1, lat:51.5}, {name:'ニューヨーク', lon:-74, lat:40.7}, {name:'サンパウロ', lon:-46.6, lat:-23.5}, {name:'シドニー', lon:151.2, lat:-33.9},
+  ];
+  const km = (a, b) => {
+    const r = Math.PI / 180, d = Math.sin((b.lat - a.lat) * r / 2) ** 2 + Math.cos(a.lat * r) * Math.cos(b.lat * r) * Math.sin((b.lon - a.lon) * r / 2) ** 2;
+    return 6371 * 2 * Math.asin(Math.sqrt(d));
+  };
+  // 光ファイバの中の光は約20万km/秒。往復＋経路の遠回りを1.5倍として目安を出す
+  const rtt = d => Math.max(2, Math.round(d * 2 / 200 * 1.5));
+  const svg = document.getElementById('cdnMap');
+  const btns = document.getElementById('cityBtns');
+  btns.innerHTML = CITIES.map((c, k) => `<button data-k="${k}">${c.name}</button>`).join('');
+  function draw(k){
+    const me = CITIES[k];
+    btns.querySelectorAll('button').forEach((b, j) => b.classList.toggle('on', j === k));
+    const near = EDGES.reduce((best, e) => km(me, e) < km(me, best) ? e : best);
+    const [mx, my] = P(me.lon, me.lat), [nx, ny] = P(near.lon, near.lat), [ox, oy] = P(ORIGIN.lon, ORIGIN.lat);
+    let g = '';
+    for(let x = 0; x <= 720; x += 60) g += `<line class="grid" x1="${x}" y1="0" x2="${x}" y2="340"/>`;
+    for(let y = 0; y <= 340; y += 56.67) g += `<line class="grid" x1="0" y1="${y}" x2="720" y2="${y}"/>`;
+    g += LAND.map(poly => `<polygon class="land" points="${poly.map(p => P(p[0], p[1]).join(',')).join(' ')}"/>`).join('');
+    // 日付変更線をまたぐ方が近いときは、地図の端で折り返して描く
+    if(Math.abs(mx - ox) > 360){
+      const s = mx > ox ? 720 : -720;
+      g += `<line class="route far" x1="${mx}" y1="${my}" x2="${ox + s}" y2="${oy}"/><line class="route far" x1="${mx - s}" y1="${my}" x2="${ox}" y2="${oy}"/>`;
+    } else g += `<line class="route far" x1="${mx}" y1="${my}" x2="${ox}" y2="${oy}"/>`;
+    if(near.id) g += `<line class="route" x1="${mx}" y1="${my}" x2="${nx}" y2="${ny}"/>`;
+    g += `<rect class="origin" x="${ox - 6}" y="${oy - 6}" width="12" height="12" rx="2"/><text class="small" x="${ox - 8}" y="${oy + 22}">元のサーバー</text>`;
+    g += EDGES.map(e => { const [x, y] = P(e.lon, e.lat); return `<circle class="edge ${e === near ? 'pick' : ''}" cx="${x}" cy="${y}" r="7"/>`; }).join('');
+    g += `<circle class="me-ring" cx="${mx}" cy="${my}" r="9"/><circle class="me" cx="${mx}" cy="${my}" r="6"/>`;
+    g += mx > 520
+      ? `<text x="${mx - 12}" y="${my - 12}" font-weight="700" text-anchor="end">あなた（${me.name}）</text>`
+      : `<text x="${mx + 12}" y="${my - 12}" font-weight="700">あなた（${me.name}）</text>`;
+    svg.innerHTML = g;
+    const dNear = km(me, near), dOrig = km(me, ORIGIN);
+    document.getElementById('cdnFlow').innerHTML = `
+      <div class="f"><b>① あなた → キャッシュDNSサーバー</b>www.shop.example の A は？</div>
+      <div class="f"><b>② shop.example の担当が答える（CNAME）</b>www.shop.example → shop.cdn.example.net<br><span style="font-family:'Noto Sans JP'">「本当の名前はCDNのほうだよ」</span></div>
+      <div class="f hit"><b>③ CDNの担当が、問い合わせ元の場所を見て答える</b>shop.cdn.example.net → ${near.ip}<br><span style="font-family:'Noto Sans JP'">${near.name}の拠点を案内</span></div>
+      <div class="f lat">データが往復する時間の目安<br>近くの拠点（${near.name}）まで <strong>${rtt(dNear)}</strong> ミリ秒<br>元のサーバーまで直接なら <strong style="color:var(--ink-2)">${rtt(dOrig)}</strong> ミリ秒</div>`;
+  }
+  btns.querySelectorAll('button').forEach(b => b.onclick = () => draw(+b.dataset.k));
+  draw(0);
+})();
+
+/* ---------- 2.7 暗号化 ---------- */
+(function(){
+  const M = {
+    classic:{b:'ふつうのDNS', t:'ふつうのDNS：丸見え',
+      x:'メッセージは暗号化されていないので、同じネットワークにいる人には<b>あなたが調べたサイトの名前がそのまま見えます</b>。途中で書き換えられても気づけません。',
+      spec:[['ポート','UDP / TCP の 53番'], ['規格','RFC 1035（1987年）']],
+      screen:`<span class="dim">192.168.1.23 → 192.168.1.1  UDP 53番</span>\n<span class="warn">DNS 質問：www.example.com の A は？</span>\n<span class="dim">192.168.1.1 → 192.168.1.23  UDP 53番</span>\n<span class="warn">DNS 回答：www.example.com = 192.0.2.10</span>`},
+    dot:{b:'DoT', t:'DNS over TLS（DoT）',
+      x:'DNSのメッセージを、HTTPSと同じ暗号の仕組み（<b>TLS</b>）で包んで送ります。中身は読めませんが、専用の853番ポートを使うので「DNSの通信をしている」ことは外から分かります。',
+      spec:[['ポート','TCP の 853番'], ['規格','RFC 7858（2016年）']], port:'TCP 853番'},
+    doh:{b:'DoH', t:'DNS over HTTPS（DoH）',
+      x:'DNSのメッセージを、ふつうの<b>HTTPS</b>の通信として送ります。Webページを見る通信と同じ443番ポートを使うので、外からは<b>DNSの通信だと見分けることすら難しく</b>なります。ブラウザが直接使えるのも特徴です。',
+      spec:[['ポート','443番（Webと同じ）'], ['規格','RFC 8484（2018年）']], port:'TCP 443番（HTTPS）'},
+    doq:{b:'DoQ', t:'DNS over QUIC（DoQ）',
+      x:'新しい通信方式 <b>QUIC</b>（HTTP/3 の土台）を使います。暗号化に加えて、つながるまでのやりとりが少なく、電波が不安定なスマホでも速いのが特徴です。',
+      spec:[['ポート','UDP の 853番'], ['規格','RFC 9250（2022年）']], port:'UDP 853番（QUIC）'},
+  };
+  const btns = document.getElementById('encBtns');
+  btns.innerHTML = Object.entries(M).map(([k, m]) => `<button data-k="${k}">${m.b}</button>`).join('');
+  const scr = document.getElementById('encScreen');
+  const junk = n => Array.from({length:n}, () => 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz0123456789+/'[Math.random() * 62 | 0]).join('');
+  let timer;
+  function show(k){
+    const m = M[k];
+    btns.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.k === k));
+    document.getElementById('encTitle').textContent = m.t;
+    document.getElementById('encText').innerHTML = m.x;
+    document.getElementById('encSpec').innerHTML = m.spec.map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('');
+    clearInterval(timer);
+    if(m.screen){ scr.innerHTML = m.screen; return; }
+    let n = 0;
+    const paint = () => {
+      scr.innerHTML = `<span class="dim">192.168.1.23 → キャッシュDNSサーバー  ${m.port}</span>\n${junk(40)}\n${junk(40)}\n<span class="dim">キャッシュDNSサーバー → 192.168.1.23</span>\n${junk(40)}\n<span class="dim">（暗号化されていて読めない）</span>`;
+    };
+    paint();
+    timer = setInterval(() => { paint(); if(++n > 8) clearInterval(timer); }, 70);
+  }
+  btns.querySelectorAll('button').forEach(b => b.onclick = () => show(b.dataset.k));
+  show('classic');
+})();
+
+/* ---------- 2.7 DNSSEC ---------- */
+(function(){
+  let sec = 'off';
+  const fake = document.querySelector('.race-chip.fake'), real = document.querySelector('.race-chip.real'), out = document.getElementById('raceResult');
+  document.querySelectorAll('[data-sec]').forEach(b => b.onclick = () => {
+    sec = b.dataset.sec;
+    document.querySelectorAll('[data-sec]').forEach(x => x.classList.toggle('on', x === b));
+    reset();
+  });
+  function reset(){
+    [fake, real].forEach(c => { c.style.transition = 'none'; c.classList.remove('arrived', 'rejected', 'accepted'); c.style.opacity = ''; });
+    out.innerHTML = '';
+    requestAnimationFrame(() => [fake, real].forEach(c => c.style.transition = ''));
+  }
+  document.getElementById('raceBtn').onclick = () => {
+    reset();
+    setTimeout(() => {
+      fake.style.transitionDuration = '.7s'; real.style.transitionDuration = '1.3s';
+      fake.classList.add('arrived'); real.classList.add('arrived');
+      setTimeout(() => {
+        if(sec === 'off'){
+          fake.classList.add('accepted');
+          out.innerHTML = '<span class="bad">先に届いた偽の返事を信じてしまった！</span> <code>www.example.com = 203.0.113.66</code> と記憶し、TTLの間、利用者を偽のサイトに案内してしまいます。';
+        } else {
+          fake.classList.add('rejected');
+          out.innerHTML = '偽の返事には正しい署名を付けられないので、<b>確かめた時点で捨てる</b>…';
+        }
+      }, 750);
+      setTimeout(() => {
+        if(sec === 'off'){ real.style.opacity = '.35'; out.innerHTML += '<br>あとから届いた本物の返事は「もう答えは決まった」として無視されてしまいました。'; }
+        else { real.classList.add('accepted'); out.innerHTML = '偽の返事は署名が合わずに<b>捨てられ</b>、<span class="good">署名の正しい本物の返事だけが採用されました。</span>'; }
+      }, 1400);
+    }, 30);
+  };
+})();
+
+/* ---------- 2.8 コマンド ---------- */
+(function(){
+  const C = {
+    mac:[
+      ['nslookup www.example.com', 'いちばん手軽な方法。最初の <code>Server:</code> の行に、答えてくれたキャッシュDNSサーバーの住所が出ます。'],
+      ['dig www.example.com', 'くわしく表示します。<code>ANSWER SECTION</code> に答え、<code>Query time</code> にかかった時間が出ます。<b>2回続けて実行</b>すると、2回目は時間が短く、TTLの数字が減っているはず。キャッシュが効いている証拠です。'],
+      ['dig www.example.com AAAA', '種類を指定して問い合わせます。<code>AAAA</code> を <code>MX</code> や <code>NS</code> に変えてみましょう（MXは <code>dig example.com MX</code> のようにドメイン名で）。'],
+      ['dig +trace www.example.com', '旅を再現します。結果の読み方は下で説明します。'],
+      ['dig example.com TYPE65', 'HTTPSレコードを見ます。Macに最初から入っている dig は古い版のため <code>HTTPS</code> と書けず、番号（65）で指定します。答えも16進数の読みにくい形で表示されますが、よく見ると <code>026833</code>（2文字の「h3」）が入っていて、HTTP/3 に対応していることが読み取れます。'],
+      ['sudo dscacheutil -flushcache; sudo killall -HUP mDNSResponder', 'OSの記憶を消します（パスワードを聞かれます）。ブラウザの記憶は、Chromeのアドレスバーに <code>chrome://net-internals/#dns</code> と入れた画面で消せます。'],
+    ],
+    win:[
+      ['nslookup www.example.com', 'いちばん手軽な方法。最初の <code>Server:</code> の行に、答えてくれたキャッシュDNSサーバーが出ます。'],
+      ['Resolve-DnsName www.example.com', 'PowerShell で使える、くわしい方法です。<code>TTL</code> の列にも注目。'],
+      ['Resolve-DnsName example.com -Type MX', '種類を指定して問い合わせます。<code>MX</code> を <code>AAAA</code> や <code>NS</code> に変えてみましょう。'],
+      ['ipconfig /displaydns', 'OSが記憶している答えの一覧を表示します。いろいろなアプリが調べた名前が並んでいて驚くはず。'],
+      ['ipconfig /flushdns', 'OSの記憶を消します。ブラウザの記憶は、Chromeのアドレスバーに <code>chrome://net-internals/#dns</code> と入れた画面で消せます。'],
+    ],
+  };
+  const box = document.getElementById('cmds');
+  function show(os){
+    document.querySelectorAll('[data-os]').forEach(b => b.classList.toggle('on', b.dataset.os === os));
+    box.innerHTML = C[os].map(([c, d]) => `<div class="cmd"><div class="cmd-line"><code>${esc(c)}</code><button data-c="${esc(c)}">コピー</button></div><div class="cmd-desc">${d}</div></div>`).join('')
+      + (os === 'win' ? '<p class="note">Windowsには dig が最初から入っていないため、旅の再現（+trace）は Mac か Linux で試してみてください。</p>' : '');
+    box.querySelectorAll('[data-c]').forEach(b => b.onclick = async () => {
+      try{ await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'コピーした'; }
+      catch(e){ b.textContent = '選択してコピーしてね'; }
+      setTimeout(() => b.textContent = 'コピー', 1500);
+    });
+  }
+  document.querySelectorAll('[data-os]').forEach(b => b.onclick = () => show(b.dataset.os));
+  show('mac');
+})();
+
+/* ---------- 2.8 dig +trace の読み方 ---------- */
+(function(){
+  const L = [
+    ['c', '; <<>> DiG 9.10.6 <<>> +trace www.example.com'],
+    ['1', '.      325130  IN  NS     a.root-servers.net.'],
+    ['1', '.      325130  IN  NS     b.root-servers.net.'],
+    ['1', '              … ここまで a〜m の13行 …'],
+    ['1', '.      325130  IN  RRSIG  NS 8 0 518400 … (署名)'],
+    ['1r', ';; Received 1097 bytes from 192.168.1.1#53(192.168.1.1) in 16 ms'],
+    ['2', 'com.   172800  IN  NS     a.gtld-servers.net.'],
+    ['2', '              … ここまで a〜m の13行 …'],
+    ['2d', 'com.    86400  IN  DS     19718 13 2 8ACBB0CD28F4…'],
+    ['2d', 'com.    86400  IN  RRSIG  DS 8 1 86400 … (署名)'],
+    ['2r', ';; Received 1175 bytes from 199.7.83.42#53(l.root-servers.net) in 135 ms'],
+    ['3', 'example.com.  172800  IN  NS  hera.ns.cloudflare.com.'],
+    ['3', 'example.com.  172800  IN  NS  elliott.ns.cloudflare.com.'],
+    ['2d', 'example.com.   86400  IN  DS     2371 13 2 C988EC423E38…'],
+    ['3r', ';; Received 510 bytes from 192.54.112.30#53(h.gtld-servers.net) in 123 ms'],
+    ['4', 'www.example.com.  300  IN  A      172.66.147.243'],
+    ['4', 'www.example.com.  300  IN  A      104.20.23.154'],
+    ['2d', 'www.example.com.  300  IN  RRSIG  A 13 3 300 … (署名)'],
+    ['4r', ';; Received 183 bytes from 108.162.192.162#53(hera.ns.cloudflare.com) in 16 ms'],
+  ];
+  const E = {
+    '1':['まずルートサーバーの一覧をもらう', 'いつものキャッシュDNSサーバーに「ルートサーバーはどこ？」と聞いて、a〜m の13台の名前をもらいます。<code>NS</code> は「担当のDNSサーバー」を表すレコードでした（2.5）。<code>RRSIG</code> は DNSSEC の署名です（2.7）。'],
+    '1r':['この答えをくれたのは家のルーター', '<code>192.168.1.1</code> の53番ポートから、16ミリ秒で届きました。家のルーターが、プロバイダのキャッシュDNSサーバーへ取り次いでいます（住所は家庭によって違います）。'],
+    '2':['ルートが .com の担当を紹介', 'ルートサーバーは答えを知らないので、<code>.com</code> の担当13台を紹介してくれました。2列目の <code>172800</code> は TTL（秒）で、<b>2日</b>のこと。旅で「.com の担当は2日覚えておける」としたのは、この値です。'],
+    '2d':['DNSSEC の「信頼のリレー」', '<code>DS</code> は、1つ下の担当が使う鍵の<b>指紋</b>、<code>RRSIG</code> はその情報への<b>署名</b>です。ルート → .com → example.com → www と、上の階層が下の階層を保証していく様子が、実際のデータで見えています。'],
+    '2r':['答えたのは l のルートサーバー', '今回は <code>l.root-servers.net</code> が135ミリ秒で答えました。13台のうちどれに聞くかは、dig がその都度選びます。同じ <code>l</code> でも、世界中の拠点のうち近くのものが答えています（エニーキャスト、2.6）。'],
+    '3':['.com が example.com の担当を紹介', '<code>example.com</code> の担当は、CDNの会社 Cloudflare のDNSサーバーでした。本物の example.com がCDNの上で動いていることが分かります。'],
+    '3r':['.com のサーバーから届いた', '<code>h.gtld-servers.net</code> が123ミリ秒で答えました。ルートと .com は遠くのサーバーまで聞きに行くため、時間がかかっています。'],
+    '4':['ついに答え！', '<code>www.example.com</code> のIPアドレスが<b>2つ</b>返ってきました。どちらにつないでもよい、という意味です。TTLは <b>300秒（5分）</b>と短め。CDNは混み具合などに合わせて案内先を変えるので、短く設定されることが多いのです。'],
+    '4r':['担当サーバーは近くにいた', 'Cloudflare のサーバーはたった16ミリ秒で答えました。CDNの会社は、DNSサーバーも世界中に置いています。'],
+  };
+  const tr = document.getElementById('trace');
+  tr.innerHTML = L.map(([g, t]) => {
+    const cls = g === 'c' ? 'cmt' : g.endsWith('r') ? 'recv g' : 'g';
+    return `<div class="ln ${cls}" data-g="${g}" ${g === 'c' ? '' : 'tabindex="0" role="button"'}>${esc(t)}</div>`;
+  }).join('');
+  function pick(g){
+    tr.querySelectorAll('.ln').forEach(l => l.classList.toggle('on', l.dataset.g === g));
+    const e = E[g];
+    document.getElementById('traceExplain').innerHTML = `<h4>${e[0]}</h4>${e[1]}`;
+  }
+  tr.querySelectorAll('.ln.g').forEach(l => {
+    l.onclick = () => pick(l.dataset.g);
+    l.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); pick(l.dataset.g); } };
+  });
+})();
+
+/* ---------- 2.10 クイズ ---------- */
+const QUIZ = [
+  {q:'PCが最初にDNSの問い合わせを送る相手は？', o:['ルートサーバー','キャッシュDNSサーバー','example.com のサーバー'], a:1,
+   e:'PCは自分で調べ回らず、キャッシュDNSサーバーに「最後まで調べて」とお願いします。'},
+  {q:'ルートサーバーは www.example.com のIPアドレスを知っている？', o:['知っていて、すぐ答えてくれる','知らないが、.com の担当を紹介してくれる','知らないので、何も返さない'], a:1,
+   e:'ルートは案内係。答えではなく「次はここに聞いて」と紹介します。'},
+  {q:'2回目のアクセスで名前の解決が速くなるのはなぜ？', o:['ルートサーバーが近くに引っ越すから','キャッシュDNSサーバーが答えを覚えているから','Webサーバーの性能が上がるから'], a:1,
+   e:'一度調べた答えはTTLの間だけ記憶されるので、世界中に聞きに行かずに済みます。'},
+  {q:'AAAA レコードが表しているのは？', o:['メールの配達先','IPv6アドレス','別の名前（ニックネーム）'], a:1,
+   e:'IPv6アドレスは128ビットで、IPv4（32ビット）の4倍の長さ。だからAが4つです。'},
+  {q:'DNS over HTTPS（DoH）で防げるのはどれ？', o:['同じWi-Fiにいる人に、調べたサイト名をのぞかれること','キャッシュDNSサーバーに、調べたサイト名を知られること','偽サイトの見た目にだまされること'], a:0,
+   e:'暗号化されるのはPCとキャッシュDNSサーバーの間だけ。キャッシュDNSサーバー自身には見えています。'},
+  {q:'同じ名前なのに、東京とロンドンで違うIPアドレスが返ってくるのはなぜ？', o:['DNSの調子が悪いから','CDNが、それぞれの近くのサーバーを案内しているから','国ごとにドメイン名が違うから'], a:1,
+   e:'CDNの担当DNSサーバーは、問い合わせ元の場所を見て、近い拠点の住所を答えます。'},
+];
+const quizEl = document.getElementById('quiz');
+QUIZ.forEach((item, qi) => {
+  const d = document.createElement('div');
+  d.className = 'card q';
+  d.innerHTML = `<b>Q${qi + 1}. ${item.q}</b><div class="opts">${item.o.map((o, k) => `<button data-k="${k}">${o}</button>`).join('')}</div><div class="fb"></div>`;
+  d.querySelectorAll('.opts button').forEach(b => b.onclick = () => {
+    const k = +b.dataset.k;
+    d.querySelectorAll('.opts button').forEach(x => x.classList.remove('right', 'wrong'));
+    b.classList.add(k === item.a ? 'right' : 'wrong');
+    d.querySelector('.fb').innerHTML = (k === item.a ? '⭕ 正解！ ' : '❌ もう一度考えてみよう。 ') + (k === item.a ? item.e : '');
+  });
+  quizEl.appendChild(d);
+});
+</script>
+</body>
+</html>

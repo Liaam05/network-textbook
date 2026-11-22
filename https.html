@@ -1,0 +1,1238 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HTTPSの旅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaf2f8; --surface:#ffffff; --surface-2:#e1eff6; --ink:#0d1b2a; --ink-2:#4a5d75; --line:#c8d5e4;
+  --accent:#0891b2; --accent-soft:rgba(8,145,178,.12); --answer:#d97706; --answer-soft:rgba(217,119,6,.13); --ok:#15803d; --ok-soft:rgba(21,128,61,.12);
+  --ground:#e3ebf4; --zone-home:rgba(21,128,61,.09); --zone-isp:rgba(8,145,178,.1); --zone-net:rgba(217,119,6,.09);
+  --grid:rgba(8,145,178,.07); --glow:0 0 0 1px rgba(8,145,178,.4),0 0 16px rgba(8,145,178,.15); --on-accent:#ffffff;
+  --shadow:0 1px 2px rgba(13,27,42,.06),0 6px 18px rgba(13,27,42,.07);
+  --board-grid:rgba(8,145,178,.14); --board-edge:#b9cadc;
+  --z-home:rgba(21,128,61,.13); --z-home-edge:#15803d; --z-isp:rgba(8,145,178,.15); --z-isp-edge:#0e7490;
+  --z-net:rgba(217,119,6,.13); --z-net-edge:#b45309; --z-web:rgba(124,58,237,.11); --z-web-edge:#6d28d9;
+  --accent2:#7c3aed;
+  --wash:radial-gradient(1100px 620px at 0% 0%,rgba(8,145,178,.16),transparent 62%),radial-gradient(900px 560px at 100% 25%,rgba(124,58,237,.12),transparent 60%),radial-gradient(1000px 640px at 40% 100%,rgba(217,119,6,.10),transparent 60%);
+  --strip:linear-gradient(90deg,#06b6d4,#7c3aed 55%,#f59e0b);
+  --bar-bg:linear-gradient(90deg,rgba(8,145,178,.12),rgba(124,58,237,.09));
+  --primary-bg:linear-gradient(135deg,#0891b2,#4f46e5);
+  --num-bg:linear-gradient(135deg,#0891b2,#7c3aed); --num-fg:#ffffff;
+  --h1-grad:linear-gradient(90deg,#0d1b2a 20%,#0891b2 60%,#7c3aed);
+  --subh-bar:linear-gradient(#0891b2,#7c3aed);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.85;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:48px 0 12px}
+.kicker{font-size:13px;color:var(--ink-2);letter-spacing:.08em}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.35;margin:6px 0 12px}
+h2{font-size:clamp(20px,3.6vw,26px);margin:56px 0 8px;line-height:1.4}
+h2 .num{display:inline-block;font-size:14px;color:var(--accent);margin-right:8px;font-family:"JetBrains Mono",monospace}
+p{margin:.6em 0}
+.lead{font-size:17px;color:var(--ink-2)}
+b{color:var(--ink)}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.92em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.note{font-size:13px;color:var(--ink-2)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+button.primary:hover:not(:disabled){filter:brightness(1.08)}
+button.on{background:var(--accent-soft);border-color:var(--accent)}
+
+/* --- analogy --- */
+.analogy{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:12px}
+.analogy .box{text-align:center;padding:14px}
+.analogy .big{font-size:20px;font-weight:700}
+.analogy .arrow{font-size:22px;color:var(--ink-2)}
+
+/* --- domain tree --- */
+.domain-input{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.domain-input input{flex:1;min-width:220px;font:inherit;font-family:"JetBrains Mono",monospace;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{font-size:13px;padding:4px 10px}
+.stairs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.stair{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-left:calc(var(--k) * 22px);opacity:0;transform:translateX(-8px);animation:in .4s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.stair .blk{font-family:"JetBrains Mono",monospace;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.stair .blk .new{color:var(--accent);font-weight:600}
+.stair .desc{flex:1 1 10em;font-size:13px;color:var(--ink-2)}
+.domain-err{color:var(--answer);font-size:14px}
+
+/* --- stage --- */
+.stage-card{padding:0;overflow:hidden}
+.stage-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stage-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.stage-bar button,.stepper-bar button{white-space:nowrap}
+.counter{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-2);min-width:56px;text-align:center}
+.stage-wrap{position:relative;width:100%;overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage-wrap.dragging{cursor:grabbing}
+.stage{position:absolute;left:0;top:0;width:820px;height:600px;transform-origin:0 0;perspective:1500px;perspective-origin:50% 30%;
+  --ax:55deg; --az:-24deg}
+.plane{position:absolute;left:30px;top:50px;width:800px;height:520px;transform-style:preserve-3d;
+  transform:rotateX(var(--ax)) rotateZ(var(--az));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.dragging .plane,.dragging .anchor{transition:none!important}
+.plane > svg{position:absolute;inset:0;overflow:visible}
+.ground{fill:var(--ground)}
+.zone-home{fill:var(--zone-home)}.zone-isp{fill:var(--zone-isp)}.zone-net{fill:var(--zone-net)}
+.zone-label{font-size:16px;font-weight:700;letter-spacing:.04em}
+.board-gridline{stroke:var(--board-grid);stroke-width:1}
+.ground{stroke:var(--board-edge);stroke-width:2}
+.zone{stroke-width:2.5}
+.z-home{fill:var(--z-home);stroke:var(--z-home-edge)}.l-home{fill:var(--z-home-edge)}
+.z-isp{fill:var(--z-isp);stroke:var(--z-isp-edge)}.l-isp{fill:var(--z-isp-edge)}
+.z-net{fill:var(--z-net);stroke:var(--z-net-edge)}.l-net{fill:var(--z-net-edge)}
+.z-web{fill:var(--z-web);stroke:var(--z-web-edge)}.l-web{fill:var(--z-web-edge)}
+.link{stroke:var(--ink-2);stroke-opacity:.45;stroke-width:4;fill:none;stroke-linecap:round}
+.link.web{stroke-dasharray:2 10}
+.link.active{stroke:var(--accent);stroke-opacity:1;stroke-width:6;stroke-dasharray:10 8;animation:flow .6s linear infinite}
+.link.active.ans{stroke:var(--answer)}
+@keyframes flow{to{stroke-dashoffset:-18}}
+.shadow{fill:rgba(0,0,0,.18)}
+.anchor{position:absolute;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.node{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.node .icon{width:64px;height:64px;border-radius:16px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);transition:border-color .3s,box-shadow .3s,transform .3s}
+.node .icon svg{width:38px;height:38px;color:var(--ink-2)}
+.node.hl .icon{border-color:var(--accent);box-shadow:0 0 0 6px var(--accent-soft),var(--shadow);transform:translateY(-4px)}
+.node .lbl{font-size:15px;font-weight:700;white-space:nowrap;background:var(--surface);padding:0 8px;border-radius:6px;border:1px solid var(--line)}
+.node .sub{font-size:11px;color:var(--ink-2);white-space:nowrap;font-family:"JetBrains Mono",monospace}
+.bubble{position:absolute;bottom:136px;left:0;transform:translateX(-50%) scale(.6);opacity:0;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;padding:6px 12px;border-radius:12px;white-space:nowrap;transition:opacity .25s,transform .25s;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--ink)}
+.bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.packet-anchor{transition:none;transform:translateZ(var(--h,0px)) rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1))}
+.packet{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.packet .env{width:44px;height:30px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.packet.ans .env{background:var(--answer)}
+.packet.web .env{background:var(--ok)}
+.packet.hide{opacity:0}
+.drag-hint{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px 8px;pointer-events:none}
+
+.panels{display:grid;grid-template-columns:1.25fr .8fr 1.2fr;gap:14px;margin-top:14px;align-items:start}
+.explain{padding:18px 22px 22px;border-top:1px solid var(--line);background:var(--surface);min-height:190px}
+.explain h3{margin:0 0 4px;font-size:21px;line-height:1.5}
+.explain #stepText{font-size:16.5px}
+.timeline{display:flex;gap:4px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.timeline button{flex:0 0 auto;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.timeline button .n{font-family:"JetBrains Mono",monospace;font-size:11px;opacity:.7}
+.timeline button.done{color:var(--ink);border-color:var(--line);background:var(--surface-2)}
+.timeline button.cur{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:700}
+.timeline button.cur.ans{background:var(--answer);border-color:var(--answer)}
+.node{transition:opacity .35s}
+.node.dim{opacity:.55}
+.url-split{font-size:14px;margin:4px 0 10px;padding:8px 12px;border-radius:8px;background:var(--surface-2)}
+.url-split .dim-part{color:var(--ink-2);opacity:.6}
+.url-split .host-part{color:var(--accent);font-weight:600;background:var(--accent-soft);border-radius:4px;padding:0 2px}
+.explain .stepno{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+.explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.side{display:flex;flex-direction:column;gap:14px}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.msg{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6}
+.msg .head{display:inline-block;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:1px 8px;border-radius:6px;margin-bottom:6px}
+.msg .head.q{background:var(--accent-soft);color:var(--accent)}
+.msg .head.a{background:var(--answer-soft);color:var(--answer)}
+.msg table{border-collapse:collapse;width:100%}
+.msg td{padding:3px 0;vertical-align:top;border-top:1px dashed var(--line)}
+.msg td:first-child{width:5.5em;white-space:nowrap;color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding-right:8px}
+.msg .empty{color:var(--ink-2);font-family:"Noto Sans JP",sans-serif}
+.timer{font-family:"JetBrains Mono",monospace;font-size:28px;font-weight:600}
+.timer small{font-size:13px;color:var(--ink-2);font-weight:400}
+.history{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.history span{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--surface-2);border-radius:6px;padding:1px 8px}
+.cache-list{list-style:none;margin:0;padding:0;font-size:13px}
+.cache-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.cache-list li.flash{animation:flash 1.2s}
+@keyframes flash{0%{background:var(--ok-soft)}100%{background:transparent}}
+.cache-list .ttl{font-family:"JetBrains Mono",monospace;color:var(--ok);white-space:nowrap}
+.cache-list .gone{color:var(--ink-2);text-decoration:line-through}
+.cache-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cache-btns button{font-size:12px;padding:4px 10px}
+.clock{font-size:12px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+
+/* --- summary / quiz --- */
+.summary li{margin:6px 0}
+.quiz{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.q .opts button{text-align:left}
+.q .opts button.right{background:var(--ok-soft);border-color:var(--ok)}
+.q .opts button.wrong{background:var(--answer-soft);border-color:var(--answer)}
+.q .fb{font-size:14px;margin-top:6px;min-height:1.4em}
+footer{margin:64px 0 48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+footer a{color:var(--accent)}
+
+@media (max-width:720px){
+  .panels{grid-template-columns:1fr}
+  .explain{padding:16px}
+  .analogy{grid-template-columns:1fr}
+  .analogy .arrow{transform:rotate(90deg);text-align:center}
+  .drag-hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .plane,.anchor{transition:none}
+  .link.active{animation:none}
+}
+
+/* --- 共通パーツ --- */
+.sub-h{font-size:18px;margin:32px 0 6px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;font-size:14px;padding:6px 12px;border-radius:8px}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow);font-weight:700;color:var(--accent)}
+.wrap-seg{margin-bottom:12px}
+.row-btns{display:flex;gap:8px;margin-top:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.mini-card h3{margin:0 0 6px;font-size:16px}
+.mini-card p{font-size:14.5px}
+
+/* --- 2.3 PCの中 --- */
+.stepper{padding:0;overflow:hidden}
+.stepper-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stepper-bar .seg{background:var(--bg)}
+.stepper-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;padding:20px}
+.pc-stack{position:relative;border:2px dashed var(--line);border-radius:16px;padding:30px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.pc-frame-label{position:absolute;top:6px;left:14px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.layer{border:2px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface);transition:border-color .3s,background .3s,opacity .3s;position:relative}
+.layer .lname{font-weight:700;font-size:15px}
+.layer .lsub{font-size:12px;color:var(--ink-2)}
+.layer .lmem{position:absolute;right:12px;top:10px;font-size:11px;color:var(--ink-2)}
+.layer.on{border-color:var(--accent);background:var(--accent-soft)}
+.layer.skip{opacity:.35}
+.layer.skip .lname{text-decoration:line-through}
+.os-inner{display:flex;gap:8px;margin-top:8px}
+.mini{flex:1;font-size:12px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px;background:var(--surface-2);transition:all .3s}
+.mini.on{border-color:var(--accent);background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 0 0 3px var(--accent-soft)}
+.pc-out{text-align:center;font-size:13px;color:var(--ink-2);padding:6px;border-radius:10px;transition:all .3s}
+.pc-out.on{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.pc-chip{position:absolute;right:-12px;top:0;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:top .5s cubic-bezier(.3,.7,.2,1),background .3s}
+.pc-chip.lock{background:var(--ok)}
+.pc-explain h3{margin:0 0 6px;font-size:19px}
+.pc-explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.pkt-box{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pkt-box div{display:flex;border-top:1px dashed var(--line)}
+.pkt-box div:first-child{border-top:0}
+.pkt-box span{padding:4px 10px}
+.pkt-box span:first-child{width:7.5em;white-space:nowrap;flex:0 0 auto;background:var(--surface-2);color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px}
+
+/* --- 2.5 レコード --- */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font-family:"JetBrains Mono",monospace;font-weight:600;min-width:64px}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rec-q,.rec-a{font-size:13.5px;padding:8px 12px;border-radius:8px;overflow-x:auto;white-space:nowrap}
+.rec-q{background:var(--accent-soft);color:var(--accent)}
+.rec-a{background:var(--answer-soft);color:var(--answer);margin-top:6px}
+.rec-body h3{margin:14px 0 4px;font-size:18px}
+.parallel{display:flex;flex-direction:column;gap:8px}
+.lane{display:grid;grid-template-columns:4.5em 1fr 9em;gap:10px;align-items:center}
+.lane .who{font-size:12px;color:var(--ink-2)}
+.track{position:relative;height:30px;border-radius:8px;background:var(--surface-2)}
+.chip{position:absolute;top:3px;left:4px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;background:var(--accent);color:#fff;transition:left 1s cubic-bezier(.4,0,.2,1)}
+.chip.ans{background:var(--answer)}
+.res{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--answer);opacity:0;transition:opacity .3s}
+.res.show{opacity:1}
+
+/* --- 2.6 CDN --- */
+.cdn-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+#cdnMap{width:100%;height:auto;background:var(--surface-2);border-radius:12px}
+#cdnMap .grid{stroke:var(--line);stroke-width:1}
+#cdnMap .land{fill:var(--ground);stroke:var(--line);stroke-width:1}
+#cdnMap .edge{fill:var(--surface);stroke:var(--ink-2);stroke-width:2}
+#cdnMap .edge.pick{fill:var(--answer);stroke:var(--answer)}
+#cdnMap .origin{fill:var(--ink-2)}
+#cdnMap .me{fill:var(--accent)}
+#cdnMap .me-ring{fill:none;stroke:var(--accent);stroke-width:2;animation:ring 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+#cdnMap .route{stroke:var(--answer);stroke-width:3;stroke-dasharray:6 6;fill:none;animation:flow .6s linear infinite}
+#cdnMap .route.far{stroke:var(--ink-2);stroke-width:1.5;opacity:.6;animation:none}
+#cdnMap text{font-size:13px;fill:var(--ink);font-family:"Noto Sans JP",sans-serif}
+#cdnMap text.small{font-size:11px;fill:var(--ink-2)}
+.cdn-flow{font-size:12.5px;display:flex;flex-direction:column;gap:8px}
+.cdn-flow .f{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.cdn-flow .f b{font-family:"Noto Sans JP",sans-serif;font-size:12px;color:var(--ink-2);display:block;font-weight:500}
+.cdn-flow .f.hit{border-color:var(--answer);background:var(--answer-soft)}
+.cdn-flow .lat{font-family:"Noto Sans JP",sans-serif;font-size:13px}
+.cdn-flow .lat strong{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--answer)}
+
+/* --- 2.7 守る --- */
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.enc-view{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.enc-label{font-size:12px;font-weight:700;padding:6px 12px;background:var(--surface-2);color:var(--ink-2)}
+.enc-screen{background:#0d1117;color:#7ee787;font-size:12.5px;padding:12px;min-height:150px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.enc-screen .warn{color:#ffa657}
+.enc-screen .dim{color:#6e7681}
+.enc-grid h3{margin:0 0 6px;font-size:18px}
+.spec{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
+.spec td{padding:4px 8px;border-top:1px solid var(--line)}
+.spec td:first-child{color:var(--ink-2);width:5em}
+.race{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:10px;padding-right:96px}
+.race-row{display:grid;grid-template-columns:8.5em 1fr;gap:10px;align-items:center}
+.race-who{font-size:13px;font-weight:700;line-height:1.3}
+.race-who small{font-weight:400;color:var(--ink-2);font-size:11px}
+.race-track{position:relative;height:34px;background:var(--surface-2);border-radius:8px}
+.race-chip{position:absolute;left:4px;top:5px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;color:#fff;white-space:nowrap;transition:left .9s cubic-bezier(.4,0,.2,1),opacity .4s,transform .4s}
+.race-chip.fake{background:#c92a2a}
+.race-chip.real{background:var(--ok)}
+.race-chip.arrived{left:calc(100% - 136px)}
+.race-chip.rejected{opacity:.35;transform:rotate(-8deg)}
+.race-chip.rejected::after{content:" ✕"}
+.race-chip.accepted::after{content:" ✓"}
+.race-goal{position:absolute;right:0;top:0;bottom:0;width:86px;border:2px solid var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:11px;font-weight:700;background:var(--surface);padding:4px}
+.race-result{margin-top:12px;font-size:15px;min-height:1.5em}
+.race-result .bad{color:#e03131;font-weight:700}
+.race-result .good{color:var(--ok);font-weight:700}
+.chain{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.chain-step{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:13px;display:flex;flex-direction:column}
+.chain-step b{font-family:"JetBrains Mono",monospace}
+.chain-step span{color:var(--ink-2);font-size:12px}
+.chain-arrow{font-size:12px;color:var(--accent);padding-left:12px}
+
+/* --- 2.8 試す --- */
+.can-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.can-list li{position:relative;padding:8px 12px 8px 38px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:13.5px;line-height:1.6}
+.can-list li b{display:block;font-size:14.5px}
+.can-list li span{color:var(--ink-2)}
+.can-list li::before{position:absolute;left:12px;top:8px;font-weight:700;font-size:15px}
+.can-list li.yes::before{content:"✓";color:var(--ok)}
+.can-list li.no::before{content:"✕";color:var(--answer)}
+.cmds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.cmd{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmd-line{display:flex;align-items:center;gap:8px;background:#0d1117;padding:8px 8px 8px 12px}
+.cmd-line code{flex:1;color:#e6edf3;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.cmd-line code::before{content:"$ ";color:#6e7681}
+.cmd-line button{font-size:12px;padding:3px 10px;background:#21262d;color:#e6edf3;border-color:#30363d}
+.cmd-desc{font-size:13.5px;padding:8px 12px}
+.trace-card{padding:0;overflow:hidden}
+.trace{background:#0d1117;color:#c9d1d9;font-size:12px;padding:12px 0;overflow-x:auto;line-height:1.75}
+.trace .ln{padding:0 14px;white-space:pre;cursor:default}
+.trace .ln.g{cursor:pointer;border-left:3px solid transparent}
+.trace .ln.g:hover{background:#161b22}
+.trace .ln.g.on{background:#1f2a40;border-left-color:#6ea0ff}
+.trace .ln.recv{color:#7ee787}
+.trace .ln.cmt{color:#6e7681}
+.trace .ln .k{color:#ffa657}
+.trace-explain{padding:14px 18px;font-size:15px;border-top:1px solid var(--line);min-height:80px}
+.trace-explain h4{margin:0 0 4px;font-size:16px}
+
+@media (max-width:720px){
+  .pc-body,.cdn-grid,.enc-grid,.cols{grid-template-columns:1fr}
+  .pc-chip{right:6px}
+  .lane{grid-template-columns:1fr 7em}
+  .lane .who{display:none}
+  .stair{margin-left:calc(var(--k) * 12px)}
+  .rec-a{white-space:normal;overflow-wrap:anywhere}
+  .race{padding-right:0}
+  .race-row{grid-template-columns:6.5em 1fr}
+  .race-goal{position:static;width:auto;padding:8px}
+}
+
+/* ===== サイバー調の仕上げ ===== */
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.kicker::before{content:"▍";animation:blink 1.1s steps(1) infinite;margin-right:4px}
+@keyframes blink{50%{opacity:0}}
+h1{background:linear-gradient(90deg,var(--ink) 30%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .num{font-size:13px;padding:2px 8px;border:1px solid var(--accent);border-radius:4px;text-shadow:0 0 8px var(--accent-soft);vertical-align:3px}
+h2 .num::before{content:"// "}
+.card{position:relative;background:linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));border-color:var(--line);border-radius:10px}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2}
+.card::before{top:0;left:0;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-top-left-radius:10px}
+.card::after{bottom:0;right:0;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-bottom-right-radius:10px}
+button{border-radius:6px;background:transparent;transition:border-color .15s,box-shadow .15s,background .15s}
+button:hover:not(:disabled){border-color:var(--accent);box-shadow:var(--glow)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 0 16px var(--accent-soft)}
+button.on,.seg button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);box-shadow:none}
+.seg{border:1px solid var(--line);background:var(--bg)}
+.seg button.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.stage-bar,.stepper-bar{background:var(--surface-2)}
+.counter{color:var(--accent)}
+.node .icon{background:var(--surface);border-radius:12px}
+.node .icon svg{color:var(--accent)}
+.node.hl .icon{box-shadow:var(--glow);border-color:var(--accent)}
+.node .lbl{background:var(--surface);border-color:var(--line);border-radius:4px}
+.bubble{background:var(--accent);color:var(--on-accent);box-shadow:var(--glow)}
+.bubble::after{border-top-color:var(--accent)}
+.packet .env{box-shadow:0 0 18px var(--accent)}
+.packet.ans .env{box-shadow:0 0 18px var(--answer)}
+.link.active{filter:drop-shadow(0 0 4px var(--accent))}
+.link.active.ans{filter:drop-shadow(0 0 4px var(--answer))}
+.explain .stepno,.stepno{font-family:"JetBrains Mono",monospace;letter-spacing:.1em}
+.layer{border-radius:8px;overflow:hidden}
+.layer.on{box-shadow:var(--glow)}
+.layer.on::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);transform:translateX(-100%);animation:scan 1.8s linear infinite;pointer-events:none}
+@keyframes scan{to{transform:translateX(100%)}}
+.pc-stack{border-color:var(--accent-soft);border-radius:12px}
+.pc-frame-label{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.1em}
+.pc-chip{box-shadow:0 0 14px var(--accent);color:var(--on-accent)}
+.pc-chip.lock{box-shadow:0 0 14px var(--ok)}
+.timeline button.cur{color:var(--on-accent);box-shadow:0 0 12px var(--accent-soft)}
+.timer{color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+.tabs button.on{color:var(--on-accent);box-shadow:var(--glow)}
+.chip{color:var(--on-accent)}
+.stair .blk{border-radius:6px}
+.cache-list .ttl{text-shadow:0 0 8px var(--ok-soft)}
+.packet .env,.race-chip.real,.cdn-flow .f.hit{color:var(--on-accent)}
+.cdn-flow .f.hit{background:var(--answer);border-color:var(--answer)}
+.cdn-flow .f.hit b{color:var(--on-accent);opacity:.75}
+.enc-screen{background:#02050a;border-top:1px solid var(--line);text-shadow:0 0 6px rgba(126,231,135,.35)}
+.timeline{scrollbar-color:var(--line) transparent}
+.timeline::-webkit-scrollbar{height:6px}
+.timeline::-webkit-scrollbar-track{background:transparent}
+.timeline::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.zone{filter:drop-shadow(0 0 6px var(--board-grid))}
+
+/* 送信・受信している2台を強く、それ以外を弱く */
+.node .icon{position:relative}
+.node .role{position:absolute;top:-11px;right:-22px;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:4px;background:var(--accent);color:var(--on-accent);box-shadow:0 0 10px var(--accent);opacity:0;transition:opacity .25s}
+.node.send .role,.node.recv .role{opacity:1}
+.node.hl .icon{background:var(--accent-soft);border-width:2.5px}
+.node.hl .lbl{border-color:var(--accent);color:var(--ink);box-shadow:0 0 10px var(--accent-soft)}
+.node.hl .sub{color:var(--ink)}
+.node.ans .icon{border-color:var(--answer);background:var(--answer-soft);box-shadow:0 0 0 1px var(--answer),0 0 22px var(--answer-soft)}
+.node.ans .icon svg{color:var(--answer)}
+.node.ans .lbl{border-color:var(--answer)}
+.node.ans .role{background:var(--answer);box-shadow:0 0 10px var(--answer)}
+.node.dim{opacity:.28;filter:grayscale(.7)}
+.zone,.zone-label{transition:opacity .4s}
+.zone-dim{opacity:.35}
+
+/* 色のトークンで切り替える装飾（ダークでは控えめ・ライトでは色を足す） */
+body::before{content:"";position:fixed;inset:0;background:var(--wash);pointer-events:none;z-index:-1}
+h1{background-image:var(--h1-grad)}
+h2 .num{background:var(--num-bg);color:var(--num-fg)}
+.card{background-image:var(--strip),linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));background-size:100% 3px,auto;background-repeat:no-repeat}
+.stage-bar,.stepper-bar{background:var(--bar-bg)}
+button.primary,.timeline button.cur:not(.ans){background:var(--primary-bg);border-color:transparent}
+.sub-h{border-left:4px solid transparent;border-image:var(--subh-bar) 1;padding-left:10px}
+.summary li::marker{color:var(--accent2)}
+@media (prefers-reduced-motion: reduce){
+  .kicker::before,.layer.on::after{animation:none}
+}
+.top-nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:14px}
+.top-nav a{color:var(--ink-2);text-decoration:none}
+.top-nav a:hover{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none;color:var(--accent)}
+
+/* ===== 章をまたいで使う部品（第3章以降） ===== */
+:root{--bad:#dc2626;--c-port:#64748b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bad:#ff5c5c;--c-port:#94a3b8}}
+:root[data-theme="dark"]{--bad:#ff5c5c;--c-port:#94a3b8}
+.card a{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none}
+.chap-nav a:hover{text-decoration:underline}
+.ver-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.toggle input{accent-color:var(--answer);width:16px;height:16px}
+.tag{display:inline-block;font-family:"JetBrains Mono",monospace;padding:0 6px;border-radius:4px;font-size:11px}
+.tag.q{background:var(--accent-soft);color:var(--accent)}
+.tag.a{background:var(--answer-soft);color:var(--answer)}
+kbd{font-family:"JetBrains Mono",monospace;font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface-2)}
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.cmp{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+table.cmp th,table.cmp td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.cmp thead th{background:var(--surface-2);font-size:13px;color:var(--ink-2)}
+table.cmp tbody th{font-weight:700;white-space:nowrap;color:var(--ink-2);font-size:13px}
+table.cmp tr:last-child td,table.cmp tr:last-child th{border-bottom:0}
+.trace .ln .hk{color:#79c0ff}
+.explain-box{margin-top:12px;font-size:14.5px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;min-height:3em}
+.explain-box b.t{display:block;font-size:15.5px}
+.explain-box.ans{border-left-color:var(--answer)}
+.big-stat{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--ink-2)}
+.big-stat b{font-family:"JetBrains Mono",monospace;font-size:26px;color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+input[type=range]{accent-color:var(--accent);width:100%}
+
+/* あいさつの図（はしご型） */
+.hs-card{padding:0;overflow:hidden}
+.hs-ladder{padding:16px 20px 6px}
+.hs-ends{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.hs-end{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:14px}
+.hs-state{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:1px 8px;border-radius:4px;border:1px solid var(--line);color:var(--ink-2);transition:all .3s}
+.hs-state.est{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.hs-state.mid{border-color:var(--accent);color:var(--accent)}
+.hs-rows{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px 0;min-height:200px;background:linear-gradient(var(--line),var(--line)) 25% 0/2px 100% no-repeat,linear-gradient(var(--line),var(--line)) 75% 0/2px 100% no-repeat}
+.hs-row{position:relative;height:44px;opacity:0;animation:in .4s forwards}
+.hs-arrow{position:absolute;top:22px;left:25%;right:25%;height:2px;background:var(--c);box-shadow:0 0 8px var(--c)}
+.hs-arrow::after{content:"";position:absolute;top:-5px;border:6px solid transparent}
+.hs-row.r .hs-arrow::after{right:-2px;border-left:9px solid var(--c);border-right:0}
+.hs-row.l .hs-arrow::after{left:-2px;border-right:9px solid var(--c);border-left:0}
+.hs-lbl{position:absolute;top:0;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;white-space:nowrap;color:var(--c);background:var(--surface);padding:0 8px;border-radius:4px}
+.hs-num{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2);white-space:nowrap}
+.hs-row.q{--c:var(--accent)}.hs-row.a{--c:var(--answer)}.hs-row.d{--c:var(--ok)}
+.hs-explain{padding:4px 20px 18px;font-size:15px}
+.hs-explain h3{margin:0 0 4px;font-size:18px}
+
+@keyframes pin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (max-width:720px){.hs-lbl{font-size:11px}.hs-num{font-size:10px}}
+
+/* 小さなブラウザの画面 */
+.mini-browser{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column;min-height:150px}
+.mb-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.mb-dots{display:flex;gap:4px}.mb-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.mb-url{flex:1;min-width:0;font-size:11.5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mb-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;text-align:center;font-size:14px}
+.mb-page .big{font-size:26px;font-weight:700;line-height:1.2}
+.mb-page .sm{font-size:12px;color:var(--ink-2)}
+.mb-page.warn{background:rgba(220,38,38,.08)}
+.row-btns{flex-wrap:wrap}
+.row-btns button,.ver-bar button{white-space:nowrap}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tri .mini-card p{margin:0}
+.rtt-lbl{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.rtt-lbl b{font-family:"JetBrains Mono",monospace;color:var(--accent)}
+@media (max-width:720px){.tri{grid-template-columns:1fr}}
+section > .card + .card{margin-top:14px}
+.note a{color:var(--accent)}
+.devtools ol{margin:6px 0 0;padding-left:1.4em;font-size:14.5px}
+.devtools li{margin:4px 0}
+.stepper > .explain-box{margin:0 20px 18px}
+
+/* ===== 第4章 ===== */
+/* 4.1 途中の悪い人 */
+.mitm{display:grid;grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr) auto;align-items:center;gap:8px;margin:6px 0 14px}
+.mitm-node{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12.5px;text-align:center}
+.mitm-ic{width:54px;height:54px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:26px;background:var(--surface)}
+.mitm-node.evil .mitm-ic{border-color:var(--bad);box-shadow:0 0 14px rgba(220,38,38,.25)}
+.mitm-wire{position:relative;height:4px;border-radius:2px;background:var(--line)}
+.mitm-pkt{position:absolute;top:50%;left:0;transform:translate(-50%,-50%);font-size:18px;transition:left .9s cubic-bezier(.4,0,.2,1);opacity:0}
+.mitm-pkt.go{left:100%;opacity:1}
+.mitm-btns{flex-wrap:wrap}
+.mitm-out{margin-top:12px;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.mitm-box{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-2);font-size:13.5px}
+.mitm-box h4{margin:0 0 6px;font-size:13px;color:var(--ink-2)}
+.mitm-box .code{font-family:"JetBrains Mono",monospace;font-size:12.5px;background:#0d1117;color:#c9d1d9;border-radius:6px;padding:8px 10px;overflow-wrap:anywhere;line-height:1.6}
+.mitm-box .code .hl{color:#ff7b72;font-weight:700}
+.mitm-box .code .ok{color:#7ee787}
+.mitm-box.vbox{border-left:4px solid var(--c,var(--line))}
+.mitm-box.vbox.bad{--c:var(--bad)}.mitm-box.vbox.good{--c:var(--ok)}
+.mitm-box.vbox b.v{display:block;font-size:15px;color:var(--c);margin-bottom:2px}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tri .mini-card p{margin:0}
+
+/* 4.2 鍵 */
+.keyfig{display:flex;align-items:center;justify-content:center;gap:10px;font-size:28px;margin:6px 0 8px;padding:10px;border-radius:10px;background:var(--surface-2)}
+.keyfig span{display:flex;flex-direction:column;align-items:center}
+.keyfig small{font-size:10.5px;color:var(--ink-2)}
+.keyfig .arr{font-size:18px;color:var(--ink-2)}
+
+/* 4.3 絵の具 */
+.dh{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.dh-side{border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--surface-2)}
+.dh-h{font-size:13px;font-weight:700;margin-bottom:8px}
+.dh-pal{display:flex;flex-wrap:wrap;gap:8px}
+.dh-pal button{width:38px;height:38px;border-radius:50%;padding:0;border:3px solid transparent;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)}
+.dh-pal button.on{border-color:var(--ink);box-shadow:var(--glow)}
+.dh-steps{display:flex;flex-direction:column;gap:8px;margin-top:14px}
+.dh-row{display:grid;grid-template-columns:2.2em minmax(0,1fr);gap:10px;align-items:center;font-size:14px;padding:8px 10px;border-radius:8px;background:var(--surface-2)}
+.dh-row .n{font-family:"JetBrains Mono",monospace;color:var(--accent);font-size:13px}
+.dh-row .eq{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.sw{display:inline-block;width:26px;height:26px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(0,0,0,.2),0 0 0 2px var(--surface);vertical-align:middle}
+.sw.big{width:44px;height:44px}
+.dh-row.pub{outline:1px dashed var(--answer)}
+.dh-row .pubtag{font-size:11px;font-weight:700;color:var(--answer);border:1px solid var(--answer);border-radius:4px;padding:0 6px}
+.dh-final{display:flex;flex-wrap:wrap;align-items:center;gap:12px;padding:10px 12px;border-radius:10px;border:2px solid var(--ok);background:var(--ok-soft);font-size:14px}
+.dh-final b{color:var(--ok)}
+.dh-eve{margin-top:12px;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:10px 12px;border-radius:10px;border:1px solid var(--bad);background:rgba(220,38,38,.07);font-size:13.5px}
+.pq{margin-top:14px}
+
+/* 4.5 証明書 */
+.tabs button small{display:block;font-size:10px;font-weight:400;font-family:"Noto Sans JP",sans-serif;opacity:.85}
+.cert-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
+.cert-chain{display:flex;flex-direction:column;gap:4px}
+.cert{border:1px solid var(--line);border-left:4px solid var(--c,var(--accent));border-radius:8px;padding:6px 10px;background:var(--surface);font-size:12.5px;line-height:1.5}
+.cert b{display:block;font-size:13px;font-family:"JetBrains Mono",monospace;overflow-wrap:anywhere}
+.cert span{color:var(--ink-2);font-size:11.5px}
+.cert.root{--c:var(--ok)}
+.cert.bad{--c:var(--bad);background:rgba(220,38,38,.07)}
+.cert-arrow{font-size:11.5px;color:var(--ink-2);padding-left:14px}
+.cert-arrow.bad{color:var(--bad);font-weight:700}
+.cert-checks{list-style:none;margin:0 0 10px;padding:0;display:flex;flex-direction:column;gap:4px;font-size:13.5px}
+.cert-checks li{display:flex;gap:8px;align-items:baseline;padding:4px 8px;border-radius:6px;background:var(--surface-2)}
+.cert-checks li::before{content:"✓";color:var(--ok);font-weight:700}
+.cert-checks li.ng{background:rgba(220,38,38,.08)}
+.cert-checks li.ng::before{content:"✕";color:var(--bad)}
+.cert-mb{min-height:130px}
+.mb-lock{font-size:13px}
+.cert-explain{margin-top:12px;font-size:14.5px;border-left:3px solid var(--accent);padding:2px 0 2px 12px}
+
+/* 4.6 AES-GCM */
+.aes-lbl{font-size:13px;color:var(--ink-2)}
+.aes-in{width:100%;font:inherit;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);margin-top:4px}
+.aes-out{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.aes-step{display:grid;grid-template-columns:7.5em minmax(0,1fr);gap:10px;align-items:start;font-size:13px}
+.aes-step .k{color:var(--ink-2);padding-top:6px}
+.aes-step .v{font-family:"JetBrains Mono",monospace;font-size:12px;background:#0d1117;color:#c9d1d9;border-radius:6px;padding:6px 10px;overflow-wrap:anywhere;line-height:1.6}
+.aes-step .v .flip{background:#ff7b72;color:#0d1117;border-radius:2px}
+.aes-step .v.ok{color:#7ee787}
+.aes-step .v.ng{color:#ff7b72;font-family:"Noto Sans JP",sans-serif;font-weight:700}
+
+/* 4.7 見えるもの */
+.see-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.see-item{border:1px solid var(--line);border-radius:8px;padding:8px 10px;background:var(--surface-2);font-size:12.5px}
+.see-item b{display:block;font-size:12px;color:var(--ink-2);font-weight:700;margin-bottom:2px}
+.see-item code{font-size:12px;overflow-wrap:anywhere}
+.see-item.vis{border-color:var(--answer)}
+.see-item.vis b::after{content:" 見える";color:var(--answer)}
+.see-item.hid{opacity:.75}
+.see-item.hid b::after{content:" 隠れる";color:var(--ok)}
+.see-item.hid code{color:var(--ink-2)}
+.see-explain{margin-top:12px;font-size:14px}
+
+/* 4.8 QUIC */
+.rtt-lbl{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.rtt-lbl b{font-family:"JetBrains Mono",monospace;color:var(--accent)}
+.qbars{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.qbar{display:grid;grid-template-columns:11em minmax(0,1fr) 5.5em;gap:10px;align-items:center;font-size:13px}
+.qbar .nm{font-weight:700}
+.qbar .nm small{display:block;font-weight:400;color:var(--ink-2);font-size:11px}
+.qtrack{display:flex;height:24px;border-radius:6px;background:var(--surface-2);overflow:hidden}
+.qseg{height:100%;transition:width .4s;display:grid;place-items:center;font-size:10.5px;font-weight:700;color:var(--on-accent);white-space:nowrap;overflow:hidden}
+.qseg.tcp{background:var(--accent)}
+.qseg.tls{background:var(--accent2)}
+.qseg.quic{background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.qbar .ms{font-family:"JetBrains Mono",monospace;font-weight:700;color:var(--accent);text-align:right}
+
+@media (max-width:720px){
+  .mitm{grid-template-columns:auto minmax(0,1fr) auto minmax(0,1fr) auto;gap:4px}
+  .mitm-ic{width:40px;height:40px;font-size:20px}
+  .mitm-node{font-size:11px}
+  .mitm-out,.cert-grid,.dh{grid-template-columns:1fr}
+  .tri{grid-template-columns:1fr}
+  .qbar{grid-template-columns:1fr 4.5em}
+  .qbar .qtrack{grid-column:1/3;grid-row:2}
+  .aes-step{grid-template-columns:1fr}
+  .aes-step .k{padding-top:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <nav class="top-nav"><a href="index.html">← 目次</a><a href="tcp.html">← 第3章 TCP</a><a href="ip.html">第5章 IPとイーサネット →</a></nav>
+  <div class="kicker">触って学ぶネットワーク ・ 第4章（試作）</div>
+  <h1>HTTPS ── 鍵をかけて送る</h1>
+  <p class="lead">TCPでつながった道は、たくさんの人や機械を通り抜けていきます。カフェのWi-Fi、プロバイダ、知らない国のルーター……。その途中で手紙を読まれたり、書き換えられたりしないように、手紙に<b>鍵をかける</b>のが HTTPS です。今では、Chrome で開かれるページの95%以上がHTTPSです。</p>
+</header>
+
+<section>
+  <h2><span class="num">4.1</span>HTTPSが守る3つのこと</h2>
+  <p>途中に悪い人がいたら、何ができてしまうでしょう。<code>http://</code> と <code>https://</code> を切りかえて、悪い人の手口を試してみましょう。</p>
+  <div class="card">
+    <div class="ver-bar">
+      <div class="seg" id="mitmMode">
+        <button data-m="http" class="on">http://（鍵なし）</button>
+        <button data-m="https">https://（鍵あり）</button>
+      </div>
+    </div>
+    <div class="mitm">
+      <div class="mitm-node"><div class="mitm-ic">💻</div><b>あなた</b></div>
+      <div class="mitm-wire"><div class="mitm-pkt" id="mitmPkt"></div></div>
+      <div class="mitm-node evil"><div class="mitm-ic">🕵️</div><b>途中の悪い人</b></div>
+      <div class="mitm-wire"></div>
+      <div class="mitm-node"><div class="mitm-ic">🏦</div><b>銀行のサーバー</b></div>
+    </div>
+    <div class="row-btns mitm-btns">
+      <button data-atk="peek">① のぞき見する</button>
+      <button data-atk="edit">② 書き換える</button>
+      <button data-atk="fake">③ なりすます</button>
+    </div>
+    <div class="mitm-out" id="mitmOut" aria-live="polite"></div>
+  </div>
+  <div class="tri">
+    <div class="card mini-card"><h3>🔒 暗号化</h3><p>中身を読めないようにする。<b>のぞき見</b>を防ぐ。</p></div>
+    <div class="card mini-card"><h3>🧾 改ざんの検知</h3><p>1文字でも変われば気づく。<b>書き換え</b>を防ぐ。</p></div>
+    <div class="card mini-card"><h3>🪪 相手の確認</h3><p>証明書で本物か確かめる。<b>なりすまし</b>を防ぐ。</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">4.2</span>2種類の鍵</h2>
+  <p>暗号には、大きく分けて2種類の鍵の使い方があります。HTTPSは、この2つのいいところを組み合わせています。</p>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>共通鍵：同じ鍵で閉めて、開ける</h3>
+      <div class="keyfig"><span>🔑</span><span class="arr">→ 📦🔒 →</span><span>🔑</span></div>
+      <p>送る人と受け取る人が<b>同じ鍵</b>を持ちます。計算がとても速いので、たくさんのデータを送るのに向いています。困るのは、<b>その鍵をどうやって相手に渡すか</b>です。ネットワークで送ったら、途中で盗まれてしまいます。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>公開鍵：だれでも閉められて、本人しか開けられない</h3>
+      <div class="keyfig"><span>🔓<small>公開鍵（配る）</small></span><span class="arr">→ 📦🔒 →</span><span>🗝️<small>秘密鍵（自分だけ）</small></span></div>
+      <p>開いた南京錠（<b>公開鍵</b>）をみんなに配っておき、開けるための鍵（<b>秘密鍵</b>）は自分だけが持ちます。だれでも箱に鍵をかけて送れますが、開けられるのは本人だけです。ただし計算が重く、たくさんのデータには向きません。</p>
+    </div>
+  </div>
+  <p>そこでHTTPSは、<b>最初のあいさつのときだけ</b>公開鍵の考え方を使って共通鍵を安全に用意し、<b>あとの本番のデータは速い共通鍵</b>で暗号化します。共通鍵を「渡す」のではなく、おたがいの手元で「同じものを作る」方法が、次の 4.3 です。</p>
+</section>
+
+<section>
+  <h2><span class="num">4.3</span>鍵を送らずに、同じ鍵を作る</h2>
+  <p>途中の人に見られていても、2人だけが同じ秘密を持てる。そんな魔法のような方法を、<b>絵の具</b>で体験してみましょう。絵の具は、混ぜるのは簡単でも、混ざった色から元の色に分けるのはとても難しい、という性質がポイントです。</p>
+  <div class="card">
+    <div class="dh">
+      <div class="dh-side">
+        <div class="dh-h">💻 あなたの秘密の色</div>
+        <div class="dh-pal" id="dhPalA"></div>
+      </div>
+      <div class="dh-side">
+        <div class="dh-h">🏦 サーバーの秘密の色</div>
+        <div class="dh-pal" id="dhPalB"></div>
+      </div>
+    </div>
+    <div class="dh-steps" id="dhSteps"></div>
+    <div class="dh-eve" id="dhEve"></div>
+  </div>
+  <p>本物のHTTPSでは、絵の具の代わりに数学を使います。今よく使われるのは <b>X25519</b>（楕円曲線という数学を使う方式）で、「混ぜる」は一瞬でも、「分ける」のは今のコンピュータでは現実的な時間では終わらない計算になっています。</p>
+  <div class="card mini-card pq">
+    <h3>量子コンピュータに備える</h3>
+    <p>将来、量子コンピュータが実用になると、今の鍵の作り方は解かれてしまうおそれがあります。今のうちに通信を記録しておき、将来まとめて解読する、という手口も考えられます。そこで、今までの X25519 と、量子コンピュータでも解きにくい新しい方式 <b>ML-KEM</b> を組み合わせた <b>X25519MLKEM768</b> が広がっています。Chrome・Firefox・Safari が最初から使うようになり、Cloudflare によると、2025年10月の終わりには、Cloudflare に届く人のアクセスの半分以上がこの方式で守られていました。</p>
+    <p class="note">出典：<a href="https://blog.cloudflare.com/pq-2025/" target="_blank" rel="noopener">Cloudflare「State of the post-quantum Internet in 2025」</a></p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">4.4</span>TLS 1.3 のあいさつ</h2>
+  <p>HTTPSで鍵を用意するあいさつの決まりを <b>TLS</b> と呼びます。今の主流は <b>TLS 1.3</b>（2018年）です。TCPのあいさつ（第3章）が終わったあと、続けてこのあいさつをします。ひとつ前の TLS 1.2 とも比べてみましょう。</p>
+  <div class="card hs-card">
+    <div class="stepper-bar">
+      <div class="seg" id="tlsMode">
+        <button data-mode="13" class="on">TLS 1.3</button>
+        <button data-mode="12">TLS 1.2（昔）</button>
+      </div>
+      <div class="group">
+        <button id="tlsFirst">⟲ 最初から</button>
+        <span class="counter" id="tlsCount">0 / 4</span>
+        <button class="primary" id="tlsNext">次へ ▶</button>
+      </div>
+    </div>
+    <div class="hs-ladder">
+      <div class="hs-ends">
+        <div class="hs-end"><b>ブラウザ</b><span class="hs-state" id="tlsStA">鍵なし</span></div>
+        <div class="hs-end"><b>サーバー</b><span class="hs-state" id="tlsStB">鍵なし</span></div>
+      </div>
+      <div class="hs-rows" id="tlsRows"></div>
+    </div>
+    <div class="hs-explain" id="tlsExplain" aria-live="polite"></div>
+  </div>
+  <p>TLS 1.3 は、最初のあいさつに<b>鍵の材料をいきなり入れて送る</b>ことで、あいさつを<b>1往復</b>に減らしました（TLS 1.2 は2往復）。さらに、2回目のサーバーの返事からはもう暗号化されているので、証明書の中身も途中の人には見えません。</p>
+</section>
+
+<section>
+  <h2><span class="num">4.5</span>証明書 ── 本物のサーバーだと確かめる</h2>
+  <p>鍵を作れても、相手が<b>にせもの</b>だったら意味がありません。そこでサーバーは、<b>証明書</b>という身分証を見せます。証明書は、信頼できる会社（<b>認証局</b>）が「この公開鍵は example.com のものです」と署名したものです。ブラウザがどこを確かめているのか、いろいろな証明書で試してみましょう。</p>
+  <div class="card">
+    <div class="tabs" id="certTabs"></div>
+    <div class="cert-grid">
+      <div class="cert-chain" id="certChain"></div>
+      <div>
+        <ul class="cert-checks" id="certChecks"></ul>
+        <div class="mini-browser cert-mb">
+          <div class="mb-bar"><span class="mb-lock" id="certLock">🔒</span><span class="mb-url mono">https://www.example.com/</span></div>
+          <div class="mb-page" id="certPage"></div>
+        </div>
+      </div>
+    </div>
+    <div class="cert-explain" id="certExplain" aria-live="polite"></div>
+  </div>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>信頼のリレーの出発点は、OSとブラウザの中</h3>
+      <p>一番上の<b>ルート証明書</b>は、OSやブラウザに最初から入っています。そこから下へ「この会社は信頼できる」と署名がつながっていれば、本物とみなします。第2章のDNSSECの「信頼のリレー」と、同じ考え方です。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>証明書の寿命は、どんどん短くなる</h3>
+      <p>盗まれた鍵が長く悪用されないように、証明書の有効期間は短くなっています。ブラウザと認証局の業界団体（CA/Browser Forum）の決まりで、最長の日数は2026年3月15日から<b>200日</b>、2027年3月から100日、2029年3月から<b>47日</b>になります。example.com の証明書は、2026年10月時点で<b>90日</b>でした。こまめな取り替えは、自動で行うのが当たり前になっています。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">4.6</span>暗号化を体験してみよう</h2>
+  <p>鍵が用意できたら、本番のデータは共通鍵で暗号化します。HTTPSでよく使われる <b>AES-GCM</b> という方式で、実際に暗号化してみましょう。ブラウザに入っている本物の暗号の機能を使っています。</p>
+  <div class="card">
+    <label class="aes-lbl" for="aesIn">送りたい文</label>
+    <input id="aesIn" class="aes-in" value="パスワードは hunter2 です" spellcheck="false" autocomplete="off">
+    <div class="row-btns">
+      <button class="primary" id="aesEnc">暗号化して送る</button>
+      <button id="aesTamper" disabled>途中で1文字だけ書き換える</button>
+      <button id="aesNew">鍵を作り直す</button>
+    </div>
+    <div class="aes-out" id="aesOut"></div>
+  </div>
+  <p>同じ文でも、暗号化するたびにまったく違う文字の並びになります（毎回ちがう「使い捨ての番号」を混ぜるため）。そして、途中で<b>1文字でも変えると、受け取った側は開けることを拒みます</b>。AES-GCM は、暗号化と同時に「書き換えられていないか」の確認もできる方式なのです。</p>
+</section>
+
+<section>
+  <h2><span class="num">4.7</span>それでも途中の人に見えるもの</h2>
+  <p>HTTPSで中身は隠せても、<b>何も見えなくなるわけではありません</b>。途中の人に何が見えるのか、切りかえて比べてみましょう。</p>
+  <div class="card">
+    <div class="seg wrap-seg" id="seeMode">
+      <button data-s="http">http://</button>
+      <button data-s="https" class="on">https://</button>
+      <button data-s="ech">https:// ＋ ECH</button>
+    </div>
+    <div class="see-grid" id="seeGrid"></div>
+    <div class="see-explain" id="seeExplain"></div>
+  </div>
+  <p><b>SNI</b>（Server Name Indication）は、最初のあいさつに書く「どのサイトにつなぎたいか」です。1つのサーバーでたくさんのサイトを動かしていると、サーバーは証明書を選ぶためにこれを知る必要があります。ただ、あいさつの最初はまだ暗号化されていないので、サイトの名前が見えてしまっていました。</p>
+  <p>これを隠すのが <b>ECH</b>（Encrypted Client Hello）です。2026年3月に RFC 9849 として正式な規格になりました。暗号化に使う鍵は、第2章で見たDNSの <b>HTTPSレコード</b>で前もって配ります。</p>
+</section>
+
+<section>
+  <h2><span class="num">4.8</span>QUIC ── つなぐと鍵を、いっぺんに</h2>
+  <p>ここまでの流れでは、TCPのあいさつ（1往復）のあとに、TLSのあいさつ（1往復）をしていました。HTTP/3 で使う <b>QUIC</b> は、この2つを<b>1回のあいさつにまとめ</b>ます。往復の時間を変えて、リクエストを送れるまでの時間を比べてみましょう。</p>
+  <div class="card">
+    <label class="rtt-lbl"><span>往復の時間：<b id="qRttOut">50</b> ミリ秒</span><input type="range" id="qRtt" min="5" max="300" value="50"></label>
+    <div class="qbars" id="qBars"></div>
+    <p class="note">「再訪問」は、前に一度つないだことがあるサイトに、そのときの情報を使ってつなぐ場合です。最初の手紙からデータを入れられますが（0-RTT）、悪い人に同じ手紙を送り直されるおそれがあるため、何度送られても困らない頼みごと（ページを見るだけ、など）にしか使いません。</p>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">4.9</span>自分のPCで試してみよう</h2>
+  <p>ブラウザのアドレスバーの左にある<b>鍵のマーク</b>（Chromeでは調整のマーク）を押すと、「この接続は保護されています」から証明書を見られます。ターミナルでも確かめられます。</p>
+  <div class="card">
+    <div class="seg wrap-seg">
+      <button data-os="mac" class="on">Mac</button>
+      <button data-os="win">Windows</button>
+    </div>
+    <div class="cmds" id="cmds"></div>
+  </div>
+  <h3 class="sub-h">実際の証明書を読んでみよう</h3>
+  <p>下は、2026年10月18日に Mac で example.com の証明書を調べた、実際の結果です。行を押すと説明が出ます。</p>
+  <div class="card trace-card">
+    <div class="trace mono" id="real"></div>
+    <div class="trace-explain" id="realExplain" aria-live="polite"><span class="note">↑ 気になる行を押してみてください</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">4.10</span>まとめ</h2>
+  <div class="card summary">
+    <ul>
+      <li>HTTPSは <b>暗号化</b>（のぞき見を防ぐ）・<b>改ざんの検知</b>（書き換えを防ぐ）・<b>相手の確認</b>（なりすましを防ぐ）の3つを守る</li>
+      <li>鍵には <b>共通鍵</b>（速い）と <b>公開鍵</b>（鍵を渡す問題を解く）がある。HTTPSはあいさつで共通鍵を用意し、本番は共通鍵で送る</li>
+      <li>鍵は送らずに、<b>おたがいの手元で同じものを作る</b>（X25519）。量子コンピュータに備えた ML-KEM との組み合わせが広がっている</li>
+      <li><b>TLS 1.3</b> のあいさつは1往復。2回目のサーバーの返事からは暗号化されている</li>
+      <li><b>証明書</b>で相手が本物か確かめる。名前・期限・認証局の署名のリレーを確認する。寿命は2029年に47日まで短くなる</li>
+      <li>HTTPSでも、相手のIPアドレスや <b>SNI</b>（サイトの名前）は見える。SNIを隠すのが <b>ECH</b></li>
+      <li><b>QUIC</b> は、つなぐあいさつと鍵のあいさつを1回にまとめて速くした</li>
+    </ul>
+  </div>
+  <p>これで、鍵のかかった手紙を送る準備が整いました。次の章では、この手紙を小さな小包に詰め、宛先のラベルを貼って、実際にネットワークへ送り出すところを見ていきます。</p>
+
+  <h2><span class="num">4.11</span>確認クイズ</h2>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<footer>
+  <div class="chap-nav"><a href="ip.html">次の章：<b>第5章 IPとイーサネットで包む</b> →</a></div>
+  この教材の文章と図はオリジナルです。数値や出来事は2026年10月18日時点で確認したものです。<br>
+  参考：RFC 8446（TLS 1.3）、RFC 7748（X25519）、RFC 9849（ECH）、RFC 9460（HTTPSレコード）、RFC 9000・9001（QUIC）、RFC 5280（証明書）、<a href="https://cabforum.org/2025/04/11/ballot-sc081v3-introduce-schedule-of-reducing-validity-and-data-reuse-periods/" target="_blank" rel="noopener">CA/Browser Forum Ballot SC-081v3</a>、<a href="https://blog.google/security/https-by-defau/" target="_blank" rel="noopener">Google（HTTPSの割合）</a>、<a href="https://blog.cloudflare.com/pq-2025/" target="_blank" rel="noopener">Cloudflare（耐量子暗号）</a>
+</footer>
+</div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* コマンド集（Mac / Windows の切り替えとコピー） */
+function setupCmds(C, boxId = 'cmds'){
+  const box = $(boxId);
+  function show(os){
+    document.querySelectorAll('[data-os]').forEach(b => b.classList.toggle('on', b.dataset.os === os));
+    box.innerHTML = C[os].map(([c, d]) => `<div class="cmd"><div class="cmd-line"><code>${esc(c)}</code><button data-c="${esc(c)}">コピー</button></div><div class="cmd-desc">${d}</div></div>`).join('') + (C[os + 'Note'] || '');
+    box.querySelectorAll('[data-c]').forEach(b => b.onclick = async () => {
+      try{ await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'コピーした'; }
+      catch(e){ b.textContent = '選択してコピーしてね'; }
+      setTimeout(() => b.textContent = 'コピー', 1500);
+    });
+  }
+  document.querySelectorAll('[data-os]').forEach(b => b.onclick = () => show(b.dataset.os));
+  show('mac');
+}
+
+/* 実際の結果を1行ずつ解説する欄。L=[[グループ, 行の文字]]、E={グループ:[見出し, 説明]}。グループ'c'は説明なしの行 */
+function setupTrace(id, exId, L, E){
+  const tr = $(id);
+  tr.innerHTML = L.map(([g, t]) => `<div class="ln ${g === 'c' ? 'cmt' : 'g'}" data-g="${g}" ${g === 'c' ? '' : 'tabindex="0" role="button"'}>${esc(t).replace(/^([a-zA-Z_-]+[:=])/, '<span class="k">$1</span>')}</div>`).join('');
+  function pick(g){
+    tr.querySelectorAll('.ln').forEach(l => l.classList.toggle('on', l.dataset.g === g));
+    $(exId).innerHTML = `<h4>${E[g][0]}</h4>${E[g][1]}`;
+  }
+  tr.querySelectorAll('.ln.g').forEach(l => {
+    l.onclick = () => pick(l.dataset.g);
+    l.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); pick(l.dataset.g); } };
+  });
+}
+
+/* 確認クイズ */
+function setupQuiz(QUIZ, id = 'quiz'){
+  const quizEl = $(id);
+  QUIZ.forEach((item, qi) => {
+    const d = document.createElement('div');
+    d.className = 'card q';
+    d.innerHTML = `<b>Q${qi + 1}. ${item.q}</b><div class="opts">${item.o.map((o, k) => `<button data-k="${k}">${o}</button>`).join('')}</div><div class="fb"></div>`;
+    d.querySelectorAll('.opts button').forEach(b => b.onclick = () => {
+      const k = +b.dataset.k;
+      d.querySelectorAll('.opts button').forEach(x => x.classList.remove('right', 'wrong'));
+      b.classList.add(k === item.a ? 'right' : 'wrong');
+      d.querySelector('.fb').innerHTML = (k === item.a ? '⭕ 正解！ ' + item.e : '❌ もう一度考えてみよう。');
+    });
+    quizEl.appendChild(d);
+  });
+}
+
+/* 1歩ずつ進める手順（最初から・戻る・次へ）。render(i) を呼ぶ */
+function setupStepper({first, prev, next, count, total, render}){
+  let i = 0;
+  const upd = () => { render(i); $(count).textContent = `${i + 1} / ${total}`; $(prev).disabled = i === 0; $(next).disabled = i === total - 1; };
+  $(first).onclick = () => { i = 0; upd(); };
+  $(prev).onclick = () => { if(i > 0){ i--; upd(); } };
+  $(next).onclick = () => { if(i < total - 1){ i++; upd(); } };
+  upd();
+}
+
+/* 点を折れ線にそって動かす（SVG） */
+function moveDot(svg, pts, dur, color, r = 6){
+  return new Promise(res => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', r); c.setAttribute('fill', color); c.style.filter = `drop-shadow(0 0 4px ${color})`;
+    svg.appendChild(c);
+    const seg = []; let total = 0;
+    for(let i = 1; i < pts.length; i++){ const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); total += d; }
+    const t0 = performance.now(), D = reduced() ? 1 : dur;
+    const step = now => {
+      let k = Math.min(1, (now - t0) / D), dist = k * total, i = 0;
+      while(i < seg.length - 1 && dist > seg[i]){ dist -= seg[i]; i++; }
+      const f = seg[i] ? dist / seg[i] : 0;
+      c.setAttribute('cx', pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f);
+      c.setAttribute('cy', pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f);
+      if(k < 1) requestAnimationFrame(step); else { c.remove(); res(); }
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+
+/* ---------- 4.1 途中の悪い人 ---------- */
+(function(){
+  let mode = 'http';
+  const A = {
+    peek:{
+      http:['<span>POST /login HTTP/1.1</span><br>Host: bank.example<br><br>id=yamada&amp;password=<span class="hl">hunter2</span>', 'bad', 'パスワードを盗まれた', 'はがきと同じで、中身が丸見えです。カフェのWi-Fiで、同じネットワークにいる人に読まれてしまうかもしれません。'],
+      https:['17 03 03 01 2a 9f e1 4c 08 b2 7d 3a c5 91 e0 6f 44 2b d8 13 a7 5e 0c 99 …', 'good', '読めない', '見えるのは意味のない文字の並びだけ。わかるのは、相手のサーバーと、だいたいのデータの量くらいです（4.7）。'],
+    },
+    edit:{
+      http:['振込先=山田　金額=1,000円<br>↓ 書き換え<br>振込先=<span class="hl">悪い人</span>　金額=<span class="hl">100,000円</span>', 'bad', '書き換えられたまま届いた', 'サーバーには、書き換えられたことを知る方法がありません。そのまま処理されてしまいます。'],
+      https:['17 03 03 01 2a 9f e1 <span class="hl">4d</span> 08 b2 7d …<br>↓ サーバーで確認<br><span class="ok">「書き換えられている」と検知して捨てる</span>', 'good', '書き換えに気づく', '暗号化と一緒に「改ざんを見つけるしるし」がついているので、1文字でも変われば気づけます（4.6で体験できます）。'],
+    },
+    fake:{
+      http:['悪い人が銀行のふりをして、<br>本物そっくりの<span class="hl">にせのログイン画面</span>を返す', 'bad', 'だまされる', 'http では、返事をくれた相手が本物の銀行かどうか、ブラウザには確かめようがありません。'],
+      https:['悪い人は bank.example の<span class="hl">正しい証明書を出せない</span><br>↓<br><span class="ok">ブラウザが警告の画面を出して止める</span>', 'good', 'にせものだと見抜く', '証明書は、認証局が「本当に bank.example の持ち主だ」と確かめてから発行します。悪い人には手に入りません（4.5）。'],
+    },
+  };
+  const LBL = {peek:'① のぞき見', edit:'② 書き換え', fake:'③ なりすまし'};
+  function atk(k){
+    const [code, cls, v, e] = A[k][mode];
+    const pkt = $('mitmPkt');
+    pkt.textContent = mode === 'http' ? '✉️' : '🔐';
+    pkt.classList.remove('go'); void pkt.offsetWidth; pkt.classList.add('go');
+    $('mitmOut').innerHTML = `<div class="mitm-box"><h4>🕵️ 悪い人の手元（${LBL[k]}）</h4><div class="code">${code}</div></div><div class="mitm-box vbox ${cls}"><b class="v">${cls === 'bad' ? '✕ ' : '✓ '}${v}</b>${e}</div>`;
+  }
+  document.querySelectorAll('[data-atk]').forEach(b => b.onclick = () => atk(b.dataset.atk));
+  document.querySelectorAll('#mitmMode button').forEach(b => b.onclick = () => {
+    mode = b.dataset.m;
+    document.querySelectorAll('#mitmMode button').forEach(x => x.classList.toggle('on', x === b));
+    $('mitmOut').innerHTML = `<div class="mitm-box" style="grid-column:1/-1"><h4>${mode === 'http' ? 'http://（鍵なし）' : 'https://（鍵あり）'}にしました</h4>3つの手口を試してみましょう。</div>`;
+  });
+  $('mitmOut').innerHTML = '<div class="mitm-box" style="grid-column:1/-1"><h4>使い方</h4>上の①〜③を押すと、悪い人の手口を試せます。そのあと https:// に切りかえて、同じ手口を試してみましょう。</div>';
+})();
+
+/* ---------- 4.3 絵の具で鍵を作る ---------- */
+(function(){
+  const COMMON = [245, 209, 66];
+  const PAL = [[220, 38, 38], [37, 99, 235], [22, 163, 74], [147, 51, 234], [236, 72, 153], [14, 165, 233], [120, 53, 15], [249, 115, 22]];
+  let a = 0, b = 1;
+  const hex = c => '#' + c.map(v => Math.round(v).toString(16).padStart(2, '0')).join('');
+  const avg = (...cs) => [0, 1, 2].map(i => cs.reduce((s, c) => s + c[i], 0) / cs.length);
+  const sw = (c, big) => `<span class="sw${big ? ' big' : ''}" style="background:${hex(c)}"></span>`;
+  function pal(id, sel, set){
+    $(id).innerHTML = PAL.map((c, i) => `<button style="background:${hex(c)}" data-i="${i}" class="${i === sel ? 'on' : ''}" aria-label="色${i + 1}"></button>`).join('');
+    $(id).querySelectorAll('button').forEach(x => x.onclick = () => { set(+x.dataset.i); draw(); });
+  }
+  function draw(){
+    pal('dhPalA', a, i => a = i); pal('dhPalB', b, i => b = i);
+    const A = PAL[a], B = PAL[b];
+    const mA = avg(COMMON, A), mB = avg(COMMON, B);
+    const fA = avg(mB, mB, A), fB = avg(mA, mA, B);   // どちらも (共通＋A＋B)÷3 になる
+    const eve = avg(mA, mB);
+    $('dhSteps').innerHTML = `
+      <div class="dh-row pub"><span class="n">①</span><span class="eq">共通の色を決める ${sw(COMMON)} <span class="pubtag">みんなに見える</span></span></div>
+      <div class="dh-row"><span class="n">②</span><span class="eq">あなた：${sw(COMMON)} ＋ 秘密 ${sw(A)} ＝ ${sw(mA)} → サーバーへ送る <span class="pubtag">送った色は見える</span></span></div>
+      <div class="dh-row"><span class="n">③</span><span class="eq">サーバー：${sw(COMMON)} ＋ 秘密 ${sw(B)} ＝ ${sw(mB)} → あなたへ送る <span class="pubtag">送った色は見える</span></span></div>
+      <div class="dh-row"><span class="n">④</span><span class="eq">あなた：もらった ${sw(mB)} ＋ 秘密 ${sw(A)} ＝ ${sw(fA, true)}　／　サーバー：もらった ${sw(mA)} ＋ 秘密 ${sw(B)} ＝ ${sw(fB, true)}</span></div>
+      <div class="dh-final">${sw(fA, true)}<span><b>2人とも同じ色になりました！</b> これが2人だけの共通鍵です。秘密の色は、一度も外に出していません。</span></div>`;
+    $('dhEve').innerHTML = `🕵️ 途中の人が見たのは ${sw(COMMON)} ${sw(mA)} ${sw(mB)} だけ。混ぜてみても ${sw(eve, true)} になり、2人の色 ${sw(fA)} とはちがいます。混ざった色から秘密の色を取り出せないからです。`;
+  }
+  draw();
+})();
+
+/* ---------- 4.4 TLS のあいさつ ---------- */
+(function(){
+  const M = {
+    '13':[
+      {d:'r', c:'q', l:'ClientHello', n:'使える方式・鍵の材料・SNI・ALPN', h:'① ClientHello：「この方式が使えます。鍵の材料もどうぞ」', e:'ブラウザは、使える暗号の方式の一覧と一緒に、<b>鍵の材料</b>（4.3 の「混ぜた絵の具」）をいきなり入れて送ります。つなぎたいサイトの名前（<b>SNI</b>）と、使いたいHTTPの版（<b>ALPN</b>。h2 や http/1.1）も書きます。'},
+      {d:'l', c:'a', l:'ServerHello', n:'選んだ方式・鍵の材料', s:['鍵できた', '鍵できた'], h:'② ServerHello：「この方式にします。私の材料です」', e:'サーバーは方式を1つ選び、自分の鍵の材料を返します。これで<b>両方の手元に、同じ共通鍵</b>ができました。'},
+      {d:'l', c:'a', l:'🔒 証明書・署名・Finished', n:'ここから暗号化されている', h:'③ 証明書と「確かに私です」の署名', e:'同じ返事の続きで、<b>証明書</b>（4.5）と、秘密鍵で作った<b>署名</b>を送ります。署名は「このあいさつの中身に、証明書の持ち主がたしかに署名した」というしるしで、にせものには作れません。<b>ここからはもう暗号化</b>されています。'},
+      {d:'r', c:'d', l:'🔒 Finished ＋ HTTPリクエスト', n:'1往復で送り始められる', h:'④ あいさつ完了。すぐにリクエスト', e:'ブラウザは証明書を確かめ、「受け取りました」（Finished）を返すと同時に、暗号化したHTTPリクエストを送ります。あいさつは<b>1往復</b>で済みました。'},
+    ],
+    '12':[
+      {d:'r', c:'q', l:'ClientHello', n:'使える方式（鍵の材料はまだ）', h:'① ClientHello', e:'使える方式の一覧を送ります。TLS 1.2 では、まだ鍵の材料は送りません。'},
+      {d:'l', c:'a', l:'ServerHello・証明書・鍵の材料', n:'暗号化されていない', h:'② サーバーの返事', e:'サーバーは方式を選び、証明書と鍵の材料を返します。<b>証明書は暗号化されずに流れる</b>ので、途中の人にもどのサイトの証明書かが見えます。'},
+      {d:'r', c:'q', l:'鍵の材料・Finished', n:'1往復目のおわり', s:['鍵できた', '鍵できた'], h:'③ ブラウザの材料', e:'ブラウザも鍵の材料を送り、ここでやっと両方に共通鍵ができます。'},
+      {d:'l', c:'a', l:'Finished', n:'2往復目', h:'④ サーバーの Finished', e:'サーバーの確認が届いて、あいさつが終わります。'},
+      {d:'r', c:'d', l:'🔒 HTTPリクエスト', n:'2往復かかった', h:'⑤ やっとリクエスト', e:'TLS 1.2 では、データを送れるまでに<b>2往復</b>かかっていました。TLS 1.3 は、これを半分にしたのです。'},
+    ],
+  };
+  let mode = '13', i = 0;
+  const rows = $('tlsRows');
+  const setSt = (id, v) => { const el = $(id); el.textContent = v; el.className = 'hs-state' + (v === '鍵できた' ? ' est' : ''); };
+  function reset(){
+    i = 0; rows.innerHTML = ''; setSt('tlsStA', '鍵なし'); setSt('tlsStB', '鍵なし');
+    $('tlsCount').textContent = `0 / ${M[mode].length}`; $('tlsNext').disabled = false;
+    $('tlsExplain').innerHTML = '<span class="note">TCPのあいさつ（第3章）はもう終わっています。「次へ」で、TLSのあいさつを1つずつ送ります。</span>';
+  }
+  $('tlsNext').onclick = () => {
+    const R = M[mode]; if(i >= R.length) return;
+    const r = R[i++];
+    rows.insertAdjacentHTML('beforeend', `<div class="hs-row ${r.d} ${r.c}"><span class="hs-lbl">${r.l}</span><div class="hs-arrow"></div><span class="hs-num">${r.n}</span></div>`);
+    if(r.s){ setSt('tlsStA', r.s[0]); setSt('tlsStB', r.s[1]); }
+    $('tlsExplain').innerHTML = `<h3>${r.h}</h3>${r.e}`;
+    $('tlsCount').textContent = `${i} / ${R.length}`; $('tlsNext').disabled = i >= R.length;
+  };
+  $('tlsFirst').onclick = reset;
+  document.querySelectorAll('#tlsMode button').forEach(b => b.onclick = () => {
+    mode = b.dataset.mode;
+    document.querySelectorAll('#tlsMode button').forEach(x => x.classList.toggle('on', x === b));
+    reset();
+  });
+  reset();
+})();
+
+/* ---------- 4.5 証明書 ---------- */
+(function(){
+  const CHECKS = ['名前が、開いたサイトと同じ（example.com／*.example.com）', '有効期限の中にある', 'ルート証明書まで、署名のリレーがつながる', 'サーバーが、証明書と対になる秘密鍵を持っている'];
+  const ROOT = {n:'SSL.com TLS ECC Root CA 2022', s:'ルート証明書（OSやブラウザに最初から入っている）', root:true};
+  const MID = [{n:'SSL.com TLS Transit ECC CA R2', s:'中間の認証局'}, {n:'Cloudflare TLS Issuing ECC CA 3', s:'中間の認証局'}];
+  const S = [
+    {t:'正常', st:'本物', chain:[ROOT, ...MID, {n:'example.com', s:'サーバーの証明書 ・ 2026/9/26〜12/25（90日）'}], ng:[], page:'<div class="big">📄</div><b>Example Domain</b><div class="sm">ふつうに表示された</div>', lock:'🔒',
+     e:'4つの確認がすべて通りました。これは、2026年10月18日に実際に example.com から届いた証明書のリレーです。'},
+    {t:'期限切れ', st:'NET::ERR_CERT_DATE_INVALID', chain:[ROOT, ...MID, {n:'example.com', s:'2025/9/26〜12/25（期限切れ）', bad:true}], ng:[1], warn:true,
+     e:'有効期限が切れています。持ち主が取り替えを忘れたときによく起こります。期限が切れた証明書の鍵は、盗まれていても気づけないかもしれないので、ブラウザは止めます。'},
+    {t:'名前ちがい', st:'NET::ERR_CERT_COMMON_NAME_INVALID', chain:[ROOT, ...MID, {n:'shop.example', s:'別のサイトの証明書', bad:true}], ng:[0], warn:true,
+     e:'証明書は本物でも、<b>別のサイトのもの</b>です。www.example.com を開いたのに shop.example の証明書が届いたら、だれかが割りこんでいるかもしれません。'},
+    {t:'知らない認証局', st:'NET::ERR_CERT_AUTHORITY_INVALID', chain:[{n:'Evil Root CA', s:'OSに入っていないルート', bad:true}, {n:'example.com', s:'悪い人が自分で作った証明書'}], ng:[2], arrowBad:true, warn:true,
+     e:'名前も期限も正しく書かれていますが、署名したのが<b>OSやブラウザの知らない認証局</b>です。だれでも証明書の形をしたものは作れます。信頼できる認証局の署名がつながっていることが大切なのです。'},
+  ];
+  const tabs = $('certTabs');
+  tabs.innerHTML = S.map((s, i) => `<button data-i="${i}">${s.t}<small>${i === 0 ? '本物' : 'にせもの・問題あり'}</small></button>`).join('');
+  function show(i){
+    const s = S[i];
+    tabs.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+    $('certChain').innerHTML = s.chain.map((c, k) =>
+      (k ? `<div class="cert-arrow${s.arrowBad && k === 1 ? ' bad' : ''}">↓ ${s.arrowBad && k === 1 ? '知らない相手の署名' : '署名して保証'}</div>` : '') +
+      `<div class="cert${c.root ? ' root' : ''}${c.bad ? ' bad' : ''}"><b>${c.n}</b><span>${c.s}</span></div>`).join('');
+    $('certChecks').innerHTML = CHECKS.map((c, k) => `<li class="${s.ng.includes(k) ? 'ng' : ''}">${c}</li>`).join('');
+    $('certLock').textContent = s.warn ? '⚠️' : '🔒';
+    const pg = $('certPage');
+    pg.className = 'mb-page' + (s.warn ? ' warn' : '');
+    pg.innerHTML = s.warn ? `<div class="big">⚠️</div><b>この接続ではプライバシーが保護されません</b><div class="sm mono">${s.st}</div>` : s.page;
+    $('certExplain').innerHTML = s.e;
+  }
+  tabs.querySelectorAll('button').forEach(b => b.onclick = () => show(+b.dataset.i));
+  show(0);
+})();
+
+/* ---------- 4.6 AES-GCM を体験 ---------- */
+(function(){
+  const out = $('aesOut');
+  const hx = u => [...u].map(b => b.toString(16).padStart(2, '0')).join(' ');
+  if(!(window.crypto && crypto.subtle)){
+    out.innerHTML = '<p class="note">このブラウザでは暗号の機能が使えないため、体験できません（https で開くと使えます）。</p>';
+    ['aesEnc', 'aesTamper', 'aesNew'].forEach(id => $(id).disabled = true);
+    return;
+  }
+  let key, keyHex, last;
+  async function newKey(){
+    key = await crypto.subtle.generateKey({name:'AES-GCM', length:256}, true, ['encrypt', 'decrypt']);
+    keyHex = hx(new Uint8Array(await crypto.subtle.exportKey('raw', key)));
+  }
+  async function decryptView(ct, flipAt){
+    let res;
+    try{
+      const pt = await crypto.subtle.decrypt({name:'AES-GCM', iv:last.iv}, key, ct);
+      res = `<div class="v ok">✓ 開けました：「${esc(new TextDecoder().decode(pt))}」</div>`;
+    }catch(e){
+      res = '<div class="v ng">✕ 開けません。書き換えられていることに気づいて、受け取りを拒みました</div>';
+    }
+    const ctHex = [...ct].map((b, k) => { const h = b.toString(16).padStart(2, '0'); return k === flipAt ? `<span class="flip">${h}</span>` : h; }).join(' ');
+    return {ctHex, res};
+  }
+  async function enc(){
+    if(!key) await newKey();
+    const pt = new TextEncoder().encode($('aesIn').value);
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = new Uint8Array(await crypto.subtle.encrypt({name:'AES-GCM', iv}, key, pt));
+    last = {iv, ct, pt};
+    const {ctHex, res} = await decryptView(ct, -1);
+    out.innerHTML = `
+      <div class="aes-step"><span class="k">送りたい文<br>（文字の番号）</span><div class="v">${hx(pt)}</div></div>
+      <div class="aes-step"><span class="k">共通鍵（256ビット）</span><div class="v">${keyHex}</div></div>
+      <div class="aes-step"><span class="k">使い捨ての番号</span><div class="v">${hx(iv)}</div></div>
+      <div class="aes-step"><span class="k">暗号文<br>（途中の人に見える）</span><div class="v">${ctHex}</div></div>
+      <div class="aes-step"><span class="k">受け取った側</span>${res}</div>
+      <p class="note">暗号文の最後の16バイトは「改ざんを見つけるしるし」です。もう一度「暗号化して送る」を押すと、同じ文でも暗号文がまったく変わります。</p>`;
+    $('aesTamper').disabled = false;
+  }
+  $('aesEnc').onclick = enc;
+  $('aesNew').onclick = async () => { await newKey(); await enc(); };
+  $('aesTamper').onclick = async () => {
+    if(!last) return;
+    const ct = last.ct.slice(), at = Math.min(3, ct.length - 1);
+    ct[at] ^= 0x01;
+    const {ctHex, res} = await decryptView(ct, at);
+    out.innerHTML = `
+      <div class="aes-step"><span class="k">書き換えた暗号文</span><div class="v">${ctHex}</div></div>
+      <div class="aes-step"><span class="k">受け取った側</span>${res}</div>
+      <p class="note">赤いところの1バイトを、1ビットだけ変えました。「暗号化して送る」を押すと、元に戻せます。</p>`;
+  };
+})();
+
+/* ---------- 4.7 途中の人に見えるもの ---------- */
+(function(){
+  const ITEMS = ['相手のIPアドレス', 'ポート番号', 'サイトの名前', 'URLのパス', '見出し（Cookieなど）', '本文（パスワードなど）', 'データの量と時刻'];
+  const M = {
+    http:{v:['203.0.113.10', '80', 'www.example.com', '/mypage', 'Cookie: session=7f3a9c', 'password=hunter2', '約3.2KB ・ 14:33'], hid:[],
+      e:'何もかも丸見えです。'},
+    https:{v:['203.0.113.10', '443', 'www.example.com（SNI）', '暗号化', '暗号化', '暗号化', '約3.4KB ・ 14:33'], hid:[3, 4, 5],
+      e:'中身は隠れますが、<b>どこにつないだか</b>（IPアドレスとサイトの名前）と、<b>いつ・どれくらい</b>やり取りしたかは見えます。'},
+    ech:{v:['203.0.113.10', '443', '外向きの名前 public.example だけ', '暗号化', '暗号化', '暗号化', '約3.4KB ・ 14:33'], hid:[2, 3, 4, 5],
+      e:'ECHを使うと、本当のサイトの名前もあいさつの中で暗号化され、外からは「同じサーバーに同居しているどれか」としか見えません。ただし、DNSで名前を調べるときにも暗号化していないと、そこで名前がわかってしまいます（第2章 2.7）。'},
+  };
+  function show(m){
+    document.querySelectorAll('#seeMode button').forEach(b => b.classList.toggle('on', b.dataset.s === m));
+    const s = M[m];
+    $('seeGrid').innerHTML = ITEMS.map((t, k) => `<div class="see-item ${s.hid.includes(k) ? 'hid' : 'vis'}"><b>${t}</b><code>${esc(s.v[k])}</code></div>`).join('');
+    $('seeExplain').innerHTML = s.e;
+  }
+  document.querySelectorAll('#seeMode button').forEach(b => b.onclick = () => show(b.dataset.s));
+  show('https');
+})();
+
+/* ---------- 4.8 QUIC ---------- */
+(function(){
+  const R = [
+    ['TCP ＋ TLS 1.2', '昔の組み合わせ', [['tcp', 'TCP', 1], ['tls', 'TLS', 2]]],
+    ['TCP ＋ TLS 1.3', 'HTTP/1.1・2 の今', [['tcp', 'TCP', 1], ['tls', 'TLS', 1]]],
+    ['QUIC', 'HTTP/3', [['quic', 'QUIC', 1]]],
+    ['QUIC（再訪問）', '0-RTT', []],
+  ];
+  function run(){
+    const rtt = +$('qRtt').value; $('qRttOut').textContent = rtt;
+    $('qBars').innerHTML = R.map(([nm, sub, segs]) => {
+      const n = segs.reduce((s, x) => s + x[2], 0);
+      return `<div class="qbar"><span class="nm">${nm}<small>${sub}</small></span><div class="qtrack">${segs.map(([c, l, k]) => `<span class="qseg ${c}" style="width:${k / 3 * 100}%">${l} ${k}往復</span>`).join('')}</div><span class="ms">${n * rtt} ms</span></div>`;
+    }).join('') + `<p class="note">リクエストを送り出せるまでの、あいさつだけの時間です（往復${rtt}ミリ秒の場合）。</p>`;
+  }
+  $('qRtt').oninput = run; run();
+})();
+
+/* ---------- 4.9 試そう ---------- */
+setupCmds({
+  mac:[
+    ['curl -v -o /dev/null https://www.example.com', 'つなぐ様子が見えます。<code>SSL connection</code> の行にTLSの版と方式、<code>subject</code>・<code>issuer</code> の行に証明書の中身が出ます。'],
+    ['echo | openssl s_client -connect www.example.com:443 -servername www.example.com -showcerts', '証明書のリレー（Certificate chain）が全部見えます。<code>s:</code> が持ち主、<code>i:</code> が署名した認証局です。'],
+    ['echo | openssl s_client -connect www.example.com:443 -servername www.example.com 2>/dev/null | openssl x509 -noout -subject -issuer -dates', '証明書の持ち主・発行者・有効期限だけを取り出します。'],
+  ],
+  win:[
+    ['curl.exe -v -o NUL https://www.example.com', 'つなぐ様子が見えます。Windows の curl は Windows の暗号の仕組みを使うので、表示は Mac と少しちがいます。'],
+    ['certmgr.msc', 'Windows に入っているルート証明書の一覧を開きます（「信頼されたルート証明機関」）。これがリレーの出発点です。'],
+  ],
+  macNote:'<p class="note">Mac に入っているルート証明書は、アプリの「キーチェーンアクセス」の「システムルート」で見られます。</p>',
+});
+setupTrace('real', 'realExplain', [
+  ['c', '$ curl -v -o /dev/null https://www.example.com （抜き出し）'],
+  ['alpn1', '* ALPN: curl offers h2,http/1.1'],
+  ['ssl', '* SSL connection using TLSv1.3 / TLS_AES_256_GCM_SHA384 / X25519 / id-ecPublicKey'],
+  ['alpn2', '* ALPN: server accepted h2'],
+  ['subj', '*  subject: CN=example.com'],
+  ['date', '*  start date: Sep 26 22:49:11 2026 GMT'],
+  ['date', '*  expire date: Dec 25 22:56:35 2026 GMT'],
+  ['iss', '*  issuer: C=US; O=SSL Corporation; CN=Cloudflare TLS Issuing ECC CA 3'],
+  ['ok', '*  SSL certificate verify ok.'],
+  ['c', '$ openssl x509 -ext subjectAltName （証明書に書かれた名前）'],
+  ['san', 'DNS:example.com, DNS:*.example.com'],
+], {
+  alpn1:['使えるHTTPの版を伝える', 'あいさつ（ClientHello）で「h2（HTTP/2）と http/1.1 が話せます」と伝えています。これが <b>ALPN</b> です。'],
+  ssl:['TLS 1.3 でつながった', '<b>TLSv1.3</b>。本番の暗号は <b>AES-256-GCM</b>（4.6 と同じ仕組み）、鍵の作り方は <b>X25519</b>（4.3）、証明書の鍵は楕円曲線（id-ecPublicKey）です。この curl は少し古い暗号の部品（OpenSSL 3.0）を使っているので X25519 だけですが、今のブラウザなら X25519MLKEM768 になります。'],
+  alpn2:['サーバーは HTTP/2 を選んだ', '第1章で見た <code>HTTP/2 200</code> は、ここで決まっていました。'],
+  subj:['証明書の持ち主', 'CN（Common Name）は、証明書の持ち主の名前です。'],
+  date:['有効期間：ちょうど90日', '2026年9月26日から12月25日まで、<b>90日</b>です。業界の決まり（今は最長200日）よりさらに短く、自動で取り替えています。'],
+  iss:['発行した認証局', 'Cloudflare 向けの中間の認証局です。さらに上の SSL.com のルート証明書まで、署名がつながっています（4.5 の「正常」の図）。'],
+  ok:['確認はすべて通った', '名前・期限・ルートまでの署名のリレーを確かめて、問題なし、という意味です。'],
+  san:['証明書が使える名前の一覧', '<code>*.example.com</code> は「example.com の1つ下の名前すべて」という意味なので、www.example.com でも使えます。今のブラウザは、CN ではなくこの一覧で名前を確かめます。'],
+});
+
+/* ---------- 4.11 クイズ ---------- */
+setupQuiz([
+  {q:'HTTPSでも、途中の人に見えてしまうのはどれ？', o:['パスワード','URLのパス','相手のIPアドレス'], a:2,
+   e:'中身は暗号化されますが、どこにつないでいるか（IPアドレス）は、届けるために必要なので見えます。'},
+  {q:'共通鍵のいちばんの困りごとは？', o:['計算がとても遅い','鍵を相手に安全に渡すのが難しい','1回しか使えない'], a:1,
+   e:'だからHTTPSは、鍵を「渡す」のではなく、おたがいの手元で同じものを「作る」方法を使います。'},
+  {q:'TLS 1.3 のあいさつが1往復で済むのはなぜ？', o:['証明書を送らないから','最初のあいさつに、鍵の材料をいきなり入れて送るから','暗号化をしないから'], a:1,
+   e:'TLS 1.2 では、方式を決めてから材料を送っていたので2往復かかりました。'},
+  {q:'証明書の確認で、ブラウザが確かめないのはどれ？', o:['名前が開いたサイトと同じか','有効期限の中か','サイトに書かれている内容が正しいか'], a:2,
+   e:'証明書が保証するのは「この鍵の持ち主が、このサイト名の持ち主」ということだけ。中身の正しさは別の話です。'},
+  {q:'ECH で隠せるようになったのは？', o:['相手のIPアドレス','サイトの名前（SNI）','データの量'], a:1,
+   e:'あいさつの最初に書くサイトの名前まで暗号化します。鍵はDNSのHTTPSレコードで配ります。'},
+  {q:'QUIC がつながるまで速いのはなぜ？', o:['TCPとTLSのあいさつを1回にまとめたから','暗号化を省いたから','証明書を使わないから'], a:0,
+   e:'つなぐあいさつと鍵のあいさつを同時にするので、1往復で済みます。'},
+]);
+</script>
+</body>
+</html>

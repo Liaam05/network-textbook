@@ -1,0 +1,1122 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>家からインターネットへの旅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaf2f8; --surface:#ffffff; --surface-2:#e1eff6; --ink:#0d1b2a; --ink-2:#4a5d75; --line:#c8d5e4;
+  --accent:#0891b2; --accent-soft:rgba(8,145,178,.12); --answer:#d97706; --answer-soft:rgba(217,119,6,.13); --ok:#15803d; --ok-soft:rgba(21,128,61,.12);
+  --ground:#e3ebf4; --zone-home:rgba(21,128,61,.09); --zone-isp:rgba(8,145,178,.1); --zone-net:rgba(217,119,6,.09);
+  --grid:rgba(8,145,178,.07); --glow:0 0 0 1px rgba(8,145,178,.4),0 0 16px rgba(8,145,178,.15); --on-accent:#ffffff;
+  --shadow:0 1px 2px rgba(13,27,42,.06),0 6px 18px rgba(13,27,42,.07);
+  --board-grid:rgba(8,145,178,.14); --board-edge:#b9cadc;
+  --z-home:rgba(21,128,61,.13); --z-home-edge:#15803d; --z-isp:rgba(8,145,178,.15); --z-isp-edge:#0e7490;
+  --z-net:rgba(217,119,6,.13); --z-net-edge:#b45309; --z-web:rgba(124,58,237,.11); --z-web-edge:#6d28d9;
+  --accent2:#7c3aed;
+  --wash:radial-gradient(1100px 620px at 0% 0%,rgba(8,145,178,.16),transparent 62%),radial-gradient(900px 560px at 100% 25%,rgba(124,58,237,.12),transparent 60%),radial-gradient(1000px 640px at 40% 100%,rgba(217,119,6,.10),transparent 60%);
+  --strip:linear-gradient(90deg,#06b6d4,#7c3aed 55%,#f59e0b);
+  --bar-bg:linear-gradient(90deg,rgba(8,145,178,.12),rgba(124,58,237,.09));
+  --primary-bg:linear-gradient(135deg,#0891b2,#4f46e5);
+  --num-bg:linear-gradient(135deg,#0891b2,#7c3aed); --num-fg:#ffffff;
+  --h1-grad:linear-gradient(90deg,#0d1b2a 20%,#0891b2 60%,#7c3aed);
+  --subh-bar:linear-gradient(#0891b2,#7c3aed);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.85;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:48px 0 12px}
+.kicker{font-size:13px;color:var(--ink-2);letter-spacing:.08em}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.35;margin:6px 0 12px}
+h2{font-size:clamp(20px,3.6vw,26px);margin:56px 0 8px;line-height:1.4}
+h2 .num{display:inline-block;font-size:14px;color:var(--accent);margin-right:8px;font-family:"JetBrains Mono",monospace}
+p{margin:.6em 0}
+.lead{font-size:17px;color:var(--ink-2)}
+b{color:var(--ink)}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.92em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.note{font-size:13px;color:var(--ink-2)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+button.primary:hover:not(:disabled){filter:brightness(1.08)}
+button.on{background:var(--accent-soft);border-color:var(--accent)}
+
+/* --- analogy --- */
+.analogy{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:12px}
+.analogy .box{text-align:center;padding:14px}
+.analogy .big{font-size:20px;font-weight:700}
+.analogy .arrow{font-size:22px;color:var(--ink-2)}
+
+/* --- domain tree --- */
+.domain-input{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.domain-input input{flex:1;min-width:220px;font:inherit;font-family:"JetBrains Mono",monospace;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{font-size:13px;padding:4px 10px}
+.stairs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.stair{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-left:calc(var(--k) * 22px);opacity:0;transform:translateX(-8px);animation:in .4s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.stair .blk{font-family:"JetBrains Mono",monospace;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.stair .blk .new{color:var(--accent);font-weight:600}
+.stair .desc{flex:1 1 10em;font-size:13px;color:var(--ink-2)}
+.domain-err{color:var(--answer);font-size:14px}
+
+/* --- stage --- */
+.stage-card{padding:0;overflow:hidden}
+.stage-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stage-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.stage-bar button,.stepper-bar button{white-space:nowrap}
+.counter{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-2);min-width:56px;text-align:center}
+.stage-wrap{position:relative;width:100%;overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage-wrap.dragging{cursor:grabbing}
+.stage{position:absolute;left:0;top:0;width:820px;height:600px;transform-origin:0 0;perspective:1500px;perspective-origin:50% 30%;
+  --ax:55deg; --az:-24deg}
+.plane{position:absolute;left:30px;top:50px;width:800px;height:520px;transform-style:preserve-3d;
+  transform:rotateX(var(--ax)) rotateZ(var(--az));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.dragging .plane,.dragging .anchor{transition:none!important}
+.plane > svg{position:absolute;inset:0;overflow:visible}
+.ground{fill:var(--ground)}
+.zone-home{fill:var(--zone-home)}.zone-isp{fill:var(--zone-isp)}.zone-net{fill:var(--zone-net)}
+.zone-label{font-size:16px;font-weight:700;letter-spacing:.04em}
+.board-gridline{stroke:var(--board-grid);stroke-width:1}
+.ground{stroke:var(--board-edge);stroke-width:2}
+.zone{stroke-width:2.5}
+.z-home{fill:var(--z-home);stroke:var(--z-home-edge)}.l-home{fill:var(--z-home-edge)}
+.z-isp{fill:var(--z-isp);stroke:var(--z-isp-edge)}.l-isp{fill:var(--z-isp-edge)}
+.z-net{fill:var(--z-net);stroke:var(--z-net-edge)}.l-net{fill:var(--z-net-edge)}
+.z-web{fill:var(--z-web);stroke:var(--z-web-edge)}.l-web{fill:var(--z-web-edge)}
+.link{stroke:var(--ink-2);stroke-opacity:.45;stroke-width:4;fill:none;stroke-linecap:round}
+.link.web{stroke-dasharray:2 10}
+.link.active{stroke:var(--accent);stroke-opacity:1;stroke-width:6;stroke-dasharray:10 8;animation:flow .6s linear infinite}
+.link.active.ans{stroke:var(--answer)}
+@keyframes flow{to{stroke-dashoffset:-18}}
+.shadow{fill:rgba(0,0,0,.18)}
+.anchor{position:absolute;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.node{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.node .icon{width:64px;height:64px;border-radius:16px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);transition:border-color .3s,box-shadow .3s,transform .3s}
+.node .icon svg{width:38px;height:38px;color:var(--ink-2)}
+.node.hl .icon{border-color:var(--accent);box-shadow:0 0 0 6px var(--accent-soft),var(--shadow);transform:translateY(-4px)}
+.node .lbl{font-size:15px;font-weight:700;white-space:nowrap;background:var(--surface);padding:0 8px;border-radius:6px;border:1px solid var(--line)}
+.node .sub{font-size:11px;color:var(--ink-2);white-space:nowrap;font-family:"JetBrains Mono",monospace}
+.bubble{position:absolute;bottom:136px;left:0;transform:translateX(-50%) scale(.6);opacity:0;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;padding:6px 12px;border-radius:12px;white-space:nowrap;transition:opacity .25s,transform .25s;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--ink)}
+.bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.packet-anchor{transition:none;transform:translateZ(var(--h,0px)) rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1))}
+.packet{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.packet .env{width:44px;height:30px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.packet.ans .env{background:var(--answer)}
+.packet.web .env{background:var(--ok)}
+.packet.hide{opacity:0}
+.drag-hint{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px 8px;pointer-events:none}
+
+.panels{display:grid;grid-template-columns:1.25fr .8fr 1.2fr;gap:14px;margin-top:14px;align-items:start}
+.explain{padding:18px 22px 22px;border-top:1px solid var(--line);background:var(--surface);min-height:190px}
+.explain h3{margin:0 0 4px;font-size:21px;line-height:1.5}
+.explain #stepText{font-size:16.5px}
+.timeline{display:flex;gap:4px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.timeline button{flex:0 0 auto;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.timeline button .n{font-family:"JetBrains Mono",monospace;font-size:11px;opacity:.7}
+.timeline button.done{color:var(--ink);border-color:var(--line);background:var(--surface-2)}
+.timeline button.cur{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:700}
+.timeline button.cur.ans{background:var(--answer);border-color:var(--answer)}
+.node{transition:opacity .35s}
+.node.dim{opacity:.55}
+.url-split{font-size:14px;margin:4px 0 10px;padding:8px 12px;border-radius:8px;background:var(--surface-2)}
+.url-split .dim-part{color:var(--ink-2);opacity:.6}
+.url-split .host-part{color:var(--accent);font-weight:600;background:var(--accent-soft);border-radius:4px;padding:0 2px}
+.explain .stepno{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+.explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.side{display:flex;flex-direction:column;gap:14px}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.msg{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6}
+.msg .head{display:inline-block;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:1px 8px;border-radius:6px;margin-bottom:6px}
+.msg .head.q{background:var(--accent-soft);color:var(--accent)}
+.msg .head.a{background:var(--answer-soft);color:var(--answer)}
+.msg table{border-collapse:collapse;width:100%}
+.msg td{padding:3px 0;vertical-align:top;border-top:1px dashed var(--line)}
+.msg td:first-child{width:5.5em;white-space:nowrap;color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding-right:8px}
+.msg .empty{color:var(--ink-2);font-family:"Noto Sans JP",sans-serif}
+.timer{font-family:"JetBrains Mono",monospace;font-size:28px;font-weight:600}
+.timer small{font-size:13px;color:var(--ink-2);font-weight:400}
+.history{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.history span{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--surface-2);border-radius:6px;padding:1px 8px}
+.cache-list{list-style:none;margin:0;padding:0;font-size:13px}
+.cache-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.cache-list li.flash{animation:flash 1.2s}
+@keyframes flash{0%{background:var(--ok-soft)}100%{background:transparent}}
+.cache-list .ttl{font-family:"JetBrains Mono",monospace;color:var(--ok);white-space:nowrap}
+.cache-list .gone{color:var(--ink-2);text-decoration:line-through}
+.cache-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cache-btns button{font-size:12px;padding:4px 10px}
+.clock{font-size:12px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+
+/* --- summary / quiz --- */
+.summary li{margin:6px 0}
+.quiz{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.q .opts button{text-align:left}
+.q .opts button.right{background:var(--ok-soft);border-color:var(--ok)}
+.q .opts button.wrong{background:var(--answer-soft);border-color:var(--answer)}
+.q .fb{font-size:14px;margin-top:6px;min-height:1.4em}
+footer{margin:64px 0 48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+footer a{color:var(--accent)}
+
+@media (max-width:720px){
+  .panels{grid-template-columns:1fr}
+  .explain{padding:16px}
+  .analogy{grid-template-columns:1fr}
+  .analogy .arrow{transform:rotate(90deg);text-align:center}
+  .drag-hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .plane,.anchor{transition:none}
+  .link.active{animation:none}
+}
+
+/* --- 共通パーツ --- */
+.sub-h{font-size:18px;margin:32px 0 6px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;font-size:14px;padding:6px 12px;border-radius:8px}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow);font-weight:700;color:var(--accent)}
+.wrap-seg{margin-bottom:12px}
+.row-btns{display:flex;gap:8px;margin-top:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.mini-card h3{margin:0 0 6px;font-size:16px}
+.mini-card p{font-size:14.5px}
+
+/* --- 2.3 PCの中 --- */
+.stepper{padding:0;overflow:hidden}
+.stepper-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stepper-bar .seg{background:var(--bg)}
+.stepper-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;padding:20px}
+.pc-stack{position:relative;border:2px dashed var(--line);border-radius:16px;padding:30px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.pc-frame-label{position:absolute;top:6px;left:14px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.layer{border:2px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface);transition:border-color .3s,background .3s,opacity .3s;position:relative}
+.layer .lname{font-weight:700;font-size:15px}
+.layer .lsub{font-size:12px;color:var(--ink-2)}
+.layer .lmem{position:absolute;right:12px;top:10px;font-size:11px;color:var(--ink-2)}
+.layer.on{border-color:var(--accent);background:var(--accent-soft)}
+.layer.skip{opacity:.35}
+.layer.skip .lname{text-decoration:line-through}
+.os-inner{display:flex;gap:8px;margin-top:8px}
+.mini{flex:1;font-size:12px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px;background:var(--surface-2);transition:all .3s}
+.mini.on{border-color:var(--accent);background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 0 0 3px var(--accent-soft)}
+.pc-out{text-align:center;font-size:13px;color:var(--ink-2);padding:6px;border-radius:10px;transition:all .3s}
+.pc-out.on{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.pc-chip{position:absolute;right:-12px;top:0;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:top .5s cubic-bezier(.3,.7,.2,1),background .3s}
+.pc-chip.lock{background:var(--ok)}
+.pc-explain h3{margin:0 0 6px;font-size:19px}
+.pc-explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.pkt-box{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pkt-box div{display:flex;border-top:1px dashed var(--line)}
+.pkt-box div:first-child{border-top:0}
+.pkt-box span{padding:4px 10px}
+.pkt-box span:first-child{width:7.5em;white-space:nowrap;flex:0 0 auto;background:var(--surface-2);color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px}
+
+/* --- 2.5 レコード --- */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font-family:"JetBrains Mono",monospace;font-weight:600;min-width:64px}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rec-q,.rec-a{font-size:13.5px;padding:8px 12px;border-radius:8px;overflow-x:auto;white-space:nowrap}
+.rec-q{background:var(--accent-soft);color:var(--accent)}
+.rec-a{background:var(--answer-soft);color:var(--answer);margin-top:6px}
+.rec-body h3{margin:14px 0 4px;font-size:18px}
+.parallel{display:flex;flex-direction:column;gap:8px}
+.lane{display:grid;grid-template-columns:4.5em 1fr 9em;gap:10px;align-items:center}
+.lane .who{font-size:12px;color:var(--ink-2)}
+.track{position:relative;height:30px;border-radius:8px;background:var(--surface-2)}
+.chip{position:absolute;top:3px;left:4px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;background:var(--accent);color:#fff;transition:left 1s cubic-bezier(.4,0,.2,1)}
+.chip.ans{background:var(--answer)}
+.res{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--answer);opacity:0;transition:opacity .3s}
+.res.show{opacity:1}
+
+/* --- 2.6 CDN --- */
+.cdn-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+#cdnMap{width:100%;height:auto;background:var(--surface-2);border-radius:12px}
+#cdnMap .grid{stroke:var(--line);stroke-width:1}
+#cdnMap .land{fill:var(--ground);stroke:var(--line);stroke-width:1}
+#cdnMap .edge{fill:var(--surface);stroke:var(--ink-2);stroke-width:2}
+#cdnMap .edge.pick{fill:var(--answer);stroke:var(--answer)}
+#cdnMap .origin{fill:var(--ink-2)}
+#cdnMap .me{fill:var(--accent)}
+#cdnMap .me-ring{fill:none;stroke:var(--accent);stroke-width:2;animation:ring 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+#cdnMap .route{stroke:var(--answer);stroke-width:3;stroke-dasharray:6 6;fill:none;animation:flow .6s linear infinite}
+#cdnMap .route.far{stroke:var(--ink-2);stroke-width:1.5;opacity:.6;animation:none}
+#cdnMap text{font-size:13px;fill:var(--ink);font-family:"Noto Sans JP",sans-serif}
+#cdnMap text.small{font-size:11px;fill:var(--ink-2)}
+.cdn-flow{font-size:12.5px;display:flex;flex-direction:column;gap:8px}
+.cdn-flow .f{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.cdn-flow .f b{font-family:"Noto Sans JP",sans-serif;font-size:12px;color:var(--ink-2);display:block;font-weight:500}
+.cdn-flow .f.hit{border-color:var(--answer);background:var(--answer-soft)}
+.cdn-flow .lat{font-family:"Noto Sans JP",sans-serif;font-size:13px}
+.cdn-flow .lat strong{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--answer)}
+
+/* --- 2.7 守る --- */
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.enc-view{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.enc-label{font-size:12px;font-weight:700;padding:6px 12px;background:var(--surface-2);color:var(--ink-2)}
+.enc-screen{background:#0d1117;color:#7ee787;font-size:12.5px;padding:12px;min-height:150px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.enc-screen .warn{color:#ffa657}
+.enc-screen .dim{color:#6e7681}
+.enc-grid h3{margin:0 0 6px;font-size:18px}
+.spec{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
+.spec td{padding:4px 8px;border-top:1px solid var(--line)}
+.spec td:first-child{color:var(--ink-2);width:5em}
+.race{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:10px;padding-right:96px}
+.race-row{display:grid;grid-template-columns:8.5em 1fr;gap:10px;align-items:center}
+.race-who{font-size:13px;font-weight:700;line-height:1.3}
+.race-who small{font-weight:400;color:var(--ink-2);font-size:11px}
+.race-track{position:relative;height:34px;background:var(--surface-2);border-radius:8px}
+.race-chip{position:absolute;left:4px;top:5px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;color:#fff;white-space:nowrap;transition:left .9s cubic-bezier(.4,0,.2,1),opacity .4s,transform .4s}
+.race-chip.fake{background:#c92a2a}
+.race-chip.real{background:var(--ok)}
+.race-chip.arrived{left:calc(100% - 136px)}
+.race-chip.rejected{opacity:.35;transform:rotate(-8deg)}
+.race-chip.rejected::after{content:" ✕"}
+.race-chip.accepted::after{content:" ✓"}
+.race-goal{position:absolute;right:0;top:0;bottom:0;width:86px;border:2px solid var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:11px;font-weight:700;background:var(--surface);padding:4px}
+.race-result{margin-top:12px;font-size:15px;min-height:1.5em}
+.race-result .bad{color:#e03131;font-weight:700}
+.race-result .good{color:var(--ok);font-weight:700}
+.chain{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.chain-step{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:13px;display:flex;flex-direction:column}
+.chain-step b{font-family:"JetBrains Mono",monospace}
+.chain-step span{color:var(--ink-2);font-size:12px}
+.chain-arrow{font-size:12px;color:var(--accent);padding-left:12px}
+
+/* --- 2.8 試す --- */
+.can-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.can-list li{position:relative;padding:8px 12px 8px 38px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:13.5px;line-height:1.6}
+.can-list li b{display:block;font-size:14.5px}
+.can-list li span{color:var(--ink-2)}
+.can-list li::before{position:absolute;left:12px;top:8px;font-weight:700;font-size:15px}
+.can-list li.yes::before{content:"✓";color:var(--ok)}
+.can-list li.no::before{content:"✕";color:var(--answer)}
+.cmds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.cmd{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmd-line{display:flex;align-items:center;gap:8px;background:#0d1117;padding:8px 8px 8px 12px}
+.cmd-line code{flex:1;color:#e6edf3;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.cmd-line code::before{content:"$ ";color:#6e7681}
+.cmd-line button{font-size:12px;padding:3px 10px;background:#21262d;color:#e6edf3;border-color:#30363d}
+.cmd-desc{font-size:13.5px;padding:8px 12px}
+.trace-card{padding:0;overflow:hidden}
+.trace{background:#0d1117;color:#c9d1d9;font-size:12px;padding:12px 0;overflow-x:auto;line-height:1.75}
+.trace .ln{padding:0 14px;white-space:pre;cursor:default}
+.trace .ln.g{cursor:pointer;border-left:3px solid transparent}
+.trace .ln.g:hover{background:#161b22}
+.trace .ln.g.on{background:#1f2a40;border-left-color:#6ea0ff}
+.trace .ln.recv{color:#7ee787}
+.trace .ln.cmt{color:#6e7681}
+.trace .ln .k{color:#ffa657}
+.trace-explain{padding:14px 18px;font-size:15px;border-top:1px solid var(--line);min-height:80px}
+.trace-explain h4{margin:0 0 4px;font-size:16px}
+
+@media (max-width:720px){
+  .pc-body,.cdn-grid,.enc-grid,.cols{grid-template-columns:1fr}
+  .pc-chip{right:6px}
+  .lane{grid-template-columns:1fr 7em}
+  .lane .who{display:none}
+  .stair{margin-left:calc(var(--k) * 12px)}
+  .rec-a{white-space:normal;overflow-wrap:anywhere}
+  .race{padding-right:0}
+  .race-row{grid-template-columns:6.5em 1fr}
+  .race-goal{position:static;width:auto;padding:8px}
+}
+
+/* ===== サイバー調の仕上げ ===== */
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.kicker::before{content:"▍";animation:blink 1.1s steps(1) infinite;margin-right:4px}
+@keyframes blink{50%{opacity:0}}
+h1{background:linear-gradient(90deg,var(--ink) 30%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .num{font-size:13px;padding:2px 8px;border:1px solid var(--accent);border-radius:4px;text-shadow:0 0 8px var(--accent-soft);vertical-align:3px}
+h2 .num::before{content:"// "}
+.card{position:relative;background:linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));border-color:var(--line);border-radius:10px}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2}
+.card::before{top:0;left:0;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-top-left-radius:10px}
+.card::after{bottom:0;right:0;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-bottom-right-radius:10px}
+button{border-radius:6px;background:transparent;transition:border-color .15s,box-shadow .15s,background .15s}
+button:hover:not(:disabled){border-color:var(--accent);box-shadow:var(--glow)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 0 16px var(--accent-soft)}
+button.on,.seg button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);box-shadow:none}
+.seg{border:1px solid var(--line);background:var(--bg)}
+.seg button.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.stage-bar,.stepper-bar{background:var(--surface-2)}
+.counter{color:var(--accent)}
+.node .icon{background:var(--surface);border-radius:12px}
+.node .icon svg{color:var(--accent)}
+.node.hl .icon{box-shadow:var(--glow);border-color:var(--accent)}
+.node .lbl{background:var(--surface);border-color:var(--line);border-radius:4px}
+.bubble{background:var(--accent);color:var(--on-accent);box-shadow:var(--glow)}
+.bubble::after{border-top-color:var(--accent)}
+.packet .env{box-shadow:0 0 18px var(--accent)}
+.packet.ans .env{box-shadow:0 0 18px var(--answer)}
+.link.active{filter:drop-shadow(0 0 4px var(--accent))}
+.link.active.ans{filter:drop-shadow(0 0 4px var(--answer))}
+.explain .stepno,.stepno{font-family:"JetBrains Mono",monospace;letter-spacing:.1em}
+.layer{border-radius:8px;overflow:hidden}
+.layer.on{box-shadow:var(--glow)}
+.layer.on::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);transform:translateX(-100%);animation:scan 1.8s linear infinite;pointer-events:none}
+@keyframes scan{to{transform:translateX(100%)}}
+.pc-stack{border-color:var(--accent-soft);border-radius:12px}
+.pc-frame-label{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.1em}
+.pc-chip{box-shadow:0 0 14px var(--accent);color:var(--on-accent)}
+.pc-chip.lock{box-shadow:0 0 14px var(--ok)}
+.timeline button.cur{color:var(--on-accent);box-shadow:0 0 12px var(--accent-soft)}
+.timer{color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+.tabs button.on{color:var(--on-accent);box-shadow:var(--glow)}
+.chip{color:var(--on-accent)}
+.stair .blk{border-radius:6px}
+.cache-list .ttl{text-shadow:0 0 8px var(--ok-soft)}
+.packet .env,.race-chip.real,.cdn-flow .f.hit{color:var(--on-accent)}
+.cdn-flow .f.hit{background:var(--answer);border-color:var(--answer)}
+.cdn-flow .f.hit b{color:var(--on-accent);opacity:.75}
+.enc-screen{background:#02050a;border-top:1px solid var(--line);text-shadow:0 0 6px rgba(126,231,135,.35)}
+.timeline{scrollbar-color:var(--line) transparent}
+.timeline::-webkit-scrollbar{height:6px}
+.timeline::-webkit-scrollbar-track{background:transparent}
+.timeline::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.zone{filter:drop-shadow(0 0 6px var(--board-grid))}
+
+/* 送信・受信している2台を強く、それ以外を弱く */
+.node .icon{position:relative}
+.node .role{position:absolute;top:-11px;right:-22px;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:4px;background:var(--accent);color:var(--on-accent);box-shadow:0 0 10px var(--accent);opacity:0;transition:opacity .25s}
+.node.send .role,.node.recv .role{opacity:1}
+.node.hl .icon{background:var(--accent-soft);border-width:2.5px}
+.node.hl .lbl{border-color:var(--accent);color:var(--ink);box-shadow:0 0 10px var(--accent-soft)}
+.node.hl .sub{color:var(--ink)}
+.node.ans .icon{border-color:var(--answer);background:var(--answer-soft);box-shadow:0 0 0 1px var(--answer),0 0 22px var(--answer-soft)}
+.node.ans .icon svg{color:var(--answer)}
+.node.ans .lbl{border-color:var(--answer)}
+.node.ans .role{background:var(--answer);box-shadow:0 0 10px var(--answer)}
+.node.dim{opacity:.28;filter:grayscale(.7)}
+.zone,.zone-label{transition:opacity .4s}
+.zone-dim{opacity:.35}
+
+/* 色のトークンで切り替える装飾（ダークでは控えめ・ライトでは色を足す） */
+body::before{content:"";position:fixed;inset:0;background:var(--wash);pointer-events:none;z-index:-1}
+h1{background-image:var(--h1-grad)}
+h2 .num{background:var(--num-bg);color:var(--num-fg)}
+.card{background-image:var(--strip),linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));background-size:100% 3px,auto;background-repeat:no-repeat}
+.stage-bar,.stepper-bar{background:var(--bar-bg)}
+button.primary,.timeline button.cur:not(.ans){background:var(--primary-bg);border-color:transparent}
+.sub-h{border-left:4px solid transparent;border-image:var(--subh-bar) 1;padding-left:10px}
+.summary li::marker{color:var(--accent2)}
+@media (prefers-reduced-motion: reduce){
+  .kicker::before,.layer.on::after{animation:none}
+}
+.top-nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:14px}
+.top-nav a{color:var(--ink-2);text-decoration:none}
+.top-nav a:hover{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none;color:var(--accent)}
+
+/* ===== 章をまたいで使う部品（第3章以降） ===== */
+:root{--bad:#dc2626;--c-port:#64748b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bad:#ff5c5c;--c-port:#94a3b8}}
+:root[data-theme="dark"]{--bad:#ff5c5c;--c-port:#94a3b8}
+.card a{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none}
+.chap-nav a:hover{text-decoration:underline}
+.ver-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.toggle input{accent-color:var(--answer);width:16px;height:16px}
+.tag{display:inline-block;font-family:"JetBrains Mono",monospace;padding:0 6px;border-radius:4px;font-size:11px}
+.tag.q{background:var(--accent-soft);color:var(--accent)}
+.tag.a{background:var(--answer-soft);color:var(--answer)}
+kbd{font-family:"JetBrains Mono",monospace;font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface-2)}
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.cmp{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+table.cmp th,table.cmp td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.cmp thead th{background:var(--surface-2);font-size:13px;color:var(--ink-2)}
+table.cmp tbody th{font-weight:700;white-space:nowrap;color:var(--ink-2);font-size:13px}
+table.cmp tr:last-child td,table.cmp tr:last-child th{border-bottom:0}
+.trace .ln .hk{color:#79c0ff}
+.explain-box{margin-top:12px;font-size:14.5px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;min-height:3em}
+.explain-box b.t{display:block;font-size:15.5px}
+.explain-box.ans{border-left-color:var(--answer)}
+.big-stat{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--ink-2)}
+.big-stat b{font-family:"JetBrains Mono",monospace;font-size:26px;color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+input[type=range]{accent-color:var(--accent);width:100%}
+
+/* あいさつの図（はしご型） */
+.hs-card{padding:0;overflow:hidden}
+.hs-ladder{padding:16px 20px 6px}
+.hs-ends{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.hs-end{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:14px}
+.hs-state{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:1px 8px;border-radius:4px;border:1px solid var(--line);color:var(--ink-2);transition:all .3s}
+.hs-state.est{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.hs-state.mid{border-color:var(--accent);color:var(--accent)}
+.hs-rows{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px 0;min-height:200px;background:linear-gradient(var(--line),var(--line)) 25% 0/2px 100% no-repeat,linear-gradient(var(--line),var(--line)) 75% 0/2px 100% no-repeat}
+.hs-row{position:relative;height:44px;opacity:0;animation:in .4s forwards}
+.hs-arrow{position:absolute;top:22px;left:25%;right:25%;height:2px;background:var(--c);box-shadow:0 0 8px var(--c)}
+.hs-arrow::after{content:"";position:absolute;top:-5px;border:6px solid transparent}
+.hs-row.r .hs-arrow::after{right:-2px;border-left:9px solid var(--c);border-right:0}
+.hs-row.l .hs-arrow::after{left:-2px;border-right:9px solid var(--c);border-left:0}
+.hs-lbl{position:absolute;top:0;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;white-space:nowrap;color:var(--c);background:var(--surface);padding:0 8px;border-radius:4px}
+.hs-num{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2);white-space:nowrap}
+.hs-row.q{--c:var(--accent)}.hs-row.a{--c:var(--answer)}.hs-row.d{--c:var(--ok)}
+.hs-explain{padding:4px 20px 18px;font-size:15px}
+.hs-explain h3{margin:0 0 4px;font-size:18px}
+
+@keyframes pin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (max-width:720px){.hs-lbl{font-size:11px}.hs-num{font-size:10px}}
+
+/* 小さなブラウザの画面 */
+.mini-browser{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column;min-height:150px}
+.mb-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.mb-dots{display:flex;gap:4px}.mb-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.mb-url{flex:1;min-width:0;font-size:11.5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mb-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;text-align:center;font-size:14px}
+.mb-page .big{font-size:26px;font-weight:700;line-height:1.2}
+.mb-page .sm{font-size:12px;color:var(--ink-2)}
+.mb-page.warn{background:rgba(220,38,38,.08)}
+.row-btns{flex-wrap:wrap}
+.row-btns button,.ver-bar button{white-space:nowrap}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tri .mini-card p{margin:0}
+.rtt-lbl{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.rtt-lbl b{font-family:"JetBrains Mono",monospace;color:var(--accent)}
+@media (max-width:720px){.tri{grid-template-columns:1fr}}
+section > .card + .card{margin-top:14px}
+.note a{color:var(--accent)}
+.devtools ol{margin:6px 0 0;padding-left:1.4em;font-size:14.5px}
+.devtools li{margin:4px 0}
+.stepper > .explain-box{margin:0 20px 18px}
+
+/* ===== 第7章 ===== */
+/* 7.2 光の速さ */
+.light-fiber{position:relative;height:14px;margin:18px 0 10px;border-radius:7px;background:linear-gradient(90deg,var(--surface-2),var(--surface-2));border:1px solid var(--line);overflow:hidden}
+.light-pulse{position:absolute;top:2px;left:-40px;width:36px;height:8px;border-radius:4px;background:linear-gradient(90deg,transparent,var(--accent),#fff);box-shadow:0 0 12px var(--accent)}
+.light-res{display:flex;flex-wrap:wrap;gap:10px 28px;align-items:baseline}
+.light-res .big-stat b{font-size:28px}
+.light-res .note{flex-basis:100%}
+
+/* 7.3 PON */
+.pon svg{width:100%;height:auto;display:block;background:var(--surface-2);border-radius:10px}
+.pon .fib{stroke:var(--line);stroke-width:3;fill:none}
+.pon .lbl{fill:var(--ink);font-size:11px;font-weight:700;font-family:"Noto Sans JP",sans-serif}
+.pon .sub{fill:var(--ink-2);font-size:9.5px;font-family:"Noto Sans JP",sans-serif}
+.pon .box{fill:var(--surface);stroke:var(--accent);stroke-width:2}
+.pon .spl{fill:var(--surface);stroke:var(--accent2);stroke-width:2}
+.pon .house{fill:var(--surface);stroke:var(--line);stroke-width:2;transition:stroke .2s}
+.pon .mark{font-size:11px;font-weight:700;font-family:"Noto Sans JP",sans-serif}
+.pon .slot{stroke:var(--surface);stroke-width:1}
+
+/* 7.4 PPPoE / IPoE */
+.isp{display:flex;flex-direction:column;gap:14px}
+.isp-row{display:grid;grid-template-columns:5.5em minmax(0,1fr);gap:10px;align-items:center}
+.isp-row > b{font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--accent)}
+.isp-path{display:flex;align-items:center;gap:4px;flex-wrap:nowrap;overflow-x:auto;padding:4px 2px}
+.isp-n{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;text-align:center;min-width:64px}
+.isp-n .ic{width:42px;height:42px;border-radius:10px;border:2px solid var(--line);display:grid;place-items:center;font-size:19px;background:var(--surface);transition:all .3s}
+.isp-n.gate .ic{border-color:var(--accent2)}
+.isp-n.jam .ic{border-color:var(--bad);background:rgba(220,38,38,.1);box-shadow:0 0 14px rgba(220,38,38,.3)}
+.isp-n.ok .ic{border-color:var(--ok);box-shadow:0 0 10px var(--ok-soft)}
+.isp-l{flex:1 1 20px;min-width:16px;height:4px;border-radius:2px;background:var(--line);position:relative;overflow:hidden}
+.isp-l i{position:absolute;top:0;left:-30%;width:30%;height:100%;background:var(--c,var(--accent));animation:car var(--sp,1.2s) linear infinite}
+@keyframes car{to{left:100%}}
+.isp-meter{grid-column:2;display:flex;align-items:center;gap:8px;font-size:12px;color:var(--ink-2)}
+.isp-meter .bar{flex:1;max-width:240px;height:8px;border-radius:4px;background:var(--surface-2);overflow:hidden}
+.isp-meter .bar i{display:block;height:100%;border-radius:4px;transition:width .5s,background .5s}
+
+/* 7.5 BGP */
+.bgp svg{width:100%;height:auto;display:block;background:var(--surface-2);border-radius:10px}
+.bgp .edge{stroke:var(--line);stroke-width:3;transition:stroke .3s}
+.bgp .edge.use{stroke:var(--accent);filter:drop-shadow(0 0 3px var(--accent))}
+.bgp .edge.cut{stroke:var(--bad);stroke-dasharray:6 5}
+.bgp .as{fill:var(--surface);stroke:var(--line);stroke-width:2;transition:all .3s}
+.bgp .as.know{stroke:var(--accent)}
+.bgp .as.origin{stroke:var(--ok);stroke-width:3}
+.bgp .as.lost{stroke:var(--bad)}
+.bgp .t1{fill:var(--ink);font-size:12px;font-weight:700;font-family:"JetBrains Mono",monospace}
+.bgp .t2{fill:var(--ink-2);font-size:10px;font-family:"Noto Sans JP",sans-serif}
+.bgp .t3{fill:var(--accent);font-size:10px;font-family:"JetBrains Mono",monospace}
+.bgp .t3.lost{fill:var(--bad)}
+.bgp .msg{fill:var(--answer);font-size:16px}
+
+/* 7.6 IX */
+.ix-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:10px}
+.ix-h{font-size:13px;font-weight:700;text-align:center}
+.ix-svg{width:100%;max-width:260px;height:auto;display:block;margin:0 auto}
+.ix-svg line{stroke:var(--accent);stroke-width:1;opacity:.6}
+.ix-svg circle{fill:var(--surface);stroke:var(--accent);stroke-width:2}
+.ix-svg .hub{fill:var(--accent2);stroke:var(--accent2)}
+.ix-n{text-align:center;font-size:13px;color:var(--ink-2)}
+.ix-n b{font-family:"JetBrains Mono",monospace;font-size:22px;color:var(--accent)}
+
+/* 7.7 海底ケーブル */
+.sea svg{width:100%;height:auto;display:block;border-radius:10px;background:linear-gradient(180deg,#0b2545,#13315c)}
+.sea .land{fill:#1d3a5f;stroke:#3e6a9e;stroke-width:1}
+.sea .cab{fill:none;stroke:#5ee7ff;stroke-width:2;opacity:.8}
+.sea .cab.cut{stroke:#ff5c5c;stroke-dasharray:5 6;opacity:.7}
+.sea .dot{fill:#fff}
+.sea text{fill:#cfe6ff;font-size:11px;font-family:"Noto Sans JP",sans-serif}
+.sea-ctrl{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;align-items:center}
+.sea-ctrl .note{flex-basis:100%}
+
+@media (max-width:720px){
+  .isp-row{grid-template-columns:1fr}
+  .isp-meter{grid-column:1}
+  .isp-n{min-width:52px;font-size:10px}
+  .isp-n .ic{width:34px;height:34px;font-size:16px}
+  .ix-grid{grid-template-columns:1fr 1fr;gap:6px}
+  .bgp svg{max-width:360px;margin:0 auto}
+  .bgp .t2{font-size:10.5px}
+  .pon .lbl{font-size:12px}
+  .pon .sub{font-size:10px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <nav class="top-nav"><a href="index.html">← 目次</a><a href="router.html">← 第6章 スイッチとルーター</a><a href="server.html">第8章 サーバー側の守りと分散 →</a></nav>
+  <div class="kicker">触って学ぶネットワーク ・ 第7章（試作）</div>
+  <h1>家からインターネットへ</h1>
+  <p class="lead">家のルーターを出た小包は、光ファイバーを通って電話局へ、そしてプロバイダへと進みます。プロバイダどうしは、待ち合わせ場所（IX）で小包を受け渡し、海の向こうへは海底ケーブルで渡ります。この章では、「インターネット」と呼ばれている、ネットワークどうしのつながりの正体を見ていきます。</p>
+</header>
+
+<section>
+  <h2><span class="num">7.1</span>家の外への入り口 ── アクセス回線</h2>
+  <p>家とプロバイダをつなぐ道を<b>アクセス回線</b>と呼びます。昔は電話線を使うADSLが主流でしたが、今の日本では<b>光ファイバー（FTTH）</b>が中心です。総務省の集計では、2026年3月末に、家や会社の固定回線 5,237万件のうち<b>4,148万件が光回線</b>でした（約8割）。ほかに、ケーブルテレビの回線や、携帯電話の電波を使うホームルーターもあります。</p>
+  <div class="tri">
+    <div class="card mini-card"><h3>💡 光回線</h3><p>光の点滅で0と1を送る。速くて、遠くまで信号が弱まりにくい。</p></div>
+    <div class="card mini-card"><h3>📺 ケーブルテレビ</h3><p>テレビ用の線（同軸ケーブル）にデータを乗せる。途中から光に切りかわることも多い。</p></div>
+    <div class="card mini-card"><h3>📶 ホームルーター</h3><p>携帯電話の電波（5Gなど）で基地局につなぐ。工事がいらない。</p></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">7.2</span>光の速さでも、時間はかかる</h2>
+  <p>光ファイバーの中を進む光は、1秒に約20万km（真空の光の約3分の2）。とても速いですが、距離が長くなると無視できなくなります。行き先を選んで、<b>物理的にどうしてもかかる往復の時間</b>を見てみましょう。</p>
+  <div class="card">
+    <div class="presets" id="lightDest"></div>
+    <div class="light-fiber" aria-hidden="true"><div class="light-pulse" id="lightPulse"></div></div>
+    <div class="light-res" id="lightRes"></div>
+  </div>
+  <p>実際の往復の時間は、ケーブルが遠回りしていたり、途中の機器で待たされたりするので、これより長くなります。どんなに機械が速くなっても、<b>光の速さより速くは届かない</b>。だから、世界中の近い場所にコピーを置くCDN（第2章・第8章）が大切になるのです。</p>
+</section>
+
+<section>
+  <h2><span class="num">7.3</span>1本の光を、何軒もで分け合う</h2>
+  <p>電話局から家々へ、1軒ずつ光ファイバーを引くのは大変です。そこで、1本の光ファイバーを途中の<b>光スプリッター</b>（光を分ける部品）で分けて、何軒もで使います。この仕組みを <b>PON</b> と呼び、32軒ほどで分け合うのが一般的です。光が行き来する様子を見てみましょう。</p>
+  <div class="card">
+    <div class="ver-bar">
+      <div class="seg" id="ponMode">
+        <button data-m="down" class="on">下り（局 → 家）</button>
+        <button data-m="up">上り（家 → 局）</button>
+      </div>
+      <button class="primary" id="ponBtn">光を送る</button>
+    </div>
+    <div class="pon" id="pon"></div>
+    <div class="explain-box" id="ponExplain" aria-live="polite"></div>
+  </div>
+  <p>電話局側の機械を <b>OLT</b>、家の壁の近くにある光の機械を <b>ONU</b> と呼びます。家にある「光回線の箱」が、このONUです（ルーターと一体になっていることもあります）。</p>
+</section>
+
+<section>
+  <h2><span class="num">7.4</span>プロバイダへのつなぎ方 ── PPPoE と IPoE</h2>
+  <p>日本の光回線の多くは、NTT東日本・西日本の光ファイバーの網（<b>NGN</b>）を通って、それぞれのプロバイダにつながります。このつなぎ方に、<b>PPPoE</b> と <b>IPoE</b> の2種類があります。時間帯を変えて、道の混み具合を比べてみましょう。</p>
+  <div class="card">
+    <div class="ver-bar">
+      <div class="seg" id="ispTime">
+        <button data-t="am" class="on">朝 7時</button>
+        <button data-t="pm">夜 21時</button>
+      </div>
+    </div>
+    <div class="isp" id="isp"></div>
+    <div class="explain-box" id="ispExplain" aria-live="polite"></div>
+  </div>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>PPPoE：IDとパスワードでログイン</h3>
+      <p>昔の電話回線の「ダイヤルアップ」と同じ考え方で、ルーターがプロバイダのIDとパスワードでログインしてからつながります。NGNとプロバイダの境目にある<b>網終端装置</b>を必ず通るため、利用者が増える夜には、ここが渋滞しやすいのが弱点でした。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>IPoE：ログインなしで、IPv6のまま直接</h3>
+      <p>IPv6で、ログインの手続きなしに、<b>VNE</b>（NGNとインターネットをつなぐ役目の事業者）の大きな出入り口を通ってつながります。網終端装置を通らないので、混雑の影響を受けにくくなりました。IPv4の小包は、IPv6の封筒に入れて運ぶ方式（MAP-E や DS-Lite など）で、同じ道を通ります。</p>
+    </div>
+  </div>
+  <p class="note">参考：<a href="https://business.ntt-east.co.jp/service/flets-hikari/column/ipv6_ipoe/index.html" target="_blank" rel="noopener">NTT東日本「IPv6 IPoEとは」</a></p>
+</section>
+
+<section>
+  <h2><span class="num">7.5</span>インターネットは「ネットワークのネットワーク」</h2>
+  <p>インターネットには、全体を仕切る1つの会社はありません。プロバイダ、携帯電話の会社、大学、CDN、大きなIT企業などが、それぞれ自分のネットワークを持ち、たがいにつなぎ合っています。ひとまとまりで管理されたネットワークを <b>AS</b>（自律システム）と呼び、1つ1つに<b>AS番号</b>がついています。</p>
+  <p>ASどうしは <b>BGP</b> という決まりで、「この住所の範囲は、うちの先にあります」と<b>となりのASに伝え合い</b>ます。伝言ゲームのように広がっていくことで、世界中のルーターの経路表（第6章）ができあがります。</p>
+  <div class="card">
+    <div class="row-btns" style="margin-top:0">
+      <button class="primary" id="bgpAnn">AS64510 が住所を知らせる</button>
+      <button id="bgpCut">AS64501 とのつながりが切れる</button>
+      <button id="bgpWd">知らせを取り消す</button>
+      <button id="bgpReset">最初から</button>
+    </div>
+    <div class="bgp" id="bgp"></div>
+    <div class="explain-box" id="bgpExplain" aria-live="polite"></div>
+  </div>
+  <div class="card mini-card">
+    <h3>知らせが消えると、どうなる？</h3>
+    <p>2021年10月4日、Facebook（今の Meta）の設定作業のミスで、自分のネットワークへの道の知らせが世界中から消えてしまいました。DNSサーバーにもたどり着けなくなり、Facebook・Instagram・WhatsApp が約6時間使えなくなりました。サーバーは動いていても、<b>道が知らされなければ、だれも行けない</b>のです。</p>
+  </div>
+  <p class="note">※ 図のAS番号（64496〜64511）は、説明用に決められた番号です（RFC 5398）。</p>
+</section>
+
+<section>
+  <h2><span class="num">7.6</span>IX ── ネットワークどうしの待ち合わせ場所</h2>
+  <p>ASどうしがつながるとき、1社ずつ専用の線を引いていたら大変です。そこで、たくさんのASが<b>1か所に集まって</b>、まとめてつなぎ合える場所が作られました。それが <b>IX</b>（インターネットエクスチェンジ）です。つなぎたいネットワークの数を変えて、線の数を比べてみましょう。</p>
+  <div class="card">
+    <label class="rtt-lbl"><span>ネットワークの数：<b id="ixNOut">6</b></span><input type="range" id="ixN" min="3" max="16" value="6"></label>
+    <div class="ix-grid">
+      <div><div class="ix-h">1社ずつ線を引く</div><svg class="ix-svg" id="ixMesh" viewBox="0 0 200 200"></svg><div class="ix-n" id="ixMeshN"></div></div>
+      <div><div class="ix-h">IX に集まる</div><svg class="ix-svg" id="ixStar" viewBox="0 0 200 200"></svg><div class="ix-n" id="ixStarN"></div></div>
+    </div>
+  </div>
+  <p>日本の代表的なIXの1つ、JPNAP（インターネットマルチフィード）には、2026年10月時点で <b>300以上のAS</b> がつながり、いちばん混む時間帯には<b>8Tbps（1秒に8兆ビット）以上</b>が流れています。IXの多くは東京・大阪のデータセンターにあり、日本のインターネットの交差点になっています。</p>
+  <p class="note">出典：<a href="https://www.jpnap.net/" target="_blank" rel="noopener">JPNAP</a>（2026年10月18日に確認）</p>
+</section>
+
+<section>
+  <h2><span class="num">7.7</span>海の底を通って、世界へ</h2>
+  <p>海外のサーバーへの小包は、どうやって海を渡るのでしょう。人工衛星を思いうかべるかもしれませんが、実は<b>日本の国際通信の約99%は、海底ケーブル</b>を通っています（総務省、2025年）。太さは数cmほど。中には髪の毛ほどの細さの光ファイバーが何本も入っていて、1本のケーブルで1秒に数百テラビットを運ぶものもあります。</p>
+  <div class="card">
+    <div class="sea" id="sea"></div>
+  </div>
+  <p>海底ケーブルは、船のいかりや地震で切れることがあります。そのため、ケーブルを何本も別々のルートで引いて、1本が切れても別の道で届くようにしています。総務省も2025年から、海底ケーブルを守るための検討会を開いています。</p>
+  <p class="note">出典：<a href="https://www.soumu.go.jp/main_content/001040293.pdf" target="_blank" rel="noopener">総務省「国際海底ケーブルを巡る現状と課題」（2025年11月11日）</a></p>
+</section>
+
+<section>
+  <h2><span class="num">7.8</span>自分のPCで試してみよう</h2>
+  <p>traceroute の結果に出てきた住所が、どのAS（どこの会社のネットワーク）のものかは、<code>whois</code> というコマンドで調べられます。</p>
+  <div class="card">
+    <div class="seg wrap-seg">
+      <button data-os="mac" class="on">Mac</button>
+      <button data-os="win">Windows</button>
+    </div>
+    <div class="cmds" id="cmds"></div>
+  </div>
+  <h3 class="sub-h">実際の結果を読んでみよう</h3>
+  <p>下は、2026年10月18日に、第6章の traceroute に出てきた住所を調べた、実際の結果です。行を押すと説明が出ます。</p>
+  <div class="card trace-card">
+    <div class="trace mono" id="real"></div>
+    <div class="trace-explain" id="realExplain" aria-live="polite"><span class="note">↑ 気になる行を押してみてください</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">7.9</span>まとめ</h2>
+  <div class="card summary">
+    <ul>
+      <li>家とプロバイダをつなぐのが<b>アクセス回線</b>。日本では光回線が約8割（2026年3月末で4,148万件）</li>
+      <li>光ファイバーの中の光は1秒に約20万km。距離が長いと、<b>物理的に往復の時間がかかる</b></li>
+      <li><b>PON</b> は、1本の光ファイバーを光スプリッターで分けて何軒もで使う。下りは全員に届けて自分の分だけ受け取り、上りは順番に送る</li>
+      <li>日本では NGN を通ってプロバイダにつなぐ。<b>PPPoE</b> はログインして網終端装置を通り、<b>IPoE</b> はIPv6でVNEの出入り口を通る</li>
+      <li>インターネットは <b>AS</b> のつながり。ASどうしは <b>BGP</b> で道を知らせ合う。知らせが消えると、だれもたどり着けない</li>
+      <li><b>IX</b> は、ネットワークどうしが集まってまとめてつながる場所</li>
+      <li>日本の国際通信の約99%は<b>海底ケーブル</b>を通る</li>
+    </ul>
+  </div>
+  <p>小包は、いくつものネットワークを渡って、ついにサーバーのいるデータセンターの入り口までやって来ました。次の章では、サーバーの手前で小包を待ち受ける、守りと分散の仕組みを見ていきます。</p>
+
+  <h2><span class="num">7.10</span>確認クイズ</h2>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<footer>
+  <div class="chap-nav"><a href="server.html">次の章：<b>第8章 サーバー側の守りと分散</b> →</a></div>
+  この教材の文章と図はオリジナルです。数値や出来事は2026年10月18日時点で確認したものです。<br>
+  参考：<a href="https://www.soumu.go.jp/menu_news/s-news/01kiban04_02000278.html" target="_blank" rel="noopener">総務省「電気通信サービスの契約数及びシェアに関する四半期データ（令和7年度第4四半期）」</a>、IEEE 802.3ah（GE-PON）、RFC 4271（BGP-4）、RFC 5398（説明用のAS番号）、RFC 7597（MAP-E）、RFC 6333（DS-Lite）、<a href="https://www.jpnap.net/" target="_blank" rel="noopener">JPNAP</a>、<a href="https://www.soumu.go.jp/main_content/001040293.pdf" target="_blank" rel="noopener">総務省（海底ケーブル）</a>、<a href="https://business.ntt-east.co.jp/service/flets-hikari/column/ipv6_ipoe/index.html" target="_blank" rel="noopener">NTT東日本（IPoE）</a>
+</footer>
+</div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* コマンド集（Mac / Windows の切り替えとコピー） */
+function setupCmds(C, boxId = 'cmds'){
+  const box = $(boxId);
+  function show(os){
+    document.querySelectorAll('[data-os]').forEach(b => b.classList.toggle('on', b.dataset.os === os));
+    box.innerHTML = C[os].map(([c, d]) => `<div class="cmd"><div class="cmd-line"><code>${esc(c)}</code><button data-c="${esc(c)}">コピー</button></div><div class="cmd-desc">${d}</div></div>`).join('') + (C[os + 'Note'] || '');
+    box.querySelectorAll('[data-c]').forEach(b => b.onclick = async () => {
+      try{ await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'コピーした'; }
+      catch(e){ b.textContent = '選択してコピーしてね'; }
+      setTimeout(() => b.textContent = 'コピー', 1500);
+    });
+  }
+  document.querySelectorAll('[data-os]').forEach(b => b.onclick = () => show(b.dataset.os));
+  show('mac');
+}
+
+/* 実際の結果を1行ずつ解説する欄。L=[[グループ, 行の文字]]、E={グループ:[見出し, 説明]}。グループ'c'は説明なしの行 */
+function setupTrace(id, exId, L, E){
+  const tr = $(id);
+  tr.innerHTML = L.map(([g, t]) => `<div class="ln ${g === 'c' ? 'cmt' : 'g'}" data-g="${g}" ${g === 'c' ? '' : 'tabindex="0" role="button"'}>${esc(t).replace(/^([a-zA-Z_-]+[:=])/, '<span class="k">$1</span>')}</div>`).join('');
+  function pick(g){
+    tr.querySelectorAll('.ln').forEach(l => l.classList.toggle('on', l.dataset.g === g));
+    $(exId).innerHTML = `<h4>${E[g][0]}</h4>${E[g][1]}`;
+  }
+  tr.querySelectorAll('.ln.g').forEach(l => {
+    l.onclick = () => pick(l.dataset.g);
+    l.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); pick(l.dataset.g); } };
+  });
+}
+
+/* 確認クイズ */
+function setupQuiz(QUIZ, id = 'quiz'){
+  const quizEl = $(id);
+  QUIZ.forEach((item, qi) => {
+    const d = document.createElement('div');
+    d.className = 'card q';
+    d.innerHTML = `<b>Q${qi + 1}. ${item.q}</b><div class="opts">${item.o.map((o, k) => `<button data-k="${k}">${o}</button>`).join('')}</div><div class="fb"></div>`;
+    d.querySelectorAll('.opts button').forEach(b => b.onclick = () => {
+      const k = +b.dataset.k;
+      d.querySelectorAll('.opts button').forEach(x => x.classList.remove('right', 'wrong'));
+      b.classList.add(k === item.a ? 'right' : 'wrong');
+      d.querySelector('.fb').innerHTML = (k === item.a ? '⭕ 正解！ ' + item.e : '❌ もう一度考えてみよう。');
+    });
+    quizEl.appendChild(d);
+  });
+}
+
+/* 1歩ずつ進める手順（最初から・戻る・次へ）。render(i) を呼ぶ */
+function setupStepper({first, prev, next, count, total, render}){
+  let i = 0;
+  const upd = () => { render(i); $(count).textContent = `${i + 1} / ${total}`; $(prev).disabled = i === 0; $(next).disabled = i === total - 1; };
+  $(first).onclick = () => { i = 0; upd(); };
+  $(prev).onclick = () => { if(i > 0){ i--; upd(); } };
+  $(next).onclick = () => { if(i < total - 1){ i++; upd(); } };
+  upd();
+}
+
+/* 点を折れ線にそって動かす（SVG） */
+function moveDot(svg, pts, dur, color, r = 6){
+  return new Promise(res => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', r); c.setAttribute('fill', color); c.style.filter = `drop-shadow(0 0 4px ${color})`;
+    svg.appendChild(c);
+    const seg = []; let total = 0;
+    for(let i = 1; i < pts.length; i++){ const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); total += d; }
+    const t0 = performance.now(), D = reduced() ? 1 : dur;
+    const step = now => {
+      let k = Math.min(1, (now - t0) / D), dist = k * total, i = 0;
+      while(i < seg.length - 1 && dist > seg[i]){ dist -= seg[i]; i++; }
+      const f = seg[i] ? dist / seg[i] : 0;
+      c.setAttribute('cx', pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f);
+      c.setAttribute('cy', pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f);
+      if(k < 1) requestAnimationFrame(step); else { c.remove(); res(); }
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+
+/* ---------- 7.2 光の速さ ---------- */
+(function(){
+  const D = [['大阪', 400], ['札幌', 830], ['福岡', 880], ['ソウル', 1160], ['シンガポール', 5300], ['ロサンゼルス', 8800], ['ロンドン', 9600], ['サンパウロ', 18500]];
+  let anim;
+  function pick(i){
+    const [nm, km] = D[i];
+    $('lightDest').querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i));
+    const one = km / 200, rt = km / 100;
+    $('lightRes').innerHTML = `<div class="big-stat"><span>東京 → ${nm}（まっすぐ約${km.toLocaleString('ja-JP')}km）片道</span><b>${one.toFixed(1)}</b><span>ミリ秒</span></div><div class="big-stat"><span>往復</span><b>${rt.toFixed(1)}</b><span>ミリ秒</span></div><span class="note">光ファイバーの中の光は1ミリ秒で約200km進みます。実際のケーブルは遠回りするので、もっとかかります。</span>`;
+    const p = $('lightPulse'); cancelAnimationFrame(anim);
+    const dur = reduced() ? 1 : Math.min(3200, 400 + one * 30), t0 = performance.now();
+    const step = now => { const k = Math.min(1, (now - t0) / dur); p.style.left = `calc(${k * 100}% - ${k * 36}px)`; if(k < 1) anim = requestAnimationFrame(step); };
+    anim = requestAnimationFrame(step);
+  }
+  $('lightDest').innerHTML = D.map(([nm], i) => `<button data-i="${i}">${nm}</button>`).join('');
+  $('lightDest').querySelectorAll('button').forEach(b => b.onclick = () => pick(+b.dataset.i));
+  pick(5);
+})();
+
+/* ---------- 7.3 PON ---------- */
+(function(){
+  const H = [['A', 34, '#22d3ee'], ['B', 82, '#a78bfa'], ['C', 130, '#ffb020'], ['D', 178, '#3dff8f']];
+  let OLT, SPL, HX, VW;
+  const layout = () => { const nar = $('pon').clientWidth < 520; VW = nar ? 330 : 560; OLT = [nar ? 46 : 70, 106]; SPL = [nar ? 150 : 300, 106]; HX = nar ? 214 : 470; };
+  let mode = 'down', run = 0;
+  function base(){
+    layout();
+    const ox = OLT[0] - 26;
+    $('pon').innerHTML = `<svg viewBox="0 0 ${VW} 230" id="ponSvg">
+      <path class="fib" d="M${OLT[0]},${OLT[1]} L${SPL[0]},${SPL[1]}"/>
+      ${H.map(([, y]) => `<path class="fib" d="M${SPL[0]},${SPL[1]} L${HX},${y}"/>`).join('')}
+      <rect class="box" x="${ox - 3}" y="84" width="58" height="44" rx="8"/><text class="lbl" x="${ox + 26}" y="104" text-anchor="middle">OLT</text><text class="sub" x="${ox + 26}" y="118" text-anchor="middle">電話局</text>
+      <rect class="spl" x="${SPL[0] - 14}" y="92" width="28" height="28" rx="6"/><text class="sub" x="${SPL[0]}" y="142" text-anchor="middle">光スプリッター</text>
+      ${H.map(([n, y]) => `<rect class="house" id="ponH${n}" x="${HX}" y="${y - 16}" width="50" height="32" rx="6"/><text class="lbl" x="${HX + 8}" y="${y + 4}">🏠${n}</text><text class="mark" id="ponM${n}" x="${HX + 56}" y="${y + 4}"></text>`).join('')}
+      <text class="sub" x="${HX + 25}" y="222" text-anchor="middle">（実際は32軒ほど）</text>
+      <g id="ponSlots"></g>
+    </svg>`;
+  }
+  const mark = (n, t, c) => { const m = $('ponM' + n); m.textContent = t; m.setAttribute('fill', c); };
+  async function down(me){
+    const svg = $('ponSvg');
+    $('ponExplain').innerHTML = '<b class="t">下り：全員に同じ光が届く</b>OLTは、4軒あての小包を順に送り出します。光スプリッターは光を分けるだけなので、<b>どの小包も全員の家に届きます</b>。';
+    for(const [n, , col] of H){
+      if(me !== run) return;
+      await moveDot(svg, [OLT, SPL], 500, col);
+      await Promise.all(H.map(([m, y]) => moveDot(svg, [SPL, [HX, y]], 500, col, 5)));
+      H.forEach(([m]) => mark(m, m === n ? (VW < 400 ? '✓' : '✓ 自分の分') : (VW < 400 ? '✕' : '✕ 捨てる'), m === n ? col : 'var(--ink-2)'));
+      await sleep(reduced() ? 0 : 500);
+    }
+    $('ponExplain').innerHTML += '<br>各家のONUは、<b>自分あての小包だけ</b>を受け取り、ほかは捨てます。よその家の小包は暗号化されているので、のぞくこともできません。';
+  }
+  async function up(me){
+    const svg = $('ponSvg'), slots = $('ponSlots');
+    $('ponExplain').innerHTML = '<b class="t">上り：順番を決めて送る</b>上りは1本の光ファイバーに合流するので、同時に送ると光がぶつかってしまいます。そこでOLTが「Aさんはこの時間、Bさんはこの時間」と<b>送ってよい時間を割り当て</b>、各家は自分の番にだけ送ります。';
+    for(let k = 0; k < H.length; k++){
+      if(me !== run) return;
+      const [n, y, col] = H[k];
+      mark(n, VW < 400 ? '▶' : '▶ 送信中', col);
+      await moveDot(svg, [[HX, y], SPL, OLT], 800, col);
+      mark(n, '✓', col);
+      slots.insertAdjacentHTML('beforeend', `<rect class="slot" x="${10 + k * 40}" y="196" width="38" height="14" fill="${col}"/><text class="sub" x="${29 + k * 40}" y="207" text-anchor="middle" fill="#00141a">${n}</text>`);
+    }
+    slots.insertAdjacentHTML('beforeend', '<text class="sub" x="10" y="190">OLTに届いた順番（ぶつからない）</text>');
+  }
+  $('ponBtn').onclick = () => { const me = ++run; base(); (mode === 'down' ? down : up)(me); };
+  document.querySelectorAll('#ponMode button').forEach(b => b.onclick = () => {
+    mode = b.dataset.m; run++; base();
+    document.querySelectorAll('#ponMode button').forEach(x => x.classList.toggle('on', x === b));
+    $('ponExplain').innerHTML = '「光を送る」を押してください。';
+  });
+  base();
+  $('ponExplain').innerHTML = '下りと上りを切りかえて、「光を送る」を押してみましょう。';
+})();
+
+/* ---------- 7.4 PPPoE と IPoE ---------- */
+(function(){
+  const R = {
+    pppoe:[['🏠', '家'], ['🔆', 'NGN<br>（NTT東西）'], ['🚧', '網終端装置', 'gate'], ['🏢', 'プロバイダ'], ['🌐', 'インターネット']],
+    ipoe:[['🏠', '家'], ['🔆', 'NGN<br>（NTT東西）'], ['🚪', 'VNEの<br>出入り口', 'gate'], ['🌐', 'インターネット']],
+  };
+  function draw(t){
+    const pm = t === 'pm';
+    const row = (k, nm, jam) => {
+      const nodes = R[k];
+      const path = nodes.map(([ic, l, g], i) => (i ? `<div class="isp-l" style="--c:${jam && i === 2 ? 'var(--bad)' : 'var(--accent)'};--sp:${jam && i >= 2 ? '4s' : '1.1s'}"><i></i></div>` : '') +
+        `<div class="isp-n ${g ? (jam ? 'jam' : 'ok') : ''}"><div class="ic">${ic}</div>${l}</div>`).join('');
+      const lvl = jam ? 92 : pm ? 35 : 20;
+      return `<div class="isp-row"><b>${nm}</b><div class="isp-path">${path}</div><div class="isp-meter">混み具合（イメージ）<span class="bar"><i style="width:${lvl}%;background:${lvl > 80 ? 'var(--bad)' : lvl > 30 ? 'var(--answer)' : 'var(--ok)'}"></i></span></div></div>`;
+    };
+    $('isp').innerHTML = row('pppoe', 'PPPoE', pm) + row('ipoe', 'IPoE', false);
+    document.querySelectorAll('#ispTime button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+    $('ispExplain').innerHTML = pm
+      ? '<b class="t">夜21時：PPPoE の網終端装置が渋滞</b>みんなが動画を見る夜は、PPPoE の小包が必ず通る<b>網終端装置</b>に集中し、ここが渋滞しやすくなっていました。IPoE は網終端装置を通らず、大きな出入り口からインターネットに出るので、影響を受けにくいのです。'
+      : '<b class="t">朝7時：どちらもすいている</b>使う人が少ない時間帯は、どちらのつなぎ方でも快適です。';
+  }
+  document.querySelectorAll('#ispTime button').forEach(b => b.onclick = () => draw(b.dataset.t));
+  draw('am');
+})();
+
+/* ---------- 7.5 BGP ---------- */
+(function(){
+  const N = {
+    64510:{x:80, y:130, nm:'お店のサーバーの会社'},
+    64501:{x:280, y:50, nm:'大きなプロバイダA'},
+    64502:{x:280, y:210, nm:'大きなプロバイダB'},
+    64503:{x:480, y:130, nm:'海外のプロバイダ'},
+    64500:{x:640, y:50, nm:'あなたのプロバイダ'},
+  };
+  const NN = {64510:[90, 50], 64501:[90, 190], 64502:[260, 120], 64503:[260, 300], 64500:[90, 400]};
+  let VB = '0 0 720 260';
+  function layout(){
+    const nar = $('bgp').clientWidth < 520;
+    VB = nar ? '0 0 340 440' : '0 0 720 260';
+    const W = {64510:[80, 130], 64501:[280, 50], 64502:[280, 210], 64503:[480, 130], 64500:[640, 50]};
+    Object.keys(N).forEach(k => { const [x, y] = (nar ? NN : W)[k]; N[k].x = x; N[k].y = y; });
+  }
+  const E0 = [[64510, 64501], [64510, 64502], [64501, 64503], [64502, 64503], [64501, 64500], [64503, 64500]];
+  let edges, cut, announced, best, run = 0;
+  const key = (a, b) => [a, b].sort().join('-');
+  function reset(){ edges = E0.map(e => [...e]); cut = null; announced = false; best = {}; }
+  function compute(){
+    best = {}; if(!announced) return;
+    best[64510] = [];
+    const q = [64510];
+    while(q.length){
+      const u = +q.shift();
+      edges.forEach(([a, b]) => {
+        if(cut === key(a, b)) return;
+        const v = a === u ? b : b === u ? a : null;
+        if(v === null || best[v]) return;
+        best[v] = [u, ...best[u]].filter(x => x !== v);
+        q.push(v);
+      });
+    }
+  }
+  function draw(shown){
+    shown = shown || new Set(Object.keys(best).map(Number));
+    const used = new Set();
+    Object.entries(best).forEach(([v, p]) => { if(p.length && shown.has(+v)) used.add(key(+v, p[0])); });
+    layout();
+    let h = `<svg viewBox="${VB}">`;
+    edges.forEach(([a, b]) => { const A = N[a], B = N[b], k = key(a, b); h += `<line class="edge${cut === k ? ' cut' : used.has(k) ? ' use' : ''}" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}"/>`; });
+    if(cut && cut !== 'withdrawn'){ const [a, b] = cut.split('-').map(Number); h += `<text class="msg" x="${(N[a].x + N[b].x) / 2 - 8}" y="${(N[a].y + N[b].y) / 2 + 6}">✂</text>`; }
+    Object.entries(N).forEach(([as, n]) => {
+      as = +as;
+      const know = shown.has(as) && best[as];
+      const cls = as === 64510 ? 'origin' : know ? 'know' : announced ? '' : '';
+      const lostAll = !announced && cut === 'withdrawn';
+      const pathTxt = as === 64510 ? (announced ? '203.0.113.0/24 の持ち主' : '') : know ? '道：' + best[as].join(' → ') : (lostAll ? '道がない！' : '');
+      h += `<rect class="as ${cls}${lostAll && as !== 64510 ? ' lost' : ''}" x="${n.x - 66}" y="${n.y - 26}" width="132" height="52" rx="10"/>
+        <text class="t1" x="${n.x}" y="${n.y - 8}" text-anchor="middle">AS${as}</text>
+        <text class="t2" x="${n.x}" y="${n.y + 6}" text-anchor="middle">${n.nm}</text>
+        <text class="t3${lostAll && as !== 64510 ? ' lost' : ''}" x="${n.x}" y="${n.y + 19}" text-anchor="middle">${pathTxt}</text>`;
+    });
+    $('bgp').innerHTML = h + '</svg>';
+  }
+  async function announce(){
+    const me = ++run;
+    if(cut === 'withdrawn') cut = null;
+    announced = true; compute();
+    const byDist = Object.entries(best).sort((a, b) => a[1].length - b[1].length).map(x => +x[0]);
+    const shown = new Set();
+    for(const as of byDist){ if(me !== run) return; shown.add(as); draw(shown); await sleep(reduced() ? 0 : 450); }
+    $('bgpExplain').innerHTML = '<b class="t">知らせが広がった</b>AS64510 が「203.0.113.0/24 はうちの先にあります」と知らせると、となりのASがそれを受け取り、<b>自分の番号を前に足して</b>さらにとなりへ伝えます。あなたのプロバイダ（AS64500）には、A経由と海外経由の2つの道が届きました。BGPは、ふつう<b>通るASの数が少ない道</b>を選びます（実際は、料金の契約などの事情も考えて選びます）。';
+  }
+  $('bgpAnn').onclick = announce;
+  $('bgpCut').onclick = () => {
+    if(!announced){ $('bgpExplain').innerHTML = '先に「AS64510 が住所を知らせる」を押してください。'; return; }
+    cut = key(64510, 64501); compute(); draw();
+    $('bgpExplain').innerHTML = '<b class="t">つながりが切れても、別の道へ</b>AS64510 と A のつながりが切れました。BGPはすぐに知らせ直し、あなたのプロバイダは <b>海外のプロバイダ経由の道</b>に切りかえました。インターネットは、どこかが切れても別の道を探す、しぶとい作りになっています。';
+  };
+  $('bgpWd').onclick = () => {
+    run++; announced = false; cut = 'withdrawn'; compute(); draw(new Set());
+    $('bgpExplain').innerHTML = '<b class="t">知らせが消えると、だれも行けない</b>AS64510 が知らせを取り消すと、すべてのASの経路表から 203.0.113.0/24 への道が消えました。サーバーが元気に動いていても、<b>道を知らない以上、だれも小包を届けられません</b>。下の「Facebook の大きな障害」で起きたのは、これでした。';
+  };
+  $('bgpReset').onclick = () => { run++; reset(); draw(); $('bgpExplain').innerHTML = 'まだ、だれも 203.0.113.0/24 への道を知りません。「AS64510 が住所を知らせる」を押してみましょう。'; };
+  reset(); draw();
+  $('bgpExplain').innerHTML = 'まだ、だれも 203.0.113.0/24 への道を知りません。「AS64510 が住所を知らせる」を押してみましょう。';
+})();
+
+/* ---------- 7.6 IX ---------- */
+(function(){
+  function run(){
+    const n = +$('ixN').value; $('ixNOut').textContent = n;
+    const pts = Array.from({length:n}, (_, i) => [100 + 80 * Math.cos(2 * Math.PI * i / n - Math.PI / 2), 100 + 80 * Math.sin(2 * Math.PI * i / n - Math.PI / 2)]);
+    let mesh = '', m = 0;
+    for(let i = 0; i < n; i++) for(let j = i + 1; j < n; j++){ mesh += `<line x1="${pts[i][0]}" y1="${pts[i][1]}" x2="${pts[j][0]}" y2="${pts[j][1]}"/>`; m++; }
+    const dots = pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="7"/>`).join('');
+    $('ixMesh').innerHTML = mesh + dots;
+    $('ixStar').innerHTML = pts.map(([x, y]) => `<line x1="100" y1="100" x2="${x}" y2="${y}"/>`).join('') + dots + '<circle class="hub" cx="100" cy="100" r="16"/><text x="100" y="104" text-anchor="middle" font-size="11" font-weight="700" fill="#fff">IX</text>';
+    $('ixMeshN').innerHTML = `線の数 <b>${m}</b> 本`;
+    $('ixStarN').innerHTML = `線の数 <b>${n}</b> 本`;
+  }
+  $('ixN').oninput = run; run();
+})();
+
+/* ---------- 7.7 海底ケーブル ---------- */
+(function(){
+  const C = [
+    {id:'us1', d:'M150,90 C260,40 420,40 560,80', nm:'北米へ（1）'},
+    {id:'us2', d:'M150,100 C270,120 430,130 560,96', nm:'北米へ（2）'},
+    {id:'sg', d:'M140,112 C120,170 90,200 60,226', nm:'東南アジアへ'},
+  ];
+  const cut = new Set();
+  function draw(){
+    let h = `<svg viewBox="0 0 620 240">
+      <path class="land" d="M120,60 L160,50 L175,80 L165,120 L140,130 L125,105 Z"/><text x="82" y="78">日本</text>
+      <path class="land" d="M560,30 L620,30 L620,170 L570,150 L555,100 Z"/><text x="565" y="190">北米</text>
+      <path class="land" d="M20,215 L70,205 L80,240 L20,240 Z"/><text x="20" y="200">東南アジア</text>`;
+    C.forEach((c, i) => {
+      const isCut = cut.has(c.id);
+      h += `<path id="cab${i}" class="cab${isCut ? ' cut' : ''}" d="${c.d}"/>`;
+      if(!isCut) for(let k = 0; k < 3; k++) h += `<circle class="dot" r="2.6"><animateMotion dur="${2.4 + i * 0.3}s" begin="${k * 0.8}s" repeatCount="indefinite"><mpath href="#cab${i}"/></animateMotion></circle>`;
+    });
+    $('sea').innerHTML = h + '</svg>' + `<div class="sea-ctrl">${C.map(c => `<button data-c="${c.id}" class="${cut.has(c.id) ? 'on' : ''}">${cut.has(c.id) ? '直す：' : '切る：'}${c.nm}</button>`).join('')}<span class="note">${cut.has('us1') !== cut.has('us2') ? '北米へのケーブルが1本切れても、もう1本を通って届きます。' : cut.has('us1') && cut.has('us2') ? '北米への2本が両方切れると、別の国を経由する遠回りの道を使うことになり、遅くなります。' : 'ケーブルを切ってみましょう（光の点が小包の流れです）。'}</span></div>`;
+    $('sea').querySelectorAll('[data-c]').forEach(b => b.onclick = () => { cut.has(b.dataset.c) ? cut.delete(b.dataset.c) : cut.add(b.dataset.c); draw(); });
+  }
+  draw();
+})();
+
+/* ---------- 7.8 試そう ---------- */
+setupCmds({
+  mac:[
+    ['whois -h whois.radb.net 103.22.201.21', 'その住所の範囲を、どのASが知らせているか（<code>origin</code>）を調べます。'],
+    ['whois -h whois.cymru.com " -v 172.66.147.243"', '住所から、AS番号と会社の名前を一度に調べます。'],
+    ['traceroute -n -a www.example.com', '<code>-a</code> を付けると、traceroute の各ルーターのAS番号も表示します。どこでASが切りかわるかを見てみましょう。'],
+  ],
+  win:[
+    ['Resolve-DnsName 21.201.22.103.origin.asn.cymru.com -Type TXT', 'Windows には whois が入っていないので、DNSの仕組みを使ってAS番号を調べます（住所の数字を逆に並べて書きます）。'],
+    ['tracert -d www.example.com', '道のりを調べて、出てきた住所を上のコマンドで調べてみましょう。'],
+  ],
+});
+setupTrace('real', 'realExplain', [
+  ['c', '$ whois -h whois.radb.net 103.22.201.21 （抜き出し）'],
+  ['route', 'route:          103.22.200.0/22'],
+  ['origin', 'origin:         AS13335'],
+  ['descr', 'descr:          Cloudflare, Inc.'],
+  ['src', 'source:         APNIC'],
+  ['c', '$ whois -h whois.cymru.com " -v 172.66.147.243" （抜き出し）'],
+  ['cyh', 'AS      | IP               | BGP Prefix          | CC | Registry'],
+  ['cy', '13335   | 172.66.147.243   | 172.66.144.0/20     | US | arin'],
+], {
+  route:['住所の範囲', '第6章の traceroute の10番目に出てきた 103.22.201.21 は、<b>103.22.200.0/22</b> という範囲に入っています。'],
+  origin:['この範囲を知らせているAS', '<b>AS13335</b> が「この範囲はうちの先にあります」とBGPで知らせています（7.5 の AS64510 の役）。'],
+  descr:['ASの持ち主', 'AS13335 は Cloudflare（CDNの会社）です。'],
+  src:['登録した団体', 'APNIC は、アジア太平洋地域でIPアドレスとAS番号を配っている団体です。'],
+  cyh:['表の見出し', 'AS番号、IPアドレス、BGPで知らされている範囲、国、登録した団体の順に並んでいます。'],
+  cy:['example.com のサーバーの住所', 'example.com の住所 172.66.147.243 も、同じ <b>AS13335</b> の中にありました。BGPで知らされている範囲は 172.66.144.0/20 で、アメリカの団体（ARIN）から配られた住所ですが、エニーキャスト（第2章）で日本の拠点が答えています。'],
+});
+
+/* ---------- 7.10 クイズ ---------- */
+setupQuiz([
+  {q:'日本の家や会社の固定回線で、いちばん多いのは？（2026年3月末）', o:['ADSL','光回線','ケーブルテレビ'], a:1,
+   e:'固定回線5,237万件のうち、4,148万件（約8割）が光回線です。'},
+  {q:'東京からロサンゼルス（約8,800km）まで、光ファイバーでの往復は最低でもどれくらい？', o:['約9ミリ秒','約88ミリ秒','約880ミリ秒'], a:1,
+   e:'光ファイバーの中の光は1ミリ秒で約200km。往復17,600kmなので約88ミリ秒です。'},
+  {q:'PON の下りでは、ほかの家あての小包はどうなる？', o:['届かない','届くが、自分あてでないので捨てる','届いて中身が読める'], a:1,
+   e:'光スプリッターは光を分けるだけなので全員に届きます。自分の分だけ受け取り、ほかは暗号化されていて読めません。'},
+  {q:'IPoE が夜も混みにくいのはなぜ？', o:['光の速さが速くなるから','網終端装置を通らないから','IPv4しか使わないから'], a:1,
+   e:'PPPoE は網終端装置を必ず通るため、夜にここが渋滞しやすかったのです。'},
+  {q:'BGP でASどうしが伝え合うのは？', o:['住所の範囲が、どのASの先にあるか','サイトの名前とIPアドレスの対応','パスワード'], a:0,
+   e:'「この範囲はうちの先にあります」という知らせを伝言ゲームのように広げて、経路表を作ります。'},
+  {q:'日本の国際通信の約99%を運んでいるのは？', o:['人工衛星','海底ケーブル','携帯電話の基地局'], a:1,
+   e:'海底ケーブルです。切れても大丈夫なように、何本も別のルートで引かれています。'},
+]);
+</script>
+</body>
+</html>

@@ -1,0 +1,1428 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ブラウザの旅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaf2f8; --surface:#ffffff; --surface-2:#e1eff6; --ink:#0d1b2a; --ink-2:#4a5d75; --line:#c8d5e4;
+  --accent:#0891b2; --accent-soft:rgba(8,145,178,.12); --answer:#d97706; --answer-soft:rgba(217,119,6,.13); --ok:#15803d; --ok-soft:rgba(21,128,61,.12);
+  --ground:#e3ebf4; --zone-home:rgba(21,128,61,.09); --zone-isp:rgba(8,145,178,.1); --zone-net:rgba(217,119,6,.09);
+  --grid:rgba(8,145,178,.07); --glow:0 0 0 1px rgba(8,145,178,.4),0 0 16px rgba(8,145,178,.15); --on-accent:#ffffff;
+  --shadow:0 1px 2px rgba(13,27,42,.06),0 6px 18px rgba(13,27,42,.07);
+  --board-grid:rgba(8,145,178,.14); --board-edge:#b9cadc;
+  --z-home:rgba(21,128,61,.13); --z-home-edge:#15803d; --z-isp:rgba(8,145,178,.15); --z-isp-edge:#0e7490;
+  --z-net:rgba(217,119,6,.13); --z-net-edge:#b45309; --z-web:rgba(124,58,237,.11); --z-web-edge:#6d28d9;
+  --accent2:#7c3aed;
+  --wash:radial-gradient(1100px 620px at 0% 0%,rgba(8,145,178,.16),transparent 62%),radial-gradient(900px 560px at 100% 25%,rgba(124,58,237,.12),transparent 60%),radial-gradient(1000px 640px at 40% 100%,rgba(217,119,6,.10),transparent 60%);
+  --strip:linear-gradient(90deg,#06b6d4,#7c3aed 55%,#f59e0b);
+  --bar-bg:linear-gradient(90deg,rgba(8,145,178,.12),rgba(124,58,237,.09));
+  --primary-bg:linear-gradient(135deg,#0891b2,#4f46e5);
+  --num-bg:linear-gradient(135deg,#0891b2,#7c3aed); --num-fg:#ffffff;
+  --h1-grad:linear-gradient(90deg,#0d1b2a 20%,#0891b2 60%,#7c3aed);
+  --subh-bar:linear-gradient(#0891b2,#7c3aed);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.85;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:48px 0 12px}
+.kicker{font-size:13px;color:var(--ink-2);letter-spacing:.08em}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.35;margin:6px 0 12px}
+h2{font-size:clamp(20px,3.6vw,26px);margin:56px 0 8px;line-height:1.4}
+h2 .num{display:inline-block;font-size:14px;color:var(--accent);margin-right:8px;font-family:"JetBrains Mono",monospace}
+p{margin:.6em 0}
+.lead{font-size:17px;color:var(--ink-2)}
+b{color:var(--ink)}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.92em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.note{font-size:13px;color:var(--ink-2)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+button.primary:hover:not(:disabled){filter:brightness(1.08)}
+button.on{background:var(--accent-soft);border-color:var(--accent)}
+
+/* --- analogy --- */
+.analogy{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:12px}
+.analogy .box{text-align:center;padding:14px}
+.analogy .big{font-size:20px;font-weight:700}
+.analogy .arrow{font-size:22px;color:var(--ink-2)}
+
+/* --- domain tree --- */
+.domain-input{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.domain-input input{flex:1;min-width:220px;font:inherit;font-family:"JetBrains Mono",monospace;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{font-size:13px;padding:4px 10px}
+.stairs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.stair{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-left:calc(var(--k) * 22px);opacity:0;transform:translateX(-8px);animation:in .4s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.stair .blk{font-family:"JetBrains Mono",monospace;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.stair .blk .new{color:var(--accent);font-weight:600}
+.stair .desc{flex:1 1 10em;font-size:13px;color:var(--ink-2)}
+.domain-err{color:var(--answer);font-size:14px}
+
+/* --- stage --- */
+.stage-card{padding:0;overflow:hidden}
+.stage-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stage-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.stage-bar button,.stepper-bar button{white-space:nowrap}
+.counter{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-2);min-width:56px;text-align:center}
+.stage-wrap{position:relative;width:100%;overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage-wrap.dragging{cursor:grabbing}
+.stage{position:absolute;left:0;top:0;width:820px;height:600px;transform-origin:0 0;perspective:1500px;perspective-origin:50% 30%;
+  --ax:55deg; --az:-24deg}
+.plane{position:absolute;left:30px;top:50px;width:800px;height:520px;transform-style:preserve-3d;
+  transform:rotateX(var(--ax)) rotateZ(var(--az));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.dragging .plane,.dragging .anchor{transition:none!important}
+.plane > svg{position:absolute;inset:0;overflow:visible}
+.ground{fill:var(--ground)}
+.zone-home{fill:var(--zone-home)}.zone-isp{fill:var(--zone-isp)}.zone-net{fill:var(--zone-net)}
+.zone-label{font-size:16px;font-weight:700;letter-spacing:.04em}
+.board-gridline{stroke:var(--board-grid);stroke-width:1}
+.ground{stroke:var(--board-edge);stroke-width:2}
+.zone{stroke-width:2.5}
+.z-home{fill:var(--z-home);stroke:var(--z-home-edge)}.l-home{fill:var(--z-home-edge)}
+.z-isp{fill:var(--z-isp);stroke:var(--z-isp-edge)}.l-isp{fill:var(--z-isp-edge)}
+.z-net{fill:var(--z-net);stroke:var(--z-net-edge)}.l-net{fill:var(--z-net-edge)}
+.z-web{fill:var(--z-web);stroke:var(--z-web-edge)}.l-web{fill:var(--z-web-edge)}
+.link{stroke:var(--ink-2);stroke-opacity:.45;stroke-width:4;fill:none;stroke-linecap:round}
+.link.web{stroke-dasharray:2 10}
+.link.active{stroke:var(--accent);stroke-opacity:1;stroke-width:6;stroke-dasharray:10 8;animation:flow .6s linear infinite}
+.link.active.ans{stroke:var(--answer)}
+@keyframes flow{to{stroke-dashoffset:-18}}
+.shadow{fill:rgba(0,0,0,.18)}
+.anchor{position:absolute;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.node{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.node .icon{width:64px;height:64px;border-radius:16px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);transition:border-color .3s,box-shadow .3s,transform .3s}
+.node .icon svg{width:38px;height:38px;color:var(--ink-2)}
+.node.hl .icon{border-color:var(--accent);box-shadow:0 0 0 6px var(--accent-soft),var(--shadow);transform:translateY(-4px)}
+.node .lbl{font-size:15px;font-weight:700;white-space:nowrap;background:var(--surface);padding:0 8px;border-radius:6px;border:1px solid var(--line)}
+.node .sub{font-size:11px;color:var(--ink-2);white-space:nowrap;font-family:"JetBrains Mono",monospace}
+.bubble{position:absolute;bottom:136px;left:0;transform:translateX(-50%) scale(.6);opacity:0;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;padding:6px 12px;border-radius:12px;white-space:nowrap;transition:opacity .25s,transform .25s;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--ink)}
+.bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.packet-anchor{transition:none;transform:translateZ(var(--h,0px)) rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1))}
+.packet{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.packet .env{width:44px;height:30px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.packet.ans .env{background:var(--answer)}
+.packet.web .env{background:var(--ok)}
+.packet.hide{opacity:0}
+.drag-hint{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px 8px;pointer-events:none}
+
+.panels{display:grid;grid-template-columns:1.25fr .8fr 1.2fr;gap:14px;margin-top:14px;align-items:start}
+.explain{padding:18px 22px 22px;border-top:1px solid var(--line);background:var(--surface);min-height:190px}
+.explain h3{margin:0 0 4px;font-size:21px;line-height:1.5}
+.explain #stepText{font-size:16.5px}
+.timeline{display:flex;gap:4px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.timeline button{flex:0 0 auto;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.timeline button .n{font-family:"JetBrains Mono",monospace;font-size:11px;opacity:.7}
+.timeline button.done{color:var(--ink);border-color:var(--line);background:var(--surface-2)}
+.timeline button.cur{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:700}
+.timeline button.cur.ans{background:var(--answer);border-color:var(--answer)}
+.node{transition:opacity .35s}
+.node.dim{opacity:.55}
+.url-split{font-size:14px;margin:4px 0 10px;padding:8px 12px;border-radius:8px;background:var(--surface-2)}
+.url-split .dim-part{color:var(--ink-2);opacity:.6}
+.url-split .host-part{color:var(--accent);font-weight:600;background:var(--accent-soft);border-radius:4px;padding:0 2px}
+.explain .stepno{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+.explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.side{display:flex;flex-direction:column;gap:14px}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.msg{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6}
+.msg .head{display:inline-block;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:1px 8px;border-radius:6px;margin-bottom:6px}
+.msg .head.q{background:var(--accent-soft);color:var(--accent)}
+.msg .head.a{background:var(--answer-soft);color:var(--answer)}
+.msg table{border-collapse:collapse;width:100%}
+.msg td{padding:3px 0;vertical-align:top;border-top:1px dashed var(--line)}
+.msg td:first-child{width:5.5em;white-space:nowrap;color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding-right:8px}
+.msg .empty{color:var(--ink-2);font-family:"Noto Sans JP",sans-serif}
+.timer{font-family:"JetBrains Mono",monospace;font-size:28px;font-weight:600}
+.timer small{font-size:13px;color:var(--ink-2);font-weight:400}
+.history{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.history span{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--surface-2);border-radius:6px;padding:1px 8px}
+.cache-list{list-style:none;margin:0;padding:0;font-size:13px}
+.cache-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.cache-list li.flash{animation:flash 1.2s}
+@keyframes flash{0%{background:var(--ok-soft)}100%{background:transparent}}
+.cache-list .ttl{font-family:"JetBrains Mono",monospace;color:var(--ok);white-space:nowrap}
+.cache-list .gone{color:var(--ink-2);text-decoration:line-through}
+.cache-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cache-btns button{font-size:12px;padding:4px 10px}
+.clock{font-size:12px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+
+/* --- summary / quiz --- */
+.summary li{margin:6px 0}
+.quiz{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.q .opts button{text-align:left}
+.q .opts button.right{background:var(--ok-soft);border-color:var(--ok)}
+.q .opts button.wrong{background:var(--answer-soft);border-color:var(--answer)}
+.q .fb{font-size:14px;margin-top:6px;min-height:1.4em}
+footer{margin:64px 0 48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+footer a{color:var(--accent)}
+
+@media (max-width:720px){
+  .panels{grid-template-columns:1fr}
+  .explain{padding:16px}
+  .analogy{grid-template-columns:1fr}
+  .analogy .arrow{transform:rotate(90deg);text-align:center}
+  .drag-hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .plane,.anchor{transition:none}
+  .link.active{animation:none}
+}
+
+/* --- 共通パーツ --- */
+.sub-h{font-size:18px;margin:32px 0 6px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;font-size:14px;padding:6px 12px;border-radius:8px}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow);font-weight:700;color:var(--accent)}
+.wrap-seg{margin-bottom:12px}
+.row-btns{display:flex;gap:8px;margin-top:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.mini-card h3{margin:0 0 6px;font-size:16px}
+.mini-card p{font-size:14.5px}
+
+/* --- 2.3 PCの中 --- */
+.stepper{padding:0;overflow:hidden}
+.stepper-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stepper-bar .seg{background:var(--bg)}
+.stepper-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;padding:20px}
+.pc-stack{position:relative;border:2px dashed var(--line);border-radius:16px;padding:30px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.pc-frame-label{position:absolute;top:6px;left:14px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.layer{border:2px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface);transition:border-color .3s,background .3s,opacity .3s;position:relative}
+.layer .lname{font-weight:700;font-size:15px}
+.layer .lsub{font-size:12px;color:var(--ink-2)}
+.layer .lmem{position:absolute;right:12px;top:10px;font-size:11px;color:var(--ink-2)}
+.layer.on{border-color:var(--accent);background:var(--accent-soft)}
+.layer.skip{opacity:.35}
+.layer.skip .lname{text-decoration:line-through}
+.os-inner{display:flex;gap:8px;margin-top:8px}
+.mini{flex:1;font-size:12px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px;background:var(--surface-2);transition:all .3s}
+.mini.on{border-color:var(--accent);background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 0 0 3px var(--accent-soft)}
+.pc-out{text-align:center;font-size:13px;color:var(--ink-2);padding:6px;border-radius:10px;transition:all .3s}
+.pc-out.on{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.pc-chip{position:absolute;right:-12px;top:0;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:top .5s cubic-bezier(.3,.7,.2,1),background .3s}
+.pc-chip.lock{background:var(--ok)}
+.pc-explain h3{margin:0 0 6px;font-size:19px}
+.pc-explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.pkt-box{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pkt-box div{display:flex;border-top:1px dashed var(--line)}
+.pkt-box div:first-child{border-top:0}
+.pkt-box span{padding:4px 10px}
+.pkt-box span:first-child{width:7.5em;white-space:nowrap;flex:0 0 auto;background:var(--surface-2);color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px}
+
+/* --- 2.5 レコード --- */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font-family:"JetBrains Mono",monospace;font-weight:600;min-width:64px}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rec-q,.rec-a{font-size:13.5px;padding:8px 12px;border-radius:8px;overflow-x:auto;white-space:nowrap}
+.rec-q{background:var(--accent-soft);color:var(--accent)}
+.rec-a{background:var(--answer-soft);color:var(--answer);margin-top:6px}
+.rec-body h3{margin:14px 0 4px;font-size:18px}
+.parallel{display:flex;flex-direction:column;gap:8px}
+.lane{display:grid;grid-template-columns:4.5em 1fr 9em;gap:10px;align-items:center}
+.lane .who{font-size:12px;color:var(--ink-2)}
+.track{position:relative;height:30px;border-radius:8px;background:var(--surface-2)}
+.chip{position:absolute;top:3px;left:4px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;background:var(--accent);color:#fff;transition:left 1s cubic-bezier(.4,0,.2,1)}
+.chip.ans{background:var(--answer)}
+.res{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--answer);opacity:0;transition:opacity .3s}
+.res.show{opacity:1}
+
+/* --- 2.6 CDN --- */
+.cdn-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+#cdnMap{width:100%;height:auto;background:var(--surface-2);border-radius:12px}
+#cdnMap .grid{stroke:var(--line);stroke-width:1}
+#cdnMap .land{fill:var(--ground);stroke:var(--line);stroke-width:1}
+#cdnMap .edge{fill:var(--surface);stroke:var(--ink-2);stroke-width:2}
+#cdnMap .edge.pick{fill:var(--answer);stroke:var(--answer)}
+#cdnMap .origin{fill:var(--ink-2)}
+#cdnMap .me{fill:var(--accent)}
+#cdnMap .me-ring{fill:none;stroke:var(--accent);stroke-width:2;animation:ring 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+#cdnMap .route{stroke:var(--answer);stroke-width:3;stroke-dasharray:6 6;fill:none;animation:flow .6s linear infinite}
+#cdnMap .route.far{stroke:var(--ink-2);stroke-width:1.5;opacity:.6;animation:none}
+#cdnMap text{font-size:13px;fill:var(--ink);font-family:"Noto Sans JP",sans-serif}
+#cdnMap text.small{font-size:11px;fill:var(--ink-2)}
+.cdn-flow{font-size:12.5px;display:flex;flex-direction:column;gap:8px}
+.cdn-flow .f{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.cdn-flow .f b{font-family:"Noto Sans JP",sans-serif;font-size:12px;color:var(--ink-2);display:block;font-weight:500}
+.cdn-flow .f.hit{border-color:var(--answer);background:var(--answer-soft)}
+.cdn-flow .lat{font-family:"Noto Sans JP",sans-serif;font-size:13px}
+.cdn-flow .lat strong{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--answer)}
+
+/* --- 2.7 守る --- */
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.enc-view{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.enc-label{font-size:12px;font-weight:700;padding:6px 12px;background:var(--surface-2);color:var(--ink-2)}
+.enc-screen{background:#0d1117;color:#7ee787;font-size:12.5px;padding:12px;min-height:150px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.enc-screen .warn{color:#ffa657}
+.enc-screen .dim{color:#6e7681}
+.enc-grid h3{margin:0 0 6px;font-size:18px}
+.spec{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
+.spec td{padding:4px 8px;border-top:1px solid var(--line)}
+.spec td:first-child{color:var(--ink-2);width:5em}
+.race{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:10px;padding-right:96px}
+.race-row{display:grid;grid-template-columns:8.5em 1fr;gap:10px;align-items:center}
+.race-who{font-size:13px;font-weight:700;line-height:1.3}
+.race-who small{font-weight:400;color:var(--ink-2);font-size:11px}
+.race-track{position:relative;height:34px;background:var(--surface-2);border-radius:8px}
+.race-chip{position:absolute;left:4px;top:5px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;color:#fff;white-space:nowrap;transition:left .9s cubic-bezier(.4,0,.2,1),opacity .4s,transform .4s}
+.race-chip.fake{background:#c92a2a}
+.race-chip.real{background:var(--ok)}
+.race-chip.arrived{left:calc(100% - 136px)}
+.race-chip.rejected{opacity:.35;transform:rotate(-8deg)}
+.race-chip.rejected::after{content:" ✕"}
+.race-chip.accepted::after{content:" ✓"}
+.race-goal{position:absolute;right:0;top:0;bottom:0;width:86px;border:2px solid var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:11px;font-weight:700;background:var(--surface);padding:4px}
+.race-result{margin-top:12px;font-size:15px;min-height:1.5em}
+.race-result .bad{color:#e03131;font-weight:700}
+.race-result .good{color:var(--ok);font-weight:700}
+.chain{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.chain-step{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:13px;display:flex;flex-direction:column}
+.chain-step b{font-family:"JetBrains Mono",monospace}
+.chain-step span{color:var(--ink-2);font-size:12px}
+.chain-arrow{font-size:12px;color:var(--accent);padding-left:12px}
+
+/* --- 2.8 試す --- */
+.can-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.can-list li{position:relative;padding:8px 12px 8px 38px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:13.5px;line-height:1.6}
+.can-list li b{display:block;font-size:14.5px}
+.can-list li span{color:var(--ink-2)}
+.can-list li::before{position:absolute;left:12px;top:8px;font-weight:700;font-size:15px}
+.can-list li.yes::before{content:"✓";color:var(--ok)}
+.can-list li.no::before{content:"✕";color:var(--answer)}
+.cmds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.cmd{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmd-line{display:flex;align-items:center;gap:8px;background:#0d1117;padding:8px 8px 8px 12px}
+.cmd-line code{flex:1;color:#e6edf3;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.cmd-line code::before{content:"$ ";color:#6e7681}
+.cmd-line button{font-size:12px;padding:3px 10px;background:#21262d;color:#e6edf3;border-color:#30363d}
+.cmd-desc{font-size:13.5px;padding:8px 12px}
+.trace-card{padding:0;overflow:hidden}
+.trace{background:#0d1117;color:#c9d1d9;font-size:12px;padding:12px 0;overflow-x:auto;line-height:1.75}
+.trace .ln{padding:0 14px;white-space:pre;cursor:default}
+.trace .ln.g{cursor:pointer;border-left:3px solid transparent}
+.trace .ln.g:hover{background:#161b22}
+.trace .ln.g.on{background:#1f2a40;border-left-color:#6ea0ff}
+.trace .ln.recv{color:#7ee787}
+.trace .ln.cmt{color:#6e7681}
+.trace .ln .k{color:#ffa657}
+.trace-explain{padding:14px 18px;font-size:15px;border-top:1px solid var(--line);min-height:80px}
+.trace-explain h4{margin:0 0 4px;font-size:16px}
+
+@media (max-width:720px){
+  .pc-body,.cdn-grid,.enc-grid,.cols{grid-template-columns:1fr}
+  .pc-chip{right:6px}
+  .lane{grid-template-columns:1fr 7em}
+  .lane .who{display:none}
+  .stair{margin-left:calc(var(--k) * 12px)}
+  .rec-a{white-space:normal;overflow-wrap:anywhere}
+  .race{padding-right:0}
+  .race-row{grid-template-columns:6.5em 1fr}
+  .race-goal{position:static;width:auto;padding:8px}
+}
+
+/* ===== サイバー調の仕上げ ===== */
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.kicker::before{content:"▍";animation:blink 1.1s steps(1) infinite;margin-right:4px}
+@keyframes blink{50%{opacity:0}}
+h1{background:linear-gradient(90deg,var(--ink) 30%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .num{font-size:13px;padding:2px 8px;border:1px solid var(--accent);border-radius:4px;text-shadow:0 0 8px var(--accent-soft);vertical-align:3px}
+h2 .num::before{content:"// "}
+.card{position:relative;background:linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));border-color:var(--line);border-radius:10px}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2}
+.card::before{top:0;left:0;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-top-left-radius:10px}
+.card::after{bottom:0;right:0;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-bottom-right-radius:10px}
+button{border-radius:6px;background:transparent;transition:border-color .15s,box-shadow .15s,background .15s}
+button:hover:not(:disabled){border-color:var(--accent);box-shadow:var(--glow)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 0 16px var(--accent-soft)}
+button.on,.seg button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);box-shadow:none}
+.seg{border:1px solid var(--line);background:var(--bg)}
+.seg button.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.stage-bar,.stepper-bar{background:var(--surface-2)}
+.counter{color:var(--accent)}
+.node .icon{background:var(--surface);border-radius:12px}
+.node .icon svg{color:var(--accent)}
+.node.hl .icon{box-shadow:var(--glow);border-color:var(--accent)}
+.node .lbl{background:var(--surface);border-color:var(--line);border-radius:4px}
+.bubble{background:var(--accent);color:var(--on-accent);box-shadow:var(--glow)}
+.bubble::after{border-top-color:var(--accent)}
+.packet .env{box-shadow:0 0 18px var(--accent)}
+.packet.ans .env{box-shadow:0 0 18px var(--answer)}
+.link.active{filter:drop-shadow(0 0 4px var(--accent))}
+.link.active.ans{filter:drop-shadow(0 0 4px var(--answer))}
+.explain .stepno,.stepno{font-family:"JetBrains Mono",monospace;letter-spacing:.1em}
+.layer{border-radius:8px;overflow:hidden}
+.layer.on{box-shadow:var(--glow)}
+.layer.on::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);transform:translateX(-100%);animation:scan 1.8s linear infinite;pointer-events:none}
+@keyframes scan{to{transform:translateX(100%)}}
+.pc-stack{border-color:var(--accent-soft);border-radius:12px}
+.pc-frame-label{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.1em}
+.pc-chip{box-shadow:0 0 14px var(--accent);color:var(--on-accent)}
+.pc-chip.lock{box-shadow:0 0 14px var(--ok)}
+.timeline button.cur{color:var(--on-accent);box-shadow:0 0 12px var(--accent-soft)}
+.timer{color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+.tabs button.on{color:var(--on-accent);box-shadow:var(--glow)}
+.chip{color:var(--on-accent)}
+.stair .blk{border-radius:6px}
+.cache-list .ttl{text-shadow:0 0 8px var(--ok-soft)}
+.packet .env,.race-chip.real,.cdn-flow .f.hit{color:var(--on-accent)}
+.cdn-flow .f.hit{background:var(--answer);border-color:var(--answer)}
+.cdn-flow .f.hit b{color:var(--on-accent);opacity:.75}
+.enc-screen{background:#02050a;border-top:1px solid var(--line);text-shadow:0 0 6px rgba(126,231,135,.35)}
+.timeline{scrollbar-color:var(--line) transparent}
+.timeline::-webkit-scrollbar{height:6px}
+.timeline::-webkit-scrollbar-track{background:transparent}
+.timeline::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.zone{filter:drop-shadow(0 0 6px var(--board-grid))}
+
+/* 送信・受信している2台を強く、それ以外を弱く */
+.node .icon{position:relative}
+.node .role{position:absolute;top:-11px;right:-22px;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:4px;background:var(--accent);color:var(--on-accent);box-shadow:0 0 10px var(--accent);opacity:0;transition:opacity .25s}
+.node.send .role,.node.recv .role{opacity:1}
+.node.hl .icon{background:var(--accent-soft);border-width:2.5px}
+.node.hl .lbl{border-color:var(--accent);color:var(--ink);box-shadow:0 0 10px var(--accent-soft)}
+.node.hl .sub{color:var(--ink)}
+.node.ans .icon{border-color:var(--answer);background:var(--answer-soft);box-shadow:0 0 0 1px var(--answer),0 0 22px var(--answer-soft)}
+.node.ans .icon svg{color:var(--answer)}
+.node.ans .lbl{border-color:var(--answer)}
+.node.ans .role{background:var(--answer);box-shadow:0 0 10px var(--answer)}
+.node.dim{opacity:.28;filter:grayscale(.7)}
+.zone,.zone-label{transition:opacity .4s}
+.zone-dim{opacity:.35}
+
+/* 色のトークンで切り替える装飾（ダークでは控えめ・ライトでは色を足す） */
+body::before{content:"";position:fixed;inset:0;background:var(--wash);pointer-events:none;z-index:-1}
+h1{background-image:var(--h1-grad)}
+h2 .num{background:var(--num-bg);color:var(--num-fg)}
+.card{background-image:var(--strip),linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));background-size:100% 3px,auto;background-repeat:no-repeat}
+.stage-bar,.stepper-bar{background:var(--bar-bg)}
+button.primary,.timeline button.cur:not(.ans){background:var(--primary-bg);border-color:transparent}
+.sub-h{border-left:4px solid transparent;border-image:var(--subh-bar) 1;padding-left:10px}
+.summary li::marker{color:var(--accent2)}
+@media (prefers-reduced-motion: reduce){
+  .kicker::before,.layer.on::after{animation:none}
+}
+
+/* ===== 第1章 ===== */
+:root{--c-scheme:#7c3aed;--c-host:#0891b2;--c-port:#64748b;--c-path:#15803d;--c-query:#d97706;--c-frag:#94a3b8;--bad:#dc2626}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){--c-scheme:#a78bfa;--c-host:#22d3ee;--c-port:#94a3b8;--c-path:#3dff8f;--c-query:#ffb020;--c-frag:#64748b;--bad:#ff5c5c}
+}
+:root[data-theme="dark"]{--c-scheme:#a78bfa;--c-host:#22d3ee;--c-port:#94a3b8;--c-path:#3dff8f;--c-query:#ffb020;--c-frag:#64748b;--bad:#ff5c5c}
+
+/* 1.1 旅の路線図 */
+.route{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch}
+.route .stn{flex:1 1 92px;min-width:92px;display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:8px 10px;text-align:left;font-size:13px;line-height:1.4;position:relative}
+.route .stn .n{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2)}
+.route .stn.here{border-color:var(--accent);background:var(--accent-soft)}
+.route .stn.here .n{color:var(--accent)}
+.route .stn.here::after{content:"いまここ";position:absolute;top:-9px;right:6px;font-size:10px;font-weight:700;line-height:1;padding:3px 6px;border-radius:4px;background:var(--accent);color:var(--on-accent)}
+.route .stn.sel{box-shadow:var(--glow);border-color:var(--accent)}
+.route-explain{margin-top:12px;font-size:14.5px;min-height:3.4em;border-left:3px solid var(--accent);padding:2px 0 2px 12px}
+.route-explain b.t{display:block;font-size:15.5px}
+.route-explain a{color:var(--accent)}
+
+/* 1.2 URLの分解 */
+.url-view{margin:14px 0 6px;padding:14px 16px;border-radius:10px;background:var(--surface-2);font-size:clamp(14px,2.6vw,18px);line-height:2.1;overflow-wrap:anywhere}
+.url-view span{padding:2px 1px;border-bottom:3px solid currentColor}
+.url-view .p-scheme{color:var(--c-scheme)}.url-view .p-host{color:var(--c-host)}.url-view .p-port{color:var(--c-port)}
+.url-view .p-path{color:var(--c-path)}.url-view .p-query{color:var(--c-query)}.url-view .p-frag{color:var(--c-frag);text-decoration:line-through}
+.url-view .p-sep{border-bottom:0;color:var(--ink-2)}
+.url-view .p-implicit{opacity:.55;border-bottom-style:dashed}
+.url-parts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.url-part{display:grid;grid-template-columns:9.5em minmax(0,1fr);gap:4px 14px;padding:8px 12px;border:1px solid var(--line);border-left:4px solid var(--c);border-radius:8px;background:var(--surface);opacity:0;transform:translateY(4px);animation:in .35s forwards}
+.url-part .nm{font-weight:700;font-size:14px;color:var(--c)}
+.url-part .nm small{display:block;font-weight:400;font-size:11px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+.url-part .vl{font-family:"JetBrains Mono",monospace;font-size:13.5px;overflow-wrap:anywhere}
+.url-part .ds{grid-column:2;font-size:13px;color:var(--ink-2)}
+.url-part .vl .dim{color:var(--ink-2)}
+.qtable{display:inline-grid;grid-template-columns:auto auto;gap:0 12px;margin-top:2px}
+.qtable span:nth-child(odd){color:var(--c-query)}
+.url-extra{margin-top:10px;font-size:14px}
+.url-extra .box{border:1px dashed var(--line);border-radius:8px;padding:8px 12px;margin-top:8px}
+.url-extra code{overflow-wrap:anywhere}
+
+/* 1.3 アドレスバー */
+.omni{display:flex;align-items:center;gap:10px;border:2px solid var(--line);border-radius:999px;padding:6px 16px;background:var(--surface);margin-bottom:10px;transition:border-color .2s,box-shadow .2s}
+.omni:focus-within{border-color:var(--accent);box-shadow:var(--glow)}
+.omni input{flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);font:inherit;font-family:"JetBrains Mono",monospace;font-size:15px;padding:4px 0}
+.omni-icon{font-size:16px;width:1.4em;text-align:center}
+.omni-result{margin-top:14px}
+.verdict{display:inline-flex;align-items:center;gap:8px;font-weight:700;padding:4px 12px;border-radius:6px;font-size:14px}
+.verdict.url{background:var(--accent-soft);color:var(--accent);border:1px solid var(--accent)}
+.verdict.search{background:var(--answer-soft);color:var(--answer);border:1px solid var(--answer)}
+.omni-why{margin:8px 0 0;font-size:14.5px}
+.omni-steps{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px}
+.omni-steps li{display:flex;gap:10px;align-items:flex-start;font-size:14px;padding:6px 10px;border-radius:8px;background:var(--surface-2)}
+.omni-steps li .s{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);flex:0 0 auto;padding-top:2px}
+.omni-steps li code{overflow-wrap:anywhere}
+.omni-steps li.warn .s{color:var(--answer)}
+
+/* 1.4 リクエスト */
+.req-bar{padding:12px 14px;border-bottom:1px solid var(--line);background:var(--bar-bg)}
+.trace .ln .hk{color:#79c0ff}
+.trace .ln .mt{color:#ff7b72;font-weight:600}
+.trace .ln .bd{color:#a5d6ff}
+.trace .ln.blank{color:#6e7681;font-style:italic}
+
+/* 1.5 ステータスコード */
+.tabs button.s2.on{background:var(--ok);border-color:var(--ok)}
+.tabs button.s3.on{background:var(--accent);border-color:var(--accent)}
+.tabs button.s4.on{background:var(--answer);border-color:var(--answer)}
+.tabs button.s5.on{background:var(--bad);border-color:var(--bad)}
+.tabs button small{display:block;font-size:10px;font-weight:400;font-family:"Noto Sans JP",sans-serif;opacity:.85}
+.st-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px;align-items:stretch}
+.st-resp{border-radius:10px;padding:10px 0;font-size:12.5px}
+.st-resp .ln{white-space:pre-wrap;overflow-wrap:anywhere}
+.mini-browser{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column;min-height:170px}
+.mb-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.mb-dots{display:flex;gap:4px}.mb-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.mb-url{flex:1;min-width:0;font-size:11.5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:color .3s}
+.mb-url.flash{color:var(--accent)}
+.mb-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;text-align:center;font-size:14px}
+.mb-page .big{font-size:26px;font-weight:700;line-height:1.2}
+.mb-page .sm{font-size:12px;color:var(--ink-2)}
+.mb-page.fade{animation:pg .4s}
+@keyframes pg{from{opacity:0;transform:scale(.98)}to{opacity:1;transform:none}}
+.st-explain{margin-top:14px;font-size:15px}
+.st-explain h3{margin:0 0 4px;font-size:18px}
+.st-groups{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:14px}
+.st-groups .g{border:1px solid var(--line);border-top:4px solid var(--c);border-radius:8px;padding:8px;text-align:center;background:var(--surface)}
+.st-groups .g b{display:block;font-family:"JetBrains Mono",monospace;color:var(--c)}
+.st-groups .g span{font-size:12.5px;color:var(--ink-2)}
+.g1{--c:var(--ink-2)}.g2{--c:var(--ok)}.g3{--c:var(--accent)}.g4{--c:var(--answer)}.g5{--c:var(--bad)}
+
+/* 1.6 ウォーターフォール */
+.wf-top{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin-bottom:12px}
+.wf-stat{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--ink-2)}
+.wf-stat b{font-family:"JetBrains Mono",monospace;font-size:26px;color:var(--accent);min-width:1.6em;text-align:right;text-shadow:0 0 12px var(--accent-soft)}
+.wf{display:flex;flex-direction:column;gap:4px}
+.wf-row{display:grid;grid-template-columns:9.5em minmax(0,1fr);gap:10px;align-items:center;font-size:12.5px}
+.wf-row .f{font-family:"JetBrains Mono",monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink-2);transition:color .2s}
+.wf-row.live .f{color:var(--ink)}
+.wf-track{position:relative;height:16px;background:var(--surface-2);border-radius:4px}
+.wf-bar{position:absolute;top:2px;bottom:2px;border-radius:3px;background:var(--c);width:0;box-shadow:0 0 8px var(--c)}
+.wf-why{position:absolute;top:-1px;font-size:10.5px;color:var(--ink-2);white-space:nowrap;opacity:0;transition:opacity .3s}
+.wf-row.done .wf-why{opacity:1}
+.wf-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:12px;font-size:12px;color:var(--ink-2)}
+.wf-legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--c);margin-right:5px;vertical-align:-1px}
+.t-html{--c:var(--accent)}.t-css{--c:var(--accent2)}.t-js{--c:var(--answer)}.t-img{--c:var(--ok)}.t-font{--c:var(--c-port)}.t-data{--c:#ec4899}
+
+/* 1.7 HTTPの版 */
+.ver-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.toggle input{accent-color:var(--answer);width:16px;height:16px}
+.ver-lanes{display:flex;flex-direction:column;gap:6px}
+.ver-lane{display:grid;grid-template-columns:4.2em minmax(0,1fr) 3.4em;gap:10px;align-items:center;font-size:12.5px}
+.ver-lane .nm{font-family:"JetBrains Mono",monospace;color:var(--ink-2)}
+.ver-cells{display:grid;grid-template-columns:repeat(4,1fr);gap:3px;height:22px}
+.ver-cells i{border-radius:3px;background:var(--surface-2);border:1px solid var(--line);transition:background .15s,box-shadow .15s}
+.ver-cells i.got{background:var(--accent);border-color:var(--accent);box-shadow:0 0 8px var(--accent-soft)}
+.ver-lane.wait .ver-cells i:not(.got){background:var(--answer-soft);border-color:var(--answer)}
+.ver-lane.lost .ver-cells i:not(.got){background:rgba(220,38,38,.18);border-color:var(--bad)}
+.ver-lane .st{font-size:11.5px;color:var(--ink-2);white-space:nowrap}
+.ver-lane.fin .st{color:var(--ok);font-weight:700}
+.ver-lane.lost .st{color:var(--bad);font-weight:700}
+.ver-lane.wait .st{color:var(--answer);font-weight:700}
+.ver-foot{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;margin-top:14px}
+.ver-time{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--ink-2)}
+.ver-time b{font-family:"JetBrains Mono",monospace;font-size:26px;color:var(--accent);min-width:1.6em;text-align:right;text-shadow:0 0 12px var(--accent-soft)}
+.ver-log{display:flex;flex-wrap:wrap;gap:6px}
+.ver-log span{font-size:12px;font-family:"JetBrains Mono",monospace;border:1px solid var(--line);border-radius:6px;padding:2px 8px;background:var(--surface-2)}
+.ver-log span.loss{border-color:var(--answer)}
+.ver-explain{margin-top:12px;font-size:14.5px;border-left:3px solid var(--accent);padding:2px 0 2px 12px}
+.ver-explain b.t{display:block;font-size:15.5px}
+
+/* 1.8 Cookie */
+.ck-btns{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.ck-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.4fr) minmax(0,1fr);gap:14px;align-items:start}
+.ck-h{font-size:12px;font-weight:700;color:var(--ink-2);margin:0 0 4px;letter-spacing:.04em}
+.ck-io .ck-h + .trace{margin-bottom:10px}
+.tag{display:inline-block;font-family:"JetBrains Mono",monospace;padding:0 6px;border-radius:4px;font-size:11px}
+.tag.q{background:var(--accent-soft);color:var(--accent)}
+.tag.a{background:var(--answer-soft);color:var(--answer)}
+.ck-trace{border-radius:8px;padding:8px 0;font-size:11.5px;min-height:3em}
+.ck-trace .ln{white-space:pre-wrap;overflow-wrap:anywhere}
+.ck-trace .ln.hot{background:rgba(255,166,87,.16);color:#ffa657}
+#ckJar{border:2px dashed var(--line);border-radius:10px;min-height:92px;padding:10px;display:flex;flex-direction:column;gap:6px;justify-content:center}
+.ck-empty{font-size:12.5px;color:var(--ink-2);text-align:center}
+.ck-ticket{font-family:"JetBrains Mono",monospace;font-size:12px;padding:8px 10px;border-radius:8px;background:var(--answer-soft);border:1px solid var(--answer);animation:pop .4s}
+.ck-ticket b{color:var(--answer)}
+.ck-ticket small{display:block;color:var(--ink-2);font-size:10.5px;margin-top:2px}
+@keyframes pop{from{transform:scale(.8);opacity:0}to{transform:none;opacity:1}}
+.ck-browser{min-height:150px}
+.ck-explain{margin-top:12px;font-size:14.5px;border-left:3px solid var(--answer);padding:2px 0 2px 12px;min-height:3em}
+.attr-list{list-style:none;margin:6px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;font-size:13.5px}
+.attr-list li{display:grid;grid-template-columns:6.5em 1fr;gap:8px;align-items:baseline}
+.attr-list code{color:var(--accent)}
+
+/* 1.9 試す */
+.devtools ol{margin:6px 0 0;padding-left:1.4em;font-size:14.5px}
+.devtools li{margin:4px 0}
+kbd{font-family:"JetBrains Mono",monospace;font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface-2)}
+.card a{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none}
+.chap-nav a:hover{text-decoration:underline}
+
+@media (max-width:720px){
+  .url-part{grid-template-columns:1fr}
+  .url-part .ds{grid-column:1}
+  .st-body,.ck-grid{grid-template-columns:1fr}
+  .st-groups{grid-template-columns:repeat(3,1fr)}
+  .wf-row{grid-template-columns:7em minmax(0,1fr)}
+  .wf-why{display:none}
+  .ver-lane{grid-template-columns:3.6em minmax(0,1fr) 3.2em}
+  .attr-list li{grid-template-columns:1fr;gap:0}
+}
+@media (prefers-reduced-motion: reduce){
+  .url-part,.ck-ticket,.mb-page.fade{animation:none;opacity:1;transform:none}
+}
+.top-nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:14px}
+.top-nav a{color:var(--ink-2);text-decoration:none}
+.top-nav a:hover{color:var(--accent)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <nav class="top-nav"><a href="index.html">← 目次</a><a href="map.html">← 第0章 全体マップ</a><a href="dns.html">第2章 DNS →</a></nav>
+  <div class="kicker">触って学ぶネットワーク ・ 第1章（試作）</div>
+  <h1>ブラウザ ── 旅はURLから始まる</h1>
+  <p class="lead">アドレスバーに <code>www.example.com</code> と打って Enter を押す。その瞬間、ブラウザは「どこの・何を・どうしてほしいか」を書いた<b>頼みごとの手紙</b>を作り始めます。この章では、手紙ができあがって出発するまでを、手を動かしながら見ていきます。</p>
+</header>
+
+<section>
+  <h2><span class="num">1.1</span>URLを打ってから、画面が出るまで</h2>
+  <p>ページが表示されるまでには、たくさんの仕組みがリレーのように働いています。この教科書では、ブラウザが作った手紙が、サーバーに届いて返事が戻ってくるまでを、<b>1つの旅</b>として順に追いかけます。下の駅を押すと、それぞれの章で何が起きるかがわかります。</p>
+  <div class="card">
+    <div class="route" id="route"></div>
+    <div class="route-explain" id="routeExplain" aria-live="polite"></div>
+  </div>
+  <p>この章で見るのは、旅の出発点です。手紙にたとえると、<b>URL は宛先</b>、<b>HTTPリクエストは手紙の本文</b>にあたります。</p>
+  <div class="analogy">
+    <div class="card box"><div class="note">宛先</div><div class="big mono">URL</div><div class="note">どのサーバーの、どのページか</div></div>
+    <div class="arrow">＋</div>
+    <div class="card box"><div class="note">本文</div><div class="big mono">リクエスト</div><div class="note">何をしてほしいか</div></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">1.2</span>URLを分解しよう</h2>
+  <p>URLは、ただの文字の並びではありません。<b>「どうやって」「どこの」「何を」</b>が、決まった順番で書かれています。好きなURLを入れて、分解してみましょう。ふだん見ているサイトのURLを貼りつけても大丈夫です。</p>
+  <div class="card">
+    <div class="domain-input">
+      <input id="urlIn" value="https://www.example.com/news/index.html?page=2&amp;sort=new#comments" aria-label="URL" spellcheck="false" autocomplete="off">
+      <button class="primary" id="urlBtn">分解する</button>
+    </div>
+    <div class="presets" id="urlPresets">
+      <button data-u="https://www.example.com/news/index.html?page=2&amp;sort=new#comments">ふつうのURL</button>
+      <button data-u="http://www.example.com:8080/admin/">ポートつき</button>
+      <button data-u="https://例え.example/検索?q=ねこ">日本語入り</button>
+      <button data-u="www.example.com">短く打った場合</button>
+    </div>
+    <div class="url-view mono" id="urlView" aria-live="polite"></div>
+    <div class="url-parts" id="urlParts"></div>
+    <div class="url-extra" id="urlExtra"></div>
+  </div>
+  <p>ポイントは、<b><code>#</code> から後ろ（フラグメント）はサーバーに送られない</b>ことです。ページの中の「どこを表示するか」をブラウザ自身が使うためのしるしなので、手紙には書かれません。</p>
+</section>
+
+<section>
+  <h2><span class="num">1.3</span>アドレスバーは検索窓でもある</h2>
+  <p>今のブラウザのアドレスバーは、URLを入れる場所と検索窓を兼ねています。打った文字がURLなのか検索したい言葉なのか、ブラウザはその場で見分けています。いろいろ打ってみましょう。</p>
+  <div class="card">
+    <div class="omni">
+      <span class="omni-icon" id="omniIcon" aria-hidden="true">🔍</span>
+      <input id="omniIn" value="www.example.com" aria-label="アドレスバーに打つ文字" spellcheck="false" autocomplete="off">
+    </div>
+    <div class="presets" id="omniPresets">
+      <button data-o="www.example.com">www.example.com</button>
+      <button data-o="ネットワーク 仕組み">ネットワーク 仕組み</button>
+      <button data-o="example">example</button>
+      <button data-o="192.0.2.10">192.0.2.10</button>
+      <button data-o="localhost:3000">localhost:3000</button>
+      <button data-o="http://www.example.com">http://www.example.com</button>
+    </div>
+    <div class="omni-result" id="omniResult" aria-live="polite"></div>
+  </div>
+
+  <h3 class="sub-h">「https://」を打たなくても、安全な方でつながる</h3>
+  <p>URLを短く打ったとき、多くのブラウザは<b>まず暗号化される <code>https://</code> で試し</b>、だめなときだけ暗号化されない <code>http://</code> に戻ります。さらに、一度「うちには必ずHTTPSで来てください」と言われたサイトは、次から最初からHTTPSで開きます（<b>HSTS</b>という仕組み）。</p>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>http と https のちがい</h3>
+      <p><code>http://</code> の手紙は<b>はがき</b>のようなもので、途中の人が中身を読めますし、書き換えることもできます。<code>https://</code> は<b>封筒に入れて鍵をかけた手紙</b>です。鍵のかけ方は第4章でくわしく見ます。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>Chrome は https を当たり前にする</h3>
+      <p>Google は2025年10月に、Chrome 154（2026年秋）から「常に安全な接続を使用する」設定を最初から有効にすると発表しました。HTTPSで開けない公開サイトでは、開く前に確認の画面が出ます。家のルーターの設定画面（<code>192.168.0.1</code> など）のような、家や会社の中だけのサイトは対象外です。</p>
+      <p class="note">出典：<a href="https://blog.google/security/https-by-defau/" target="_blank" rel="noopener">Google（2025年10月28日）</a></p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">1.4</span>リクエストの中身をのぞこう</h2>
+  <p>宛先が決まったら、ブラウザは手紙の本文、<b>HTTPリクエスト</b>を書きます。HTTPは、ブラウザとWebサーバーが話すときの<b>決まった書き方</b>です。ページを見るとき（GET）と、フォームを送るとき（POST）で中身を見比べてみましょう。行を押すと説明が出ます。</p>
+  <div class="card trace-card">
+    <div class="req-bar">
+      <div class="seg" role="tablist">
+        <button data-m="GET" class="on">GET：ページを見る</button>
+        <button data-m="POST">POST：フォームを送る</button>
+      </div>
+    </div>
+    <div class="trace mono" id="req"></div>
+    <div class="trace-explain" id="reqExplain" aria-live="polite"></div>
+  </div>
+  <p class="note">※ 読みやすいように、昔からある HTTP/1.1 の文字の形で見せています。今よく使われる HTTP/2・3 では、同じ中身を機械が読みやすい<b>バイナリ（0と1の並び）</b>に詰めて送ります（1.7）。</p>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>メソッドは「何をしてほしいか」</h3>
+      <p>よく使うのは、ページや画像を<b>もらう GET</b> と、フォームの中身を<b>送る POST</b> の2つです。ほかにも、置き換える PUT、消す DELETE、見出しだけもらう HEAD などがあります。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>パスワードは見られないの？</h3>
+      <p><code>http://</code> なら、POSTの中身も途中で丸見えです。<code>https://</code> なら、URLのパスも見出しも本文もまとめて暗号化されます。途中の人にわかるのは、どのサーバーとやり取りしているかぐらいです。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">1.5</span>返事とステータスコード</h2>
+  <p>Webサーバーからの返事（<b>HTTPレスポンス</b>）の1行目には、3けたの<b>ステータスコード</b>が書かれています。結果をひと目で伝える番号です。押して、ブラウザに何が起きるか見てみましょう。</p>
+  <div class="card">
+    <div class="tabs" id="stTabs"></div>
+    <div class="st-body">
+      <div class="trace mono st-resp" id="stResp"></div>
+      <div class="mini-browser" id="stBrowser">
+        <div class="mb-bar"><span class="mb-dots"><i></i><i></i><i></i></span><span class="mb-url mono" id="stUrl"></span></div>
+        <div class="mb-page" id="stPage"></div>
+      </div>
+    </div>
+    <div class="st-explain" id="stExplain" aria-live="polite"></div>
+  </div>
+  <div class="st-groups">
+    <div class="g g1"><b>1xx</b><span>途中経過</span></div>
+    <div class="g g2"><b>2xx</b><span>成功</span></div>
+    <div class="g g3"><b>3xx</b><span>別の場所へ</span></div>
+    <div class="g g4"><b>4xx</b><span>頼み方の問題</span></div>
+    <div class="g g5"><b>5xx</b><span>サーバー側の問題</span></div>
+  </div>
+  <p>百の位を見れば、だいたいの意味がわかります。<b>4xx は頼んだ側（ブラウザ・利用者）</b>、<b>5xx はサーバー側</b>に原因がある、と覚えておくと、エラーの画面を見たときに役立ちます。</p>
+</section>
+
+<section>
+  <h2><span class="num">1.6</span>1ページは、何十回もの往復でできている</h2>
+  <p>最初の返事で届くのは、ページの<b>設計図にあたるHTML</b>だけです。ブラウザはHTMLを読みながら「見た目の指定（CSS）が要る」「動きのプログラム（JavaScript）が要る」「写真が要る」と気づき、そのたびに新しいリクエストを送ります。読み込みの様子を見てみましょう。</p>
+  <div class="card wf-card">
+    <div class="wf-top">
+      <button class="primary" id="wfBtn">ページを読み込む</button>
+      <div class="wf-stat"><span>リクエスト</span><b id="wfCount">0</b><span>回</span></div>
+      <div class="wf-stat"><span>経過</span><b id="wfTime">0</b><span>ミリ秒</span></div>
+    </div>
+    <div class="wf" id="wf"></div>
+    <div class="wf-legend" id="wfLegend"></div>
+  </div>
+  <p>この図は説明用に12回に減らしています。実際のWebページでは、1ページあたりのリクエストの数は<b>パソコンで77回、スマホで72回</b>が真ん中の値です（HTTP Archive による2025年7月の計測）。このたくさんの往復をどれだけ速くこなせるかが、次のHTTPの<b>版（バージョン）</b>の話につながります。</p>
+</section>
+
+<section>
+  <h2><span class="num">1.7</span>HTTP/1.1・2・3 のちがい</h2>
+  <p>HTTPには版があり、新しい版ほど<b>たくさんのファイルを効率よく運ぶ</b>工夫がされています。6つのファイルを運ぶ様子を、版ごとに比べてみましょう。「途中でデータが1つ失われる」をオンにすると、ちがいがよりはっきりします。</p>
+  <div class="card">
+    <div class="ver-bar">
+      <div class="seg" id="verSeg">
+        <button data-v="1" class="on">HTTP/1.1</button>
+        <button data-v="2">HTTP/2</button>
+        <button data-v="3">HTTP/3</button>
+      </div>
+      <label class="toggle"><input type="checkbox" id="verLoss"> 途中でデータが1つ失われる</label>
+      <button class="primary" id="verBtn">運ぶ</button>
+    </div>
+    <div class="ver-lanes" id="verLanes"></div>
+    <div class="ver-foot">
+      <div class="ver-time"><span>かかった時間</span><b id="verTime">0</b><span>コマ</span></div>
+      <div class="ver-log" id="verLog"></div>
+    </div>
+    <div class="ver-explain" id="verExplain" aria-live="polite"></div>
+  </div>
+  <p class="note">※ 動きは考え方を見せるために単純にしています。実際の HTTP/1.1 では、ブラウザが同じ相手に最大6本ほどの道（接続）を同時に作って待ち時間を減らしますが、そのぶん準備の手間が増えます。</p>
+  <p>HTTP/3 は道そのもの（TCP）を新しい QUIC に取り替えたことで、つながるまでの準備も短くなっています。TCPは第3章、暗号化と QUIC の準備は第4章でくわしく見ます。</p>
+</section>
+
+<section>
+  <h2><span class="num">1.8</span>Cookie ── HTTPは前のことを覚えていない</h2>
+  <p>HTTPには、<b>1回ごとのやり取りが独立していて、前のことを覚えていない</b>という性質があります。では、ログインしたことはどうやって覚えておくのでしょう。答えは、サーバーがブラウザに渡す<b>番号札（Cookie）</b>です。順にボタンを押してみましょう。</p>
+  <div class="card ck-card">
+    <div class="ck-btns">
+      <button data-a="top">トップページを見る</button>
+      <button data-a="login" class="primary">ログインする</button>
+      <button data-a="my">マイページを見る</button>
+      <button data-a="clear">Cookieを消す</button>
+    </div>
+    <div class="ck-grid">
+      <div class="ck-jar">
+        <div class="ck-h">ブラウザのCookie置き場</div>
+        <div id="ckJar"></div>
+      </div>
+      <div class="ck-io">
+        <div class="ck-h">送ったリクエスト <span class="tag q">→</span></div>
+        <div class="trace mono ck-trace" id="ckReq"></div>
+        <div class="ck-h">返ってきた返事 <span class="tag a">←</span></div>
+        <div class="trace mono ck-trace" id="ckRes"></div>
+      </div>
+      <div class="mini-browser ck-browser">
+        <div class="mb-bar"><span class="mb-dots"><i></i><i></i><i></i></span><span class="mb-url mono" id="ckUrl"></span></div>
+        <div class="mb-page" id="ckPage"></div>
+      </div>
+    </div>
+    <div class="ck-explain" id="ckExplain" aria-live="polite"></div>
+  </div>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>番号札につける注意書き</h3>
+      <ul class="attr-list">
+        <li><code>Secure</code><span>HTTPSのときだけ送る</span></li>
+        <li><code>HttpOnly</code><span>ページのプログラム（JavaScript）からは読めなくする。盗み出しを防ぐ</span></li>
+        <li><code>SameSite</code><span>よそのサイトから送らされるのを防ぐ</span></li>
+        <li><code>Max-Age</code><span>何秒間とっておくか。書かないとブラウザを閉じるまで</span></li>
+      </ul>
+    </div>
+    <div class="card mini-card">
+      <h3>よそのサイトのCookie</h3>
+      <p>見ているサイトとは別の会社（広告など）が置くCookieを<b>サードパーティCookie</b>と呼びます。いろいろなサイトをまたいで利用者を追いかけられるため、扱いはブラウザによって分かれています。2026年10月時点では、Safari は最初から止めていて、Firefox はサイトごとに分けて保存します。Chrome は2025年4月に、これまでどおり使える状態を続けると発表しました。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">1.9</span>自分のPCで試してみよう</h2>
+  <p>ブラウザが送ったリクエストと返事は、実際に目で見られます。いちばん手軽なのは、ブラウザに入っている<b>開発者ツール</b>です。</p>
+  <div class="card mini-card devtools">
+    <h3>開発者ツールで見る（Chrome・Edge）</h3>
+    <ol>
+      <li>見たいページを開いて、<kbd>⌥</kbd>＋<kbd>⌘</kbd>＋<kbd>I</kbd>（Windowsは <kbd>F12</kbd>）を押す</li>
+      <li>上に並ぶタブから「<b>ネットワーク</b>」（Network）を選ぶ</li>
+      <li>ページを再読み込みすると、リクエストが1行ずつ流れてくる。下の方に合計の回数が出る</li>
+      <li>1行を押して「ヘッダー」（Headers）を見ると、1.4 で見たリクエストと、1.5 の返事が並んでいる</li>
+    </ol>
+  </div>
+  <p>ターミナル（Windowsは PowerShell）からも試せます。<code>curl</code> は、ブラウザの代わりにリクエストを送ってくれる道具です。</p>
+  <div class="card">
+    <div class="seg wrap-seg">
+      <button data-os="mac" class="on">Mac</button>
+      <button data-os="win">Windows</button>
+    </div>
+    <div class="cmds" id="cmds"></div>
+  </div>
+
+  <h3 class="sub-h">実際の返事を読んでみよう</h3>
+  <p>下は、2026年10月18日に Mac で <code>curl -I https://www.example.com</code> を実行した、実際の結果です。気になる行を押すと、説明が出ます。</p>
+  <div class="card trace-card">
+    <div class="trace mono" id="real"></div>
+    <div class="trace-explain" id="realExplain" aria-live="polite"><span class="note">↑ 気になる行を押してみてください</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">1.10</span>まとめ</h2>
+  <div class="card summary">
+    <ul>
+      <li>URLは <b>スキーム（https）・ホスト（サーバーの名前）・ポート・パス・クエリ・フラグメント</b> でできている。<code>#</code> から後ろはサーバーに送られない</li>
+      <li>アドレスバーは検索窓も兼ねている。URLを短く打つと、多くのブラウザは <b>まず https で試す</b></li>
+      <li>ブラウザは <b>HTTPリクエスト</b>（メソッド・パス・見出し）を書いて送り、サーバーは <b>ステータスコードつきのレスポンス</b> で返す</li>
+      <li>4xx は頼んだ側、5xx はサーバー側に原因がある</li>
+      <li>1ページの表示には、<b>数十回</b>のリクエストが行われる</li>
+      <li>HTTP/2 は1本の道にまとめて運び、HTTP/3 はデータが失われても<b>ほかのファイルを待たせない</b></li>
+      <li>HTTPは前のことを覚えていないので、<b>Cookie</b> という番号札でログインなどを覚えておく</li>
+    </ul>
+  </div>
+  <p>これで手紙はできあがりました。でも、まだ送れません。宛先の <code>www.example.com</code> は人間のための名前で、ネットワークで手紙を届けるには、相手の<b>IPアドレス（数字の住所）</b>が必要だからです。次の章では、名前から住所を探す旅に出ます。</p>
+
+  <h2><span class="num">1.11</span>確認クイズ</h2>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<footer>
+  <div class="chap-nav"><a href="dns.html">次の章：<b>第2章 DNS ── 名前から住所を探す旅</b> →</a></div>
+  この教材の文章と図はオリジナルです。数値や出来事は2026年10月18日時点で確認したものです。<br>
+  参考：RFC 3986（URI）、<a href="https://url.spec.whatwg.org/" target="_blank" rel="noopener">WHATWG URL Standard</a>、RFC 3492 / 5891（国際化ドメイン名）、RFC 9110（HTTPの意味）、RFC 9112（HTTP/1.1）、RFC 9113（HTTP/2）、RFC 9114（HTTP/3）、RFC 9000（QUIC）、RFC 6265（Cookie）、RFC 6797（HSTS）、<a href="https://almanac.httparchive.org/en/2025/page-weight" target="_blank" rel="noopener">HTTP Archive Web Almanac 2025</a>、<a href="https://blog.google/security/https-by-defau/" target="_blank" rel="noopener">Google</a>
+</footer>
+</div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+
+/* ---------- 1.1 旅の路線図 ---------- */
+(function(){
+  const S = [
+    [1, 'ブラウザ', 'URLを分解して、HTTPリクエストという手紙を書く。いま読んでいる章です。', 'here'],
+    [2, 'DNS', '名前（www.example.com）から、相手のIPアドレス（数字の住所）を探す。', 'dns.html'],
+    [3, 'TCP', '相手とつながって、データを確実に、順番どおりに届ける約束をする。'],
+    [4, 'HTTPS', '手紙に鍵をかけて、のぞき見と書き換えを防ぐ。'],
+    [5, 'IPとイーサネット', '手紙を小さな小包（パケット）に分けて、宛先のラベルを貼る。'],
+    [6, 'スイッチとルーター', '小包を、道案内にしたがって次へ次へと送り届ける。'],
+    [7, '家からインターネットへ', '光回線とプロバイダを通って、世界のネットワークへ出ていく。'],
+    [8, 'サーバー側の守り', 'ファイアウォールや CDN を通って、サーバーにたどり着く。'],
+    [9, '到着と帰り道', 'サーバーが返事を作り、同じように旅をして戻り、画面に表示される。'],
+  ];
+  const box = $('route'), ex = $('routeExplain');
+  box.innerHTML = S.map(([n, t, , f]) => `<button class="stn${f === 'here' ? ' here' : ''}" data-n="${n}"><span class="n">第${n}章</span><span>${t}</span></button>`).join('');
+  function pick(n){
+    const [, t, d, f] = S[n - 1];
+    box.querySelectorAll('.stn').forEach(b => b.classList.toggle('sel', +b.dataset.n === n));
+    const link = f && f !== 'here' ? ` <a href="${f}">第${n}章を読む →</a>` : (f === 'here' ? '' : ' <span class="note">（準備中）</span>');
+    ex.innerHTML = `<b class="t">第${n}章　${t}</b>${d}${link}`;
+  }
+  box.querySelectorAll('.stn').forEach(b => b.onclick = () => pick(+b.dataset.n));
+  pick(1);
+})();
+
+/* ---------- 1.2 URLの分解 ---------- */
+(function(){
+  const inp = $('urlIn');
+  const dec = s => { try{ return decodeURIComponent(s); }catch(e){ return s; } };
+  function run(){
+    const raw = inp.value.trim();
+    const view = $('urlView'), parts = $('urlParts'), extra = $('urlExtra');
+    if(!raw){ view.innerHTML = ''; parts.innerHTML = ''; extra.innerHTML = ''; return; }
+    const implicit = !/^[a-z][a-z0-9+.-]*:/i.test(raw);
+    let u;
+    try{ u = new URL(implicit ? 'https://' + raw : raw); }
+    catch(e){ view.innerHTML = '<span class="p-sep">URLとして読めませんでした。打ち間違いがないか確かめてください。</span>'; parts.innerHTML = ''; extra.innerHTML = ''; return; }
+    if(!/^https?:$/.test(u.protocol)){ view.innerHTML = `<span class="p-sep">この教材では http と https のURLを扱います（入力：${esc(u.protocol)}）。</span>`; parts.innerHTML = ''; extra.innerHTML = ''; return; }
+    const scheme = u.protocol.slice(0, -1);
+    const m = raw.match(/^(?:[a-z][a-z0-9+.-]*:\/\/)?([^\/?#:]+)/i);
+    const hostShown = m ? m[1].toLowerCase() : u.hostname;
+    const defPort = scheme === 'https' ? '443' : '80';
+    const path = dec(u.pathname), query = dec(u.search), frag = dec(u.hash);
+
+    view.innerHTML =
+      `<span class="p-scheme${implicit ? ' p-implicit' : ''}">${scheme}</span><span class="p-sep">://</span>` +
+      `<span class="p-host">${esc(hostShown)}</span>` +
+      (u.port ? `<span class="p-sep">:</span><span class="p-port">${u.port}</span>` : `<span class="p-port p-implicit">:${defPort}</span>`) +
+      `<span class="p-path">${esc(path)}</span>` +
+      (query ? `<span class="p-query">${esc(query)}</span>` : '') +
+      (frag ? `<span class="p-frag">${esc(frag)}</span>` : '');
+
+    const rows = [];
+    rows.push(['var(--c-scheme)', 'スキーム', 'scheme', esc(scheme) + (implicit ? ' <span class="dim">（省略されたので補った）</span>' : ''),
+      scheme === 'https' ? 'どの決まりで話すか。https は「暗号化したHTTPで話す」という意味です（暗号化は第4章）。' : 'どの決まりで話すか。http は「暗号化しないHTTPで話す」という意味で、途中で中身を読まれるおそれがあります。']);
+    rows.push(['var(--c-host)', 'ホスト', 'host', esc(hostShown) + (u.hostname !== hostShown ? `<br><span class="dim">→ 実際に使う形：</span>${esc(u.hostname)}` : ''),
+      'どのサーバーか。この名前を数字のIPアドレスに変えるのが、第2章のDNSです。' + (u.hostname !== hostShown ? '日本語の名前は、<code>xn--</code> から始まる英数字に変換してから使います（Punycode）。' : '')]);
+    rows.push(['var(--c-port)', 'ポート', 'port', u.port ? esc(u.port) : `${defPort} <span class="dim">（書いていないので、${scheme} の決まりの番号）</span>`,
+      u.port ? 'サーバーの中の「窓口の番号」。決まりの番号以外の窓口につなぐときだけ、<code>:8080</code> のように書きます。開発中のサーバーなどでよく見かけます。' : 'サーバーの中の「窓口の番号」。https なら443番、http なら80番が決まりなので、ふつうは省略します。']);
+    rows.push(['var(--c-path)', 'パス', 'path', esc(path) + (u.pathname !== path ? `<br><span class="dim">→ 実際に使う形：</span>${esc(u.pathname)}` : ''),
+      'サーバーの中の、どのページ・どのファイルか。何も書かないと <code>/</code>（トップページ）になります。' + (u.pathname !== path ? '日本語は、文字を数字の並びに置きかえた <code>%E6%A4%9C…</code> の形で送ります（パーセントエンコード）。' : '')]);
+    if(query){
+      const ps = [...u.searchParams].map(([k, v]) => `<span>${esc(k)}</span><span>= ${esc(v)}</span>`).join('');
+      rows.push(['var(--c-query)', 'クエリ', 'query', `${esc(query)}<br><span class="qtable">${ps}</span>`,
+        'ページに渡す追加の注文。<code>名前=値</code> を <code>&amp;</code> でつなぎます。何ページ目か、どの順に並べるか、検索の言葉などを伝えます。']);
+    }
+    if(frag){
+      rows.push(['var(--c-frag)', 'フラグメント', 'fragment', esc(frag) + ' <span class="dim">（サーバーには送らない）</span>',
+        'ページの中の、どこを表示するか。ブラウザが自分で使うしるしなので、サーバーへの手紙には書かれません。']);
+    }
+    parts.innerHTML = rows.map(([c, nm, en, vl, ds], i) =>
+      `<div class="url-part" style="--c:${c};animation-delay:${i * 70}ms"><div class="nm">${nm}<small>${en}</small></div><div class="vl">${vl}</div><div class="ds">${ds}</div></div>`).join('');
+
+    const target = u.pathname + u.search;
+    let x = `<div class="box">サーバーへの手紙（1.4）に書かれるのは：<br><code>GET ${esc(target)}</code>　と　<code>Host: ${esc(u.host)}</code><br><span class="note">スキームは「どう話すか」、ホストは「どこへ出すか」に使われ、フラグメントはどこにも書かれません。</span></div>`;
+    if(implicit) x += '<p class="note">※ <code>https://</code> を省略したので、ここでは補って読んでいます。実際のブラウザがどう補うかは、次の1.3で見ます。</p>';
+    extra.innerHTML = x;
+  }
+  $('urlBtn').onclick = run;
+  inp.addEventListener('keydown', e => { if(e.key === 'Enter') run(); });
+  $('urlPresets').querySelectorAll('button').forEach(b => b.onclick = () => { inp.value = b.dataset.u; run(); });
+  run();
+})();
+
+/* ---------- 1.3 アドレスバー ---------- */
+(function(){
+  const inp = $('omniIn'), out = $('omniResult'), icon = $('omniIcon');
+  const step = (s, t, warn) => `<li${warn ? ' class="warn"' : ''}><span class="s">${s}</span><span>${t}</span></li>`;
+  function judge(t){
+    if(!t) return null;
+    if(/^[a-z][a-z0-9+.-]*:\/\//i.test(t)){
+      const http = /^http:\/\//i.test(t);
+      return {url:true, why:'<code>http://</code> や <code>https://</code> から始まっているので、迷わずURLとして開きます。',
+        steps: http ? [
+          step('①', `書かれたとおり <code>${esc(t)}</code> を開こうとする`),
+          step('②', '前に「必ずHTTPSで」と言われたサイト（HSTS）なら、送る前に自動で <code>https://</code> に書きかえる'),
+          step('③', '「常に安全な接続を使用する」が有効なら、まず https で試し、だめなら確認の画面を出してから http で開く', true),
+        ] : [step('①', `書かれたとおり <code>${esc(t)}</code> を開く`), step('②', '最初から暗号化されるので、いちばん安心な形です')]};
+    }
+    if(/\s/.test(t)) return {url:false, why:'空白が入っています。URLには空白が入らないので、<b>検索したい言葉</b>だと判断します。'};
+    if(/^localhost(:\d+)?(\/.*)?$/i.test(t)) return {url:true, why:'<code>localhost</code> は「このPC自身」を表す特別な名前です。開発中のサーバーを動かすときによく使います。',
+      steps:[step('①', `<code>http://${esc(t)}${t.includes('/') ? '' : '/'}</code> を開く`), step('②', 'PCの外には出ないので、ネットワークの旅はありません')]};
+    const ip = t.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})(:\d+)?(\/.*)?$/);
+    if(ip && ip.slice(1, 5).every(n => +n <= 255)) return {url:true, why:'数字の住所（IPアドレス）が直接書かれています。名前ではないので、<b>DNSで調べる必要がありません</b>（第2章を飛ばせます）。',
+      steps:[step('①', `<code>https://${esc(t)}/</code> で試す`), step('②', 'つながらなければ <code>http://</code> で開き直す'), step('③', '家や会社の中だけの住所（192.168.x.x など）なら、確認の画面は出ない')]};
+    if(/^[^\s\/?#.]+(\.[^\s\/?#.]+)*\.[a-z぀-ヿ一-鿿]{2,}(:\d+)?([\/?#].*)?$/i.test(t)) return {url:true,
+      why:'ドットで区切られていて、最後が <code>.com</code> や <code>.jp</code> のような<b>トップレベルドメイン</b>の形をしているので、URLだと判断します。',
+      steps:[
+        step('①', `<code>https://</code> を補い、<code>https://${esc(t)}${/[\/?#]/.test(t) ? '' : '/'}</code> で試す（パスが空なら <code>/</code> を付ける）`),
+        step('②', 'HTTPSでつながらなければ <code>http://</code> に戻る。公開サイトでは、戻る前に確認の画面を出すブラウザが増えている', true),
+        step('③', '前に「必ずHTTPSで」と言われたサイト（HSTS）なら、①だけで、http には戻らない'),
+      ]};
+    return {url:false, why:'ドットのない1語なので、<b>検索したい言葉</b>だと判断します。（会社の中のサーバー名など、例外として開く設定もあります）'};
+  }
+  function run(){
+    const t = inp.value.trim(), r = judge(t);
+    if(!r){ out.innerHTML = '<span class="note">何か打ってみてください。</span>'; icon.textContent = '🔍'; return; }
+    icon.textContent = r.url ? '🌐' : '🔍';
+    const steps = r.url ? r.steps : [
+      step('①', '検索の言葉を、URLで使える形に変換する（1.2 のパーセントエンコード）'),
+      step('②', `検索サイトのURLを開く：<code>https://search.example/?q=${esc(encodeURIComponent(t))}</code>`),
+      step('③', 'ここから先の旅は、検索サイトあてのリクエストになる'),
+    ];
+    out.innerHTML = `<span class="verdict ${r.url ? 'url' : 'search'}">${r.url ? '🌐 URLとして開く' : '🔍 検索する'}</span><p class="omni-why">${r.why}</p><ul class="omni-steps">${steps.join('')}</ul>`;
+  }
+  inp.addEventListener('input', run);
+  $('omniPresets').querySelectorAll('button').forEach(b => b.onclick = () => { inp.value = b.dataset.o; run(); });
+  run();
+})();
+
+/* ---------- 1.4 リクエストの中身 ---------- */
+(function(){
+  const H = k => `<span class="hk">${k}:</span>`;
+  const R = {
+    GET:[
+      ['rl', '<span class="mt">GET</span> /news/index.html HTTP/1.1'],
+      ['host', `${H('Host')} www.example.com`],
+      ['ua', `${H('User-Agent')} Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/154.0.0.0 Safari/537.36`],
+      ['accept', `${H('Accept')} text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8`],
+      ['lang', `${H('Accept-Language')} ja,en-US;q=0.9,en;q=0.8`],
+      ['enc', `${H('Accept-Encoding')} gzip, deflate, br, zstd`],
+      ['cookie', `${H('Cookie')} session=7f3a9c`],
+      ['blank', '（空の行）'],
+    ],
+    POST:[
+      ['rlpost', '<span class="mt">POST</span> /contact HTTP/1.1'],
+      ['host', `${H('Host')} www.example.com`],
+      ['ctype', `${H('Content-Type')} application/x-www-form-urlencoded`],
+      ['clen', `${H('Content-Length')} 37`],
+      ['cookie', `${H('Cookie')} session=7f3a9c`],
+      ['blank', '（空の行）'],
+      ['body', '<span class="bd">name=%E5%B1%B1%E7%94%B0&amp;message=hello</span>'],
+    ],
+  };
+  const E = {
+    rl:['1行目：リクエスト行', '<b>メソッド</b>（GET）・<b>パス</b>（/news/index.html）・<b>HTTPの版</b>の3つが並びます。1.2で分解したURLのうち、ここに書かれるのはパスとクエリだけです。'],
+    rlpost:['1行目：POST のリクエスト行', 'POST は「本文を受け取って、処理して」という頼みです。お問い合わせフォームの送り先 <code>/contact</code> に送ります。'],
+    host:['Host：どのサイトあてか', '1台のサーバー（1つのIPアドレス）で、たくさんのサイトを動かしていることがよくあります。この行で「www.example.com あての手紙です」と見分けます。HTTP/1.1 からは必ず書く決まりです。'],
+    ua:['User-Agent：ブラウザの自己紹介', 'ブラウザとOSの名前です。どのブラウザも <code>Mozilla/5.0</code> で始まるのは、昔、ブラウザの種類で中身を変えるサイトが多く、後から出たブラウザが先輩のふりをしてきた名残です。今は個人を見分けにくくするため、OSの版などは固定の値にそろえられています。'],
+    accept:['Accept：受け取れる形式', '<code>q=</code> は好みの度合い（0〜1）で、書いていなければ1です。「HTMLが一番ほしい。ほかの形式（<code>*/*</code>）でも、少し下の好みで受け取れる」という意味です。'],
+    lang:['Accept-Language：読める言語', '日本語が一番、次に英語、という希望です。いくつもの言語に対応したサイトは、これを見て日本語のページを返せます。'],
+    enc:['Accept-Encoding：使える圧縮の方式', '対応している圧縮の方式を伝えると、サーバーはデータを縮めて送ってくれるので、速く届きます。<code>br</code>（Brotli）や <code>zstd</code> は新しい方式です。'],
+    cookie:['Cookie：前にもらった番号札', '前にこのサイトからもらった番号札を、毎回自動でつけて送ります。ログインを覚えておく仕組みで、1.8 でくわしく見ます。'],
+    blank:['空の行：見出しの終わり', '何も書いていない1行が「見出しはここまで」の合図です。GET では、ふつうこの後に本文はありません。'],
+    ctype:['Content-Type：本文の形式', 'フォームの中身を <code>名前=値&amp;名前=値</code> の形に並べたもの、という意味です。ファイルを送るときは別の形式になります。'],
+    clen:['Content-Length：本文の長さ', '本文が何バイトあるかです。サーバーは、この長さだけ読めば本文が終わったとわかります。'],
+    body:['本文（ボディ）', '<code>name</code>（名前）＝山田、<code>message</code>（本文）＝hello の2つです。日本語の「山田」は、1.2 で見たパーセントエンコードで <code>%E5%B1%B1%E7%94%B0</code> になっています（漢字1文字が3バイト）。'],
+  };
+  const box = $('req'), ex = $('reqExplain');
+  function pick(k){
+    box.querySelectorAll('.ln').forEach(l => l.classList.toggle('on', l.dataset.k === k));
+    ex.innerHTML = `<h4>${E[k][0]}</h4>${E[k][1]}`;
+  }
+  function show(m){
+    document.querySelectorAll('[data-m]').forEach(b => b.classList.toggle('on', b.dataset.m === m));
+    box.innerHTML = R[m].map(([k, h]) => `<div class="ln g${k === 'blank' ? ' blank' : ''}" data-k="${k}" tabindex="0" role="button">${h}</div>`).join('');
+    box.querySelectorAll('.ln').forEach(l => {
+      l.onclick = () => pick(l.dataset.k);
+      l.onkeydown = e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); pick(l.dataset.k); } };
+    });
+    pick(R[m][0][0]);
+  }
+  document.querySelectorAll('[data-m]').forEach(b => b.onclick = () => show(b.dataset.m));
+  show('GET');
+})();
+
+/* ---------- 1.5 ステータスコード ---------- */
+(function(){
+  const NEWS = '<div class="big">📰</div><b>今日のニュース</b><div class="sm">ページが表示された</div>';
+  const S = [
+    {c:200, t:'OK', g:2, url:'https://www.example.com/news/', page:NEWS,
+     resp:['HTTP/1.1 200 OK', 'Content-Type: text/html; charset=utf-8', 'Content-Length: 1256', '', '<!doctype html> …（ページのHTML）'],
+     h:'成功：頼んだものが届いた', e:'いちばんよく返ってくる、ふだんは目にしないコードです。見出しの後の本文に、ページのHTMLが入っています。'},
+    {c:301, t:'Moved Permanently', g:3, url:'http://www.example.com/news/', url2:'https://www.example.com/news/', page:NEWS,
+     resp:['HTTP/1.1 301 Moved Permanently', 'Location: https://www.example.com/news/'],
+     h:'引っ越しました：新しい住所はこちら', e:'ブラウザは <code>Location</code> に書かれたURLへ自動で頼み直すので、利用者は気づきません（アドレスバーの表示が変わるのを見てください）。http から https への切りかえによく使われます。一時的な引っ越しには 302 や 307 を使います。'},
+    {c:304, t:'Not Modified', g:3, url:'https://www.example.com/news/', page:NEWS.replace('ページが表示された', '手元に保存していた分を表示'),
+     resp:['HTTP/1.1 304 Not Modified', 'ETag: "a1b2c3"', 'Cache-Control: max-age=600'],
+     h:'変わっていません：手元のものを使って', e:'ブラウザが「この版（ETag）を持っているけど、変わった？」と聞き、変わっていなければ、サーバーは本文なしでこう答えます。ブラウザは保存していたもの（キャッシュ）を使うので、速く表示できます。'},
+    {c:403, t:'Forbidden', g:4, url:'https://www.example.com/admin/', page:'<div class="big">🔒 403</div><b>見る権限がありません</b>',
+     resp:['HTTP/1.1 403 Forbidden', 'Content-Type: text/html; charset=utf-8'],
+     h:'見る権限がない', e:'ページはあるけれど、あなたには見せられない、という返事です。会社の中だけのページや、管理画面などで出ます。'},
+    {c:404, t:'Not Found', g:4, url:'https://www.example.com/nwes/', page:'<div class="big">404</div><b>ページが見つかりません</b><div class="sm">URLの打ち間違い？（nwes）</div>',
+     resp:['HTTP/1.1 404 Not Found', 'Content-Type: text/html; charset=utf-8'],
+     h:'見つかりません', e:'頼まれたページがない、という返事です。URLの打ち間違いや、ページが消された場合に出ます。サーバーは元気に動いていて、<b>頼み方（URL）のほうに問題がある</b>、というのが 4xx の意味です。'},
+    {c:500, t:'Internal Server Error', g:5, url:'https://www.example.com/news/', page:'<div class="big">😵 500</div><b>サーバーでエラーが起きました</b>',
+     resp:['HTTP/1.1 500 Internal Server Error', 'Content-Type: text/html; charset=utf-8'],
+     h:'サーバーの中でエラー', e:'頼み方は正しくても、サーバーの中のプログラムが処理に失敗した、という返事です。利用者にできることは少なく、時間をおいてもう一度試すくらいです。'},
+    {c:503, t:'Service Unavailable', g:5, url:'https://www.example.com/tickets/', page:'<div class="big">⏳ 503</div><b>ただいま混み合っています</b><div class="sm">しばらくしてからお試しください</div>',
+     resp:['HTTP/1.1 503 Service Unavailable', 'Retry-After: 120'],
+     h:'今は受け付けられない', e:'混みすぎ、またはメンテナンス中、という返事です。<code>Retry-After: 120</code> は「120秒後にまた来て」という意味。チケットの発売直後などに見かけます。'},
+  ];
+  const tabs = $('stTabs');
+  tabs.innerHTML = S.map((s, i) => `<button class="s${s.g}" data-i="${i}">${s.c}<small>${s.t}</small></button>`).join('');
+  let timer;
+  function setPage(html){ const p = $('stPage'); p.classList.remove('fade'); void p.offsetWidth; p.innerHTML = html; p.classList.add('fade'); }
+  function show(i){
+    const s = S[i];
+    clearTimeout(timer);
+    tabs.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.i === i));
+    $('stResp').innerHTML = s.resp.map((l, k) => `<div class="ln${k === 0 ? ' recv' : ''}">${l ? esc(l).replace(/^([A-Za-z-]+:)/, '<span class="hk">$1</span>') : '&nbsp;'}</div>`).join('');
+    const url = $('stUrl');
+    url.textContent = s.url; url.classList.remove('flash');
+    if(s.url2){
+      setPage('<div class="sm">新しい住所へ移動中…</div>');
+      timer = setTimeout(() => { url.textContent = s.url2; url.classList.add('flash'); setPage(s.page); }, 1100);
+    } else setPage(s.page);
+    $('stExplain').innerHTML = `<h3>${s.c} ${s.t} ── ${s.h}</h3>${s.e}`;
+  }
+  tabs.querySelectorAll('button').forEach(b => b.onclick = () => show(+b.dataset.i));
+  show(0);
+})();
+
+/* ---------- 1.6 ウォーターフォール ---------- */
+(function(){
+  const T = 900;
+  const F = [
+    ['index.html', 'html', 0, 180, '最初の1回'],
+    ['style.css', 'css', 190, 110, 'HTMLに書いてあった'],
+    ['app.js', 'js', 190, 160, 'HTMLに書いてあった'],
+    ['logo.svg', 'img', 196, 70, ''],
+    ['hero.webp', 'img', 200, 230, ''],
+    ['photo1.webp', 'img', 204, 190, ''],
+    ['photo2.webp', 'img', 208, 210, ''],
+    ['font.woff2', 'font', 305, 140, 'CSSを読んで気づいた'],
+    ['icons.svg', 'img', 308, 60, ''],
+    ['news.json', 'data', 355, 220, 'JSが取りに行った'],
+    ['analytics.js', 'js', 360, 120, ''],
+    ['thumb1.webp', 'img', 580, 150, 'データを見て必要に'],
+  ];
+  const TYPES = {html:'HTML（設計図）', css:'CSS（見た目）', js:'JavaScript（動き）', img:'画像', font:'文字の形（フォント）', data:'データ'};
+  const wf = $('wf');
+  wf.innerHTML = F.map(([f, t, s, d, why]) =>
+    `<div class="wf-row t-${t}" style="opacity:.25"><span class="f">${f}</span><div class="wf-track"><div class="wf-bar" style="left:${s / T * 100}%"></div><span class="wf-why" style="left:calc(${(s + d) / T * 100}% + 6px)">${why}</span></div></div>`).join('');
+  $('wfLegend').innerHTML = Object.entries(TYPES).map(([k, v]) => `<span class="t-${k}">${v}</span>`).join('');
+  const rows = [...wf.children];
+  let raf = null;
+  function reset(){
+    rows.forEach(r => { r.style.opacity = .25; r.classList.remove('live', 'done'); r.querySelector('.wf-bar').style.width = 0; });
+    $('wfCount').textContent = 0; $('wfTime').textContent = 0;
+  }
+  function play(){
+    cancelAnimationFrame(raf); reset();
+    const slow = matchMedia('(prefers-reduced-motion: reduce)').matches ? 0.0001 : 3.2;
+    const t0 = performance.now(), end = Math.max(...F.map(f => f[2] + f[3]));
+    const tick = now => {
+      const t = Math.min(end, (now - t0) / slow);
+      let n = 0;
+      F.forEach(([, , s, d], i) => {
+        const r = rows[i];
+        if(t >= s){ n++; r.style.opacity = 1; r.classList.add('live'); r.querySelector('.wf-bar').style.width = (Math.min(t - s, d) / T * 100) + '%'; if(t >= s + d) r.classList.add('done'); }
+      });
+      $('wfCount').textContent = n; $('wfTime').textContent = Math.round(t);
+      if(t < end) raf = requestAnimationFrame(tick); else $('wfBtn').textContent = 'もう一度読み込む';
+    };
+    raf = requestAnimationFrame(tick);
+  }
+  $('wfBtn').onclick = play;
+})();
+
+/* ---------- 1.7 HTTP/1.1・2・3 ---------- */
+(function(){
+  const N = 6, C = 4, R = 3, LF = 1, LC = 1;
+  const NAMES = ['A.html', 'B.css', 'C.js', 'D.jpg', 'E.jpg', 'F.png'];
+  function simulate(v, loss){
+    const got = Array(N).fill(0), frames = [];
+    let t = 0, lossDone = !loss, lossFrame = -99;
+    const base = () => got.map(g => g >= C ? 'fin' : (g > 0 ? 'rx' : ''));
+    const push = s => { t++; frames.push({got:[...got], st:s}); };
+    if(v === 1){
+      for(let i = 0; i < N; i++){
+        for(let k = 0; k < R; k++){ const s = base(); s[i] = 'req'; push(s); }
+        while(got[i] < C){
+          if(!lossDone && i === LF && got[i] === LC){
+            lossDone = true;
+            for(let k = 0; k <= R; k++){ const s = base(); s[i] = 'lost'; for(let j = i + 1; j < N; j++) s[j] = 'wait'; push(s); }
+          }
+          got[i]++; push(base());
+        }
+      }
+      return frames;
+    }
+    for(let k = 0; k < R; k++) push(base().map(x => x || 'req'));
+    let cur = 0;
+    const blocked = i => v === 3 && i === LF && t + 1 <= lossFrame + R;
+    while(got.some(g => g < C)){
+      let tries = 0;
+      while((got[cur] >= C || blocked(cur)) && tries < N){ cur = (cur + 1) % N; tries++; }
+      if(tries >= N){ const s = base(); s[LF] = 'lost'; push(s); continue; }
+      if(!lossDone && cur === LF && got[cur] === LC){
+        lossDone = true;
+        if(v === 2){
+          for(let k = 0; k <= R; k++){ const s = base().map(x => x === 'fin' ? x : 'wait'); s[LF] = 'lost'; push(s); }
+          got[cur]++; push(base());
+        } else {
+          lossFrame = t + 1;
+          const s = base(); s[LF] = 'lost'; push(s);
+        }
+        cur = (cur + 1) % N;
+        continue;
+      }
+      got[cur]++;
+      const s = base();
+      if(v === 3 && t + 1 <= lossFrame + R && got[LF] < C) s[LF] = 'lost';
+      push(s);
+      cur = (cur + 1) % N;
+    }
+    return frames;
+  }
+  const LABEL = {'':'', rx:'受信中', req:'依頼中', wait:'待ち', lost:'再送待ち', fin:'完了'};
+  const EX = {
+    1:['1本の道で、1つずつ順番に', '1つのファイルを頼んで、届き終わるまで次を頼めません。頼むたびに、往復の待ち時間がかかります。', '失われたデータを送り直してもらう間、後ろのファイルはずっと順番待ちです。'],
+    2:['1本の道に、まとめて流す', '全部のファイルを一度に頼み、細かく切って交互に流します（<b>多重化</b>）。往復の待ちは最初の1回だけで済みます。', 'ただし道（TCP）は「順番どおりに渡す」決まりなので、1つ失われると、<b>関係ないファイルまで全部止まります</b>（先頭ブロック）。'],
+    3:['ファイルごとに、別々の流れ', 'HTTP/2 と同じくまとめて流しますが、道を <b>QUIC</b> に取り替えたので、ファイルごとの流れ（ストリーム）がそれぞれ独立しています。', '失われたのは B の流れだけ。<b>ほかのファイルは止まらずに届き続けます</b>。'],
+  };
+  const lanes = $('verLanes');
+  lanes.innerHTML = NAMES.map(n => `<div class="ver-lane"><span class="nm">${n}</span><div class="ver-cells">${'<i></i>'.repeat(C)}</div><span class="st"></span></div>`).join('');
+  const L = [...lanes.children];
+  let v = 1, timer = null;
+  function draw(f){
+    L.forEach((el, i) => {
+      el.className = 'ver-lane' + (f && f.st[i] ? ' ' + f.st[i] : '');
+      el.querySelectorAll('i').forEach((c, k) => c.classList.toggle('got', !!f && k < f.got[i]));
+      el.querySelector('.st').textContent = f ? LABEL[f.st[i]] : '';
+    });
+  }
+  function explain(){
+    const loss = $('verLoss').checked, e = EX[v];
+    $('verExplain').innerHTML = `<b class="t">HTTP/${v === 1 ? '1.1' : v}：${e[0]}</b>${e[1]}${loss ? ' ' + e[2] : ''}`;
+  }
+  function stop(){ clearInterval(timer); timer = null; }
+  function run(){
+    stop();
+    const loss = $('verLoss').checked, frames = simulate(v, loss);
+    let k = 0;
+    draw(null); $('verTime').textContent = 0;
+    const step = matchMedia('(prefers-reduced-motion: reduce)').matches ? 1 : 150;
+    timer = setInterval(() => {
+      draw(frames[k]); $('verTime').textContent = k + 1; k++;
+      if(k >= frames.length){
+        stop();
+        const log = $('verLog');
+        log.insertAdjacentHTML('beforeend', `<span${loss ? ' class="loss"' : ''}>HTTP/${v === 1 ? '1.1' : v}${loss ? '・欠け' : ''}：${frames.length}コマ</span>`);
+        while(log.children.length > 6) log.firstElementChild.remove();
+      }
+    }, step);
+  }
+  document.querySelectorAll('#verSeg button').forEach(b => b.onclick = () => {
+    v = +b.dataset.v;
+    document.querySelectorAll('#verSeg button').forEach(x => x.classList.toggle('on', x === b));
+    stop(); draw(null); $('verTime').textContent = 0; explain();
+  });
+  $('verLoss').onchange = () => { stop(); draw(null); $('verTime').textContent = 0; explain(); };
+  $('verBtn').onclick = run;
+  draw(null); explain();
+})();
+
+/* ---------- 1.8 Cookie ---------- */
+(function(){
+  let jar = false;
+  const SID = 'session=7f3a9c';
+  const lines = (arr, hot) => arr.map(l => `<div class="ln${hot && l.startsWith(hot) ? ' hot' : ''}">${l ? esc(l) : '&nbsp;'}</div>`).join('');
+  function page(html){ const p = $('ckPage'); p.classList.remove('fade'); void p.offsetWidth; p.innerHTML = html; p.classList.add('fade'); }
+  function drawJar(){
+    $('ckJar').innerHTML = jar
+      ? `<div class="ck-ticket"><b>${SID}</b><small>www.example.com 用 ・ 1日 ・ Secure ・ HttpOnly</small></div>`
+      : '<div class="ck-empty">（空っぽ）</div>';
+  }
+  const A = {
+    top(){
+      const req = ['GET / HTTP/1.1', 'Host: www.example.com'].concat(jar ? ['Cookie: ' + SID] : []);
+      $('ckReq').innerHTML = lines(req, 'Cookie');
+      $('ckRes').innerHTML = lines(['HTTP/1.1 200 OK', 'Content-Type: text/html']);
+      $('ckUrl').textContent = 'https://www.example.com/';
+      page(jar ? '<div class="big">👋</div><b>ようこそ、山田さん</b>' : '<div class="big">👋</div><b>ようこそ、ゲストさん</b><div class="sm">ログインしていません</div>');
+      return jar ? '札がついていたので、サーバーは「さっきログインした山田さんだ」と気づきました。' : '札（Cookie）がないので、サーバーにはあなたが誰だかわかりません。HTTPは前のやり取りを覚えていないからです。';
+    },
+    login(){
+      $('ckReq').innerHTML = lines(['POST /login HTTP/1.1', 'Host: www.example.com', 'Content-Type: application/x-www-form-urlencoded', '', 'id=yamada&password=••••••••']);
+      $('ckRes').innerHTML = lines(['HTTP/1.1 200 OK', `Set-Cookie: ${SID}; Secure; HttpOnly; SameSite=Lax; Max-Age=86400`], 'Set-Cookie');
+      $('ckUrl').textContent = 'https://www.example.com/login';
+      jar = true; drawJar();
+      page('<div class="big">✅</div><b>ログインしました</b>');
+      return 'パスワードが正しかったので、サーバーは番号札 <code>session=7f3a9c</code> を作り、<code>Set-Cookie</code> で渡しました。サーバーは「7f3a9c 番＝山田さん」と控えておきます。ブラウザは札を置き場にしまいます。';
+    },
+    my(){
+      $('ckUrl').textContent = 'https://www.example.com/mypage';
+      if(jar){
+        $('ckReq').innerHTML = lines(['GET /mypage HTTP/1.1', 'Host: www.example.com', 'Cookie: ' + SID], 'Cookie');
+        $('ckRes').innerHTML = lines(['HTTP/1.1 200 OK', 'Content-Type: text/html']);
+        page('<div class="big">📦</div><b>山田さんのマイページ</b><div class="sm">注文履歴・お届け先</div>');
+        return 'ブラウザは、このサイトあての手紙に<b>毎回、札を自動でつけます</b>。サーバーは札の番号から山田さんだとわかり、マイページを返しました。この札を他人に盗まれると、その人が山田さんになりすませてしまいます。だから Secure や HttpOnly の注意書きをつけるのです。';
+      }
+      $('ckReq').innerHTML = lines(['GET /mypage HTTP/1.1', 'Host: www.example.com']);
+      $('ckRes').innerHTML = lines(['HTTP/1.1 302 Found', 'Location: /login'], 'Location');
+      page('<div class="big">🔑</div><b>ログインしてください</b>');
+      return '札がないので、誰のマイページかわかりません。サーバーはログインの画面へ案内しました（302 は一時的な引っ越し。1.5 の 301 の仲間です）。';
+    },
+    clear(){
+      jar = false; drawJar();
+      $('ckReq').innerHTML = '<div class="ln cmt">（送っていません）</div>';
+      $('ckRes').innerHTML = '<div class="ln cmt">（届いていません）</div>';
+      return '札を消すと、サーバーから見れば「知らない人」に戻ります。この状態で「マイページを見る」を押してみましょう。ちなみに「ログアウト」は、サーバー側の控えを消して、札を使えなくする仕組みです。';
+    },
+  };
+  document.querySelectorAll('[data-a]').forEach(b => b.onclick = () => { $('ckExplain').innerHTML = A[b.dataset.a](); });
+  drawJar();
+  $('ckExplain').innerHTML = A.top();
+})();
+
+/* ---------- 1.9 コマンド ---------- */
+(function(){
+  const C = {
+    mac:[
+      ['curl -I https://www.example.com', '返事の<b>見出しだけ</b>を表示します（HEAD というメソッドを使います）。下で、実際の結果を1行ずつ読みます。'],
+      ['curl -v -o /dev/null https://www.example.com', '送ったリクエスト（<code>&gt;</code> の行）と、返ってきた返事（<code>&lt;</code> の行）が両方見えます。<code>*</code> の行は、つなぐ準備（第3・4章）の様子です。'],
+      ['curl -I http://www.example.com', '<code>http://</code> で頼んでみます。1行目が <code>HTTP/1.1</code> になるなど、https のときとの違いを探してみましょう。'],
+      ['curl -I https://www.example.com/no-such-page', 'ないページを頼むとどうなるか、1行目のステータスコードを見てみましょう（1.5）。'],
+    ],
+    win:[
+      ['curl.exe -I https://www.example.com', 'Windows 10 以降には curl が入っています。PowerShell では <code>curl</code> だけだと別の命令になることがあるので、<code>curl.exe</code> と打ちます。'],
+      ['curl.exe -v -o NUL https://www.example.com', '送ったリクエスト（<code>&gt;</code> の行）と、返ってきた返事（<code>&lt;</code> の行）が両方見えます。'],
+      ['curl.exe -I http://www.example.com', '<code>http://</code> で頼んでみます。https のときとの違いを探してみましょう。'],
+      ['curl.exe -I https://www.example.com/no-such-page', 'ないページを頼むとどうなるか、1行目のステータスコードを見てみましょう（1.5）。'],
+    ],
+  };
+  const box = $('cmds');
+  function show(os){
+    document.querySelectorAll('[data-os]').forEach(b => b.classList.toggle('on', b.dataset.os === os));
+    box.innerHTML = C[os].map(([c, d]) => `<div class="cmd"><div class="cmd-line"><code>${esc(c)}</code><button data-c="${esc(c)}">コピー</button></div><div class="cmd-desc">${d}</div></div>`).join('');
+    box.querySelectorAll('[data-c]').forEach(b => b.onclick = async () => {
+      try{ await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'コピーした'; }
+      catch(e){ b.textContent = '選択してコピーしてね'; }
+      setTimeout(() => b.textContent = 'コピー', 1500);
+    });
+  }
+  document.querySelectorAll('[data-os]').forEach(b => b.onclick = () => show(b.dataset.os));
+  show('mac');
+})();
+
+/* ---------- 1.9 実際の返事を読む ---------- */
+(function(){
+  const L = [
+    ['c', '$ curl -I https://www.example.com'],
+    ['st', 'HTTP/2 200'],
+    ['date', 'date: Sun, 18 Oct 2026 05:33:55 GMT'],
+    ['ct', 'content-type: text/html; charset=utf-8'],
+    ['sv', 'server: cloudflare'],
+    ['lm', 'last-modified: Tue, 13 Oct 2026 22:05:48 GMT'],
+    ['al', 'allow: GET, HEAD'],
+    ['ar', 'accept-ranges: bytes'],
+    ['age', 'age: 2850'],
+    ['hit', 'cf-cache-status: HIT'],
+    ['ray', 'cf-ray: a4c52bc5ffd33bb3-NRT'],
+    ['alt', 'alt-svc: h3=":443"; ma=86400'],
+  ];
+  const E = {
+    st:['1行目：版とステータスコード', '<b>HTTP/2</b> で話して、<b>200（成功）</b>。curl とサーバーが相談して、HTTP/2 に決めました（相談の仕組みは第4章）。HTTP/2 では「OK」のような言葉は省かれて、番号だけになります。'],
+    date:['返事を作った日時', '世界共通の時刻（GMT）で書かれています。日本時間は9時間足して、14時33分です。'],
+    ct:['中身の形式', 'HTMLのページで、文字はUTF-8という方式で書かれている、という意味です。ブラウザはこれを見て、どう表示するかを決めます。'],
+    sv:['返事をしたサーバー', '<code>cloudflare</code>。本物の example.com は、CDN の Cloudflare の上で動いています（第2章 2.6）。'],
+    lm:['最後に更新された日時', 'このページが最後に変わった日時です。1.5 の「304（変わっていません）」の判断に使われます。'],
+    al:['使えるメソッド', 'このURLで使えるのは GET と HEAD だけ、という案内です。POST などは受け付けません。'],
+    ar:['途中からもらえる', '<code>bytes</code>。ファイルの途中から（何バイト目から）もらうこともできます。動画の早送りや、ダウンロードの再開に使う仕組みです。'],
+    age:['保存されてからの時間', 'CDN の拠点がこの返事を保存してから、<b>2850秒（約48分）</b>たっています。'],
+    hit:['CDNの拠点に保存されていた', '<code>HIT</code> は、拠点に保存されていた分をそのまま返した、という意味です。元のサーバーまで行かずに済んだので速く届きます。'],
+    ray:['返事をした拠点', '最後の <code>NRT</code> は成田空港の記号で、<b>東京の近くの拠点</b>が答えてくれたことを表します。第2章 2.6 の「住んでいる場所で答えが変わる」が、実際に起きています。'],
+    alt:['HTTP/3 も使えます', '「同じ443番で <b>HTTP/3（h3）</b>も使えます。この案内は86400秒（1日）覚えておいて」という意味です。次からブラウザは、HTTP/3 でつないでみることができます（1.7）。'],
+  };
+  const tr = $('real');
+  tr.innerHTML = L.map(([g, t]) => `<div class="ln ${g === 'c' ? 'cmt' : g === 'st' ? 'recv g' : 'g'}" data-g="${g}" ${g === 'c' ? '' : 'tabindex="0" role="button"'}>${esc(t).replace(/^([a-z-]+:)/, '<span class="k">$1</span>')}</div>`).join('');
+  function pick(g){
+    tr.querySelectorAll('.ln').forEach(l => l.classList.toggle('on', l.dataset.g === g));
+    $('realExplain').innerHTML = `<h4>${E[g][0]}</h4>${E[g][1]}`;
+  }
+  tr.querySelectorAll('.ln.g').forEach(l => {
+    l.onclick = () => pick(l.dataset.g);
+    l.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); pick(l.dataset.g); } };
+  });
+})();
+
+/* ---------- 1.11 クイズ ---------- */
+const QUIZ = [
+  {q:'URL の「#comments」の部分は、サーバーに送られる？', o:['送られる','送られない','https のときだけ送られる'], a:1,
+   e:'# から後ろ（フラグメント）は、ページのどこを表示するかをブラウザ自身が使うしるしです。'},
+  {q:'リクエストの Host ヘッダーが必要なのはなぜ？', o:['ブラウザの名前を伝えるため','1台のサーバーで、たくさんのサイトを動かしていることがあるから','パスワードを送るため'], a:1,
+   e:'同じIPアドレスに届いた手紙を、どのサイトあてか見分けるために使います。'},
+  {q:'404 が返ってきたとき、原因があるのはふつうどちら？', o:['頼んだ側（URLが間違っている・ページが消えた）','サーバーの中のプログラム','インターネットの回線'], a:0,
+   e:'4xx は頼んだ側、5xx はサーバー側に原因がある、と覚えておきましょう。'},
+  {q:'1つのWebページを表示するのに、リクエストはふつう何回くらい？', o:['1回','数回','数十回'], a:2,
+   e:'HTMLを読みながら、CSS・JavaScript・画像などを次々に頼みます。真ん中の値は70回台です（2025年7月の計測）。'},
+  {q:'途中でデータが1つ失われたとき、HTTP/3 が HTTP/2 より有利なのはなぜ？', o:['データを暗号化しないから','ファイルごとの流れが独立していて、ほかのファイルが待たされないから','失われたデータを送り直さないから'], a:1,
+   e:'HTTP/2 の道（TCP）は順番どおりに渡す決まりなので、1つ失われると全部が止まります。QUIC はファイルごとに独立しています。'},
+  {q:'ログインしたことを、サイトが覚えておける仕組みは？', o:['HTTPが前のやり取りを全部覚えているから','ブラウザが、もらった番号札（Cookie）を毎回つけて送るから','IPアドレスが毎回同じだから'], a:1,
+   e:'HTTPは前のことを覚えていません。Cookie という札を毎回見せることで、同じ人だとわかります。'},
+];
+const quizEl = $('quiz');
+QUIZ.forEach((item, qi) => {
+  const d = document.createElement('div');
+  d.className = 'card q';
+  d.innerHTML = `<b>Q${qi + 1}. ${item.q}</b><div class="opts">${item.o.map((o, k) => `<button data-k="${k}">${o}</button>`).join('')}</div><div class="fb"></div>`;
+  d.querySelectorAll('.opts button').forEach(b => b.onclick = () => {
+    const k = +b.dataset.k;
+    d.querySelectorAll('.opts button').forEach(x => x.classList.remove('right', 'wrong'));
+    b.classList.add(k === item.a ? 'right' : 'wrong');
+    d.querySelector('.fb').innerHTML = (k === item.a ? '⭕ 正解！ ' : '❌ もう一度考えてみよう。 ') + (k === item.a ? item.e : '');
+  });
+  quizEl.appendChild(d);
+});
+</script>
+</body>
+</html>

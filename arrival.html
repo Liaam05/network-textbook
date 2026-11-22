@@ -1,0 +1,1109 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>サーバー到着と帰り道</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaf2f8; --surface:#ffffff; --surface-2:#e1eff6; --ink:#0d1b2a; --ink-2:#4a5d75; --line:#c8d5e4;
+  --accent:#0891b2; --accent-soft:rgba(8,145,178,.12); --answer:#d97706; --answer-soft:rgba(217,119,6,.13); --ok:#15803d; --ok-soft:rgba(21,128,61,.12);
+  --ground:#e3ebf4; --zone-home:rgba(21,128,61,.09); --zone-isp:rgba(8,145,178,.1); --zone-net:rgba(217,119,6,.09);
+  --grid:rgba(8,145,178,.07); --glow:0 0 0 1px rgba(8,145,178,.4),0 0 16px rgba(8,145,178,.15); --on-accent:#ffffff;
+  --shadow:0 1px 2px rgba(13,27,42,.06),0 6px 18px rgba(13,27,42,.07);
+  --board-grid:rgba(8,145,178,.14); --board-edge:#b9cadc;
+  --z-home:rgba(21,128,61,.13); --z-home-edge:#15803d; --z-isp:rgba(8,145,178,.15); --z-isp-edge:#0e7490;
+  --z-net:rgba(217,119,6,.13); --z-net-edge:#b45309; --z-web:rgba(124,58,237,.11); --z-web-edge:#6d28d9;
+  --accent2:#7c3aed;
+  --wash:radial-gradient(1100px 620px at 0% 0%,rgba(8,145,178,.16),transparent 62%),radial-gradient(900px 560px at 100% 25%,rgba(124,58,237,.12),transparent 60%),radial-gradient(1000px 640px at 40% 100%,rgba(217,119,6,.10),transparent 60%);
+  --strip:linear-gradient(90deg,#06b6d4,#7c3aed 55%,#f59e0b);
+  --bar-bg:linear-gradient(90deg,rgba(8,145,178,.12),rgba(124,58,237,.09));
+  --primary-bg:linear-gradient(135deg,#0891b2,#4f46e5);
+  --num-bg:linear-gradient(135deg,#0891b2,#7c3aed); --num-fg:#ffffff;
+  --h1-grad:linear-gradient(90deg,#0d1b2a 20%,#0891b2 60%,#7c3aed);
+  --subh-bar:linear-gradient(#0891b2,#7c3aed);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.85;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:48px 0 12px}
+.kicker{font-size:13px;color:var(--ink-2);letter-spacing:.08em}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.35;margin:6px 0 12px}
+h2{font-size:clamp(20px,3.6vw,26px);margin:56px 0 8px;line-height:1.4}
+h2 .num{display:inline-block;font-size:14px;color:var(--accent);margin-right:8px;font-family:"JetBrains Mono",monospace}
+p{margin:.6em 0}
+.lead{font-size:17px;color:var(--ink-2)}
+b{color:var(--ink)}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.92em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.note{font-size:13px;color:var(--ink-2)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+button.primary:hover:not(:disabled){filter:brightness(1.08)}
+button.on{background:var(--accent-soft);border-color:var(--accent)}
+
+/* --- analogy --- */
+.analogy{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:12px}
+.analogy .box{text-align:center;padding:14px}
+.analogy .big{font-size:20px;font-weight:700}
+.analogy .arrow{font-size:22px;color:var(--ink-2)}
+
+/* --- domain tree --- */
+.domain-input{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.domain-input input{flex:1;min-width:220px;font:inherit;font-family:"JetBrains Mono",monospace;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{font-size:13px;padding:4px 10px}
+.stairs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.stair{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-left:calc(var(--k) * 22px);opacity:0;transform:translateX(-8px);animation:in .4s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.stair .blk{font-family:"JetBrains Mono",monospace;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.stair .blk .new{color:var(--accent);font-weight:600}
+.stair .desc{flex:1 1 10em;font-size:13px;color:var(--ink-2)}
+.domain-err{color:var(--answer);font-size:14px}
+
+/* --- stage --- */
+.stage-card{padding:0;overflow:hidden}
+.stage-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stage-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.stage-bar button,.stepper-bar button{white-space:nowrap}
+.counter{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-2);min-width:56px;text-align:center}
+.stage-wrap{position:relative;width:100%;overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage-wrap.dragging{cursor:grabbing}
+.stage{position:absolute;left:0;top:0;width:820px;height:600px;transform-origin:0 0;perspective:1500px;perspective-origin:50% 30%;
+  --ax:55deg; --az:-24deg}
+.plane{position:absolute;left:30px;top:50px;width:800px;height:520px;transform-style:preserve-3d;
+  transform:rotateX(var(--ax)) rotateZ(var(--az));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.dragging .plane,.dragging .anchor{transition:none!important}
+.plane > svg{position:absolute;inset:0;overflow:visible}
+.ground{fill:var(--ground)}
+.zone-home{fill:var(--zone-home)}.zone-isp{fill:var(--zone-isp)}.zone-net{fill:var(--zone-net)}
+.zone-label{font-size:16px;font-weight:700;letter-spacing:.04em}
+.board-gridline{stroke:var(--board-grid);stroke-width:1}
+.ground{stroke:var(--board-edge);stroke-width:2}
+.zone{stroke-width:2.5}
+.z-home{fill:var(--z-home);stroke:var(--z-home-edge)}.l-home{fill:var(--z-home-edge)}
+.z-isp{fill:var(--z-isp);stroke:var(--z-isp-edge)}.l-isp{fill:var(--z-isp-edge)}
+.z-net{fill:var(--z-net);stroke:var(--z-net-edge)}.l-net{fill:var(--z-net-edge)}
+.z-web{fill:var(--z-web);stroke:var(--z-web-edge)}.l-web{fill:var(--z-web-edge)}
+.link{stroke:var(--ink-2);stroke-opacity:.45;stroke-width:4;fill:none;stroke-linecap:round}
+.link.web{stroke-dasharray:2 10}
+.link.active{stroke:var(--accent);stroke-opacity:1;stroke-width:6;stroke-dasharray:10 8;animation:flow .6s linear infinite}
+.link.active.ans{stroke:var(--answer)}
+@keyframes flow{to{stroke-dashoffset:-18}}
+.shadow{fill:rgba(0,0,0,.18)}
+.anchor{position:absolute;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.node{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.node .icon{width:64px;height:64px;border-radius:16px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);transition:border-color .3s,box-shadow .3s,transform .3s}
+.node .icon svg{width:38px;height:38px;color:var(--ink-2)}
+.node.hl .icon{border-color:var(--accent);box-shadow:0 0 0 6px var(--accent-soft),var(--shadow);transform:translateY(-4px)}
+.node .lbl{font-size:15px;font-weight:700;white-space:nowrap;background:var(--surface);padding:0 8px;border-radius:6px;border:1px solid var(--line)}
+.node .sub{font-size:11px;color:var(--ink-2);white-space:nowrap;font-family:"JetBrains Mono",monospace}
+.bubble{position:absolute;bottom:136px;left:0;transform:translateX(-50%) scale(.6);opacity:0;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;padding:6px 12px;border-radius:12px;white-space:nowrap;transition:opacity .25s,transform .25s;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--ink)}
+.bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.packet-anchor{transition:none;transform:translateZ(var(--h,0px)) rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1))}
+.packet{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.packet .env{width:44px;height:30px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.packet.ans .env{background:var(--answer)}
+.packet.web .env{background:var(--ok)}
+.packet.hide{opacity:0}
+.drag-hint{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px 8px;pointer-events:none}
+
+.panels{display:grid;grid-template-columns:1.25fr .8fr 1.2fr;gap:14px;margin-top:14px;align-items:start}
+.explain{padding:18px 22px 22px;border-top:1px solid var(--line);background:var(--surface);min-height:190px}
+.explain h3{margin:0 0 4px;font-size:21px;line-height:1.5}
+.explain #stepText{font-size:16.5px}
+.timeline{display:flex;gap:4px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.timeline button{flex:0 0 auto;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.timeline button .n{font-family:"JetBrains Mono",monospace;font-size:11px;opacity:.7}
+.timeline button.done{color:var(--ink);border-color:var(--line);background:var(--surface-2)}
+.timeline button.cur{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:700}
+.timeline button.cur.ans{background:var(--answer);border-color:var(--answer)}
+.node{transition:opacity .35s}
+.node.dim{opacity:.55}
+.url-split{font-size:14px;margin:4px 0 10px;padding:8px 12px;border-radius:8px;background:var(--surface-2)}
+.url-split .dim-part{color:var(--ink-2);opacity:.6}
+.url-split .host-part{color:var(--accent);font-weight:600;background:var(--accent-soft);border-radius:4px;padding:0 2px}
+.explain .stepno{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+.explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.side{display:flex;flex-direction:column;gap:14px}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.msg{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6}
+.msg .head{display:inline-block;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:1px 8px;border-radius:6px;margin-bottom:6px}
+.msg .head.q{background:var(--accent-soft);color:var(--accent)}
+.msg .head.a{background:var(--answer-soft);color:var(--answer)}
+.msg table{border-collapse:collapse;width:100%}
+.msg td{padding:3px 0;vertical-align:top;border-top:1px dashed var(--line)}
+.msg td:first-child{width:5.5em;white-space:nowrap;color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding-right:8px}
+.msg .empty{color:var(--ink-2);font-family:"Noto Sans JP",sans-serif}
+.timer{font-family:"JetBrains Mono",monospace;font-size:28px;font-weight:600}
+.timer small{font-size:13px;color:var(--ink-2);font-weight:400}
+.history{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.history span{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--surface-2);border-radius:6px;padding:1px 8px}
+.cache-list{list-style:none;margin:0;padding:0;font-size:13px}
+.cache-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.cache-list li.flash{animation:flash 1.2s}
+@keyframes flash{0%{background:var(--ok-soft)}100%{background:transparent}}
+.cache-list .ttl{font-family:"JetBrains Mono",monospace;color:var(--ok);white-space:nowrap}
+.cache-list .gone{color:var(--ink-2);text-decoration:line-through}
+.cache-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cache-btns button{font-size:12px;padding:4px 10px}
+.clock{font-size:12px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+
+/* --- summary / quiz --- */
+.summary li{margin:6px 0}
+.quiz{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.q .opts button{text-align:left}
+.q .opts button.right{background:var(--ok-soft);border-color:var(--ok)}
+.q .opts button.wrong{background:var(--answer-soft);border-color:var(--answer)}
+.q .fb{font-size:14px;margin-top:6px;min-height:1.4em}
+footer{margin:64px 0 48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+footer a{color:var(--accent)}
+
+@media (max-width:720px){
+  .panels{grid-template-columns:1fr}
+  .explain{padding:16px}
+  .analogy{grid-template-columns:1fr}
+  .analogy .arrow{transform:rotate(90deg);text-align:center}
+  .drag-hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .plane,.anchor{transition:none}
+  .link.active{animation:none}
+}
+
+/* --- 共通パーツ --- */
+.sub-h{font-size:18px;margin:32px 0 6px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;font-size:14px;padding:6px 12px;border-radius:8px}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow);font-weight:700;color:var(--accent)}
+.wrap-seg{margin-bottom:12px}
+.row-btns{display:flex;gap:8px;margin-top:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.mini-card h3{margin:0 0 6px;font-size:16px}
+.mini-card p{font-size:14.5px}
+
+/* --- 2.3 PCの中 --- */
+.stepper{padding:0;overflow:hidden}
+.stepper-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stepper-bar .seg{background:var(--bg)}
+.stepper-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;padding:20px}
+.pc-stack{position:relative;border:2px dashed var(--line);border-radius:16px;padding:30px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.pc-frame-label{position:absolute;top:6px;left:14px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.layer{border:2px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface);transition:border-color .3s,background .3s,opacity .3s;position:relative}
+.layer .lname{font-weight:700;font-size:15px}
+.layer .lsub{font-size:12px;color:var(--ink-2)}
+.layer .lmem{position:absolute;right:12px;top:10px;font-size:11px;color:var(--ink-2)}
+.layer.on{border-color:var(--accent);background:var(--accent-soft)}
+.layer.skip{opacity:.35}
+.layer.skip .lname{text-decoration:line-through}
+.os-inner{display:flex;gap:8px;margin-top:8px}
+.mini{flex:1;font-size:12px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px;background:var(--surface-2);transition:all .3s}
+.mini.on{border-color:var(--accent);background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 0 0 3px var(--accent-soft)}
+.pc-out{text-align:center;font-size:13px;color:var(--ink-2);padding:6px;border-radius:10px;transition:all .3s}
+.pc-out.on{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.pc-chip{position:absolute;right:-12px;top:0;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:top .5s cubic-bezier(.3,.7,.2,1),background .3s}
+.pc-chip.lock{background:var(--ok)}
+.pc-explain h3{margin:0 0 6px;font-size:19px}
+.pc-explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.pkt-box{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pkt-box div{display:flex;border-top:1px dashed var(--line)}
+.pkt-box div:first-child{border-top:0}
+.pkt-box span{padding:4px 10px}
+.pkt-box span:first-child{width:7.5em;white-space:nowrap;flex:0 0 auto;background:var(--surface-2);color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px}
+
+/* --- 2.5 レコード --- */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font-family:"JetBrains Mono",monospace;font-weight:600;min-width:64px}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rec-q,.rec-a{font-size:13.5px;padding:8px 12px;border-radius:8px;overflow-x:auto;white-space:nowrap}
+.rec-q{background:var(--accent-soft);color:var(--accent)}
+.rec-a{background:var(--answer-soft);color:var(--answer);margin-top:6px}
+.rec-body h3{margin:14px 0 4px;font-size:18px}
+.parallel{display:flex;flex-direction:column;gap:8px}
+.lane{display:grid;grid-template-columns:4.5em 1fr 9em;gap:10px;align-items:center}
+.lane .who{font-size:12px;color:var(--ink-2)}
+.track{position:relative;height:30px;border-radius:8px;background:var(--surface-2)}
+.chip{position:absolute;top:3px;left:4px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;background:var(--accent);color:#fff;transition:left 1s cubic-bezier(.4,0,.2,1)}
+.chip.ans{background:var(--answer)}
+.res{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--answer);opacity:0;transition:opacity .3s}
+.res.show{opacity:1}
+
+/* --- 2.6 CDN --- */
+.cdn-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+#cdnMap{width:100%;height:auto;background:var(--surface-2);border-radius:12px}
+#cdnMap .grid{stroke:var(--line);stroke-width:1}
+#cdnMap .land{fill:var(--ground);stroke:var(--line);stroke-width:1}
+#cdnMap .edge{fill:var(--surface);stroke:var(--ink-2);stroke-width:2}
+#cdnMap .edge.pick{fill:var(--answer);stroke:var(--answer)}
+#cdnMap .origin{fill:var(--ink-2)}
+#cdnMap .me{fill:var(--accent)}
+#cdnMap .me-ring{fill:none;stroke:var(--accent);stroke-width:2;animation:ring 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+#cdnMap .route{stroke:var(--answer);stroke-width:3;stroke-dasharray:6 6;fill:none;animation:flow .6s linear infinite}
+#cdnMap .route.far{stroke:var(--ink-2);stroke-width:1.5;opacity:.6;animation:none}
+#cdnMap text{font-size:13px;fill:var(--ink);font-family:"Noto Sans JP",sans-serif}
+#cdnMap text.small{font-size:11px;fill:var(--ink-2)}
+.cdn-flow{font-size:12.5px;display:flex;flex-direction:column;gap:8px}
+.cdn-flow .f{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.cdn-flow .f b{font-family:"Noto Sans JP",sans-serif;font-size:12px;color:var(--ink-2);display:block;font-weight:500}
+.cdn-flow .f.hit{border-color:var(--answer);background:var(--answer-soft)}
+.cdn-flow .lat{font-family:"Noto Sans JP",sans-serif;font-size:13px}
+.cdn-flow .lat strong{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--answer)}
+
+/* --- 2.7 守る --- */
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.enc-view{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.enc-label{font-size:12px;font-weight:700;padding:6px 12px;background:var(--surface-2);color:var(--ink-2)}
+.enc-screen{background:#0d1117;color:#7ee787;font-size:12.5px;padding:12px;min-height:150px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.enc-screen .warn{color:#ffa657}
+.enc-screen .dim{color:#6e7681}
+.enc-grid h3{margin:0 0 6px;font-size:18px}
+.spec{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
+.spec td{padding:4px 8px;border-top:1px solid var(--line)}
+.spec td:first-child{color:var(--ink-2);width:5em}
+.race{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:10px;padding-right:96px}
+.race-row{display:grid;grid-template-columns:8.5em 1fr;gap:10px;align-items:center}
+.race-who{font-size:13px;font-weight:700;line-height:1.3}
+.race-who small{font-weight:400;color:var(--ink-2);font-size:11px}
+.race-track{position:relative;height:34px;background:var(--surface-2);border-radius:8px}
+.race-chip{position:absolute;left:4px;top:5px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;color:#fff;white-space:nowrap;transition:left .9s cubic-bezier(.4,0,.2,1),opacity .4s,transform .4s}
+.race-chip.fake{background:#c92a2a}
+.race-chip.real{background:var(--ok)}
+.race-chip.arrived{left:calc(100% - 136px)}
+.race-chip.rejected{opacity:.35;transform:rotate(-8deg)}
+.race-chip.rejected::after{content:" ✕"}
+.race-chip.accepted::after{content:" ✓"}
+.race-goal{position:absolute;right:0;top:0;bottom:0;width:86px;border:2px solid var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:11px;font-weight:700;background:var(--surface);padding:4px}
+.race-result{margin-top:12px;font-size:15px;min-height:1.5em}
+.race-result .bad{color:#e03131;font-weight:700}
+.race-result .good{color:var(--ok);font-weight:700}
+.chain{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.chain-step{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:13px;display:flex;flex-direction:column}
+.chain-step b{font-family:"JetBrains Mono",monospace}
+.chain-step span{color:var(--ink-2);font-size:12px}
+.chain-arrow{font-size:12px;color:var(--accent);padding-left:12px}
+
+/* --- 2.8 試す --- */
+.can-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.can-list li{position:relative;padding:8px 12px 8px 38px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:13.5px;line-height:1.6}
+.can-list li b{display:block;font-size:14.5px}
+.can-list li span{color:var(--ink-2)}
+.can-list li::before{position:absolute;left:12px;top:8px;font-weight:700;font-size:15px}
+.can-list li.yes::before{content:"✓";color:var(--ok)}
+.can-list li.no::before{content:"✕";color:var(--answer)}
+.cmds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.cmd{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmd-line{display:flex;align-items:center;gap:8px;background:#0d1117;padding:8px 8px 8px 12px}
+.cmd-line code{flex:1;color:#e6edf3;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.cmd-line code::before{content:"$ ";color:#6e7681}
+.cmd-line button{font-size:12px;padding:3px 10px;background:#21262d;color:#e6edf3;border-color:#30363d}
+.cmd-desc{font-size:13.5px;padding:8px 12px}
+.trace-card{padding:0;overflow:hidden}
+.trace{background:#0d1117;color:#c9d1d9;font-size:12px;padding:12px 0;overflow-x:auto;line-height:1.75}
+.trace .ln{padding:0 14px;white-space:pre;cursor:default}
+.trace .ln.g{cursor:pointer;border-left:3px solid transparent}
+.trace .ln.g:hover{background:#161b22}
+.trace .ln.g.on{background:#1f2a40;border-left-color:#6ea0ff}
+.trace .ln.recv{color:#7ee787}
+.trace .ln.cmt{color:#6e7681}
+.trace .ln .k{color:#ffa657}
+.trace-explain{padding:14px 18px;font-size:15px;border-top:1px solid var(--line);min-height:80px}
+.trace-explain h4{margin:0 0 4px;font-size:16px}
+
+@media (max-width:720px){
+  .pc-body,.cdn-grid,.enc-grid,.cols{grid-template-columns:1fr}
+  .pc-chip{right:6px}
+  .lane{grid-template-columns:1fr 7em}
+  .lane .who{display:none}
+  .stair{margin-left:calc(var(--k) * 12px)}
+  .rec-a{white-space:normal;overflow-wrap:anywhere}
+  .race{padding-right:0}
+  .race-row{grid-template-columns:6.5em 1fr}
+  .race-goal{position:static;width:auto;padding:8px}
+}
+
+/* ===== サイバー調の仕上げ ===== */
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.kicker::before{content:"▍";animation:blink 1.1s steps(1) infinite;margin-right:4px}
+@keyframes blink{50%{opacity:0}}
+h1{background:linear-gradient(90deg,var(--ink) 30%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .num{font-size:13px;padding:2px 8px;border:1px solid var(--accent);border-radius:4px;text-shadow:0 0 8px var(--accent-soft);vertical-align:3px}
+h2 .num::before{content:"// "}
+.card{position:relative;background:linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));border-color:var(--line);border-radius:10px}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2}
+.card::before{top:0;left:0;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-top-left-radius:10px}
+.card::after{bottom:0;right:0;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-bottom-right-radius:10px}
+button{border-radius:6px;background:transparent;transition:border-color .15s,box-shadow .15s,background .15s}
+button:hover:not(:disabled){border-color:var(--accent);box-shadow:var(--glow)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 0 16px var(--accent-soft)}
+button.on,.seg button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);box-shadow:none}
+.seg{border:1px solid var(--line);background:var(--bg)}
+.seg button.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.stage-bar,.stepper-bar{background:var(--surface-2)}
+.counter{color:var(--accent)}
+.node .icon{background:var(--surface);border-radius:12px}
+.node .icon svg{color:var(--accent)}
+.node.hl .icon{box-shadow:var(--glow);border-color:var(--accent)}
+.node .lbl{background:var(--surface);border-color:var(--line);border-radius:4px}
+.bubble{background:var(--accent);color:var(--on-accent);box-shadow:var(--glow)}
+.bubble::after{border-top-color:var(--accent)}
+.packet .env{box-shadow:0 0 18px var(--accent)}
+.packet.ans .env{box-shadow:0 0 18px var(--answer)}
+.link.active{filter:drop-shadow(0 0 4px var(--accent))}
+.link.active.ans{filter:drop-shadow(0 0 4px var(--answer))}
+.explain .stepno,.stepno{font-family:"JetBrains Mono",monospace;letter-spacing:.1em}
+.layer{border-radius:8px;overflow:hidden}
+.layer.on{box-shadow:var(--glow)}
+.layer.on::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);transform:translateX(-100%);animation:scan 1.8s linear infinite;pointer-events:none}
+@keyframes scan{to{transform:translateX(100%)}}
+.pc-stack{border-color:var(--accent-soft);border-radius:12px}
+.pc-frame-label{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.1em}
+.pc-chip{box-shadow:0 0 14px var(--accent);color:var(--on-accent)}
+.pc-chip.lock{box-shadow:0 0 14px var(--ok)}
+.timeline button.cur{color:var(--on-accent);box-shadow:0 0 12px var(--accent-soft)}
+.timer{color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+.tabs button.on{color:var(--on-accent);box-shadow:var(--glow)}
+.chip{color:var(--on-accent)}
+.stair .blk{border-radius:6px}
+.cache-list .ttl{text-shadow:0 0 8px var(--ok-soft)}
+.packet .env,.race-chip.real,.cdn-flow .f.hit{color:var(--on-accent)}
+.cdn-flow .f.hit{background:var(--answer);border-color:var(--answer)}
+.cdn-flow .f.hit b{color:var(--on-accent);opacity:.75}
+.enc-screen{background:#02050a;border-top:1px solid var(--line);text-shadow:0 0 6px rgba(126,231,135,.35)}
+.timeline{scrollbar-color:var(--line) transparent}
+.timeline::-webkit-scrollbar{height:6px}
+.timeline::-webkit-scrollbar-track{background:transparent}
+.timeline::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.zone{filter:drop-shadow(0 0 6px var(--board-grid))}
+
+/* 送信・受信している2台を強く、それ以外を弱く */
+.node .icon{position:relative}
+.node .role{position:absolute;top:-11px;right:-22px;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:4px;background:var(--accent);color:var(--on-accent);box-shadow:0 0 10px var(--accent);opacity:0;transition:opacity .25s}
+.node.send .role,.node.recv .role{opacity:1}
+.node.hl .icon{background:var(--accent-soft);border-width:2.5px}
+.node.hl .lbl{border-color:var(--accent);color:var(--ink);box-shadow:0 0 10px var(--accent-soft)}
+.node.hl .sub{color:var(--ink)}
+.node.ans .icon{border-color:var(--answer);background:var(--answer-soft);box-shadow:0 0 0 1px var(--answer),0 0 22px var(--answer-soft)}
+.node.ans .icon svg{color:var(--answer)}
+.node.ans .lbl{border-color:var(--answer)}
+.node.ans .role{background:var(--answer);box-shadow:0 0 10px var(--answer)}
+.node.dim{opacity:.28;filter:grayscale(.7)}
+.zone,.zone-label{transition:opacity .4s}
+.zone-dim{opacity:.35}
+
+/* 色のトークンで切り替える装飾（ダークでは控えめ・ライトでは色を足す） */
+body::before{content:"";position:fixed;inset:0;background:var(--wash);pointer-events:none;z-index:-1}
+h1{background-image:var(--h1-grad)}
+h2 .num{background:var(--num-bg);color:var(--num-fg)}
+.card{background-image:var(--strip),linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));background-size:100% 3px,auto;background-repeat:no-repeat}
+.stage-bar,.stepper-bar{background:var(--bar-bg)}
+button.primary,.timeline button.cur:not(.ans){background:var(--primary-bg);border-color:transparent}
+.sub-h{border-left:4px solid transparent;border-image:var(--subh-bar) 1;padding-left:10px}
+.summary li::marker{color:var(--accent2)}
+@media (prefers-reduced-motion: reduce){
+  .kicker::before,.layer.on::after{animation:none}
+}
+.top-nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:14px}
+.top-nav a{color:var(--ink-2);text-decoration:none}
+.top-nav a:hover{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none;color:var(--accent)}
+
+/* ===== 章をまたいで使う部品（第3章以降） ===== */
+:root{--bad:#dc2626;--c-port:#64748b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bad:#ff5c5c;--c-port:#94a3b8}}
+:root[data-theme="dark"]{--bad:#ff5c5c;--c-port:#94a3b8}
+.card a{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none}
+.chap-nav a:hover{text-decoration:underline}
+.ver-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.toggle input{accent-color:var(--answer);width:16px;height:16px}
+.tag{display:inline-block;font-family:"JetBrains Mono",monospace;padding:0 6px;border-radius:4px;font-size:11px}
+.tag.q{background:var(--accent-soft);color:var(--accent)}
+.tag.a{background:var(--answer-soft);color:var(--answer)}
+kbd{font-family:"JetBrains Mono",monospace;font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface-2)}
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.cmp{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+table.cmp th,table.cmp td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.cmp thead th{background:var(--surface-2);font-size:13px;color:var(--ink-2)}
+table.cmp tbody th{font-weight:700;white-space:nowrap;color:var(--ink-2);font-size:13px}
+table.cmp tr:last-child td,table.cmp tr:last-child th{border-bottom:0}
+.trace .ln .hk{color:#79c0ff}
+.explain-box{margin-top:12px;font-size:14.5px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;min-height:3em}
+.explain-box b.t{display:block;font-size:15.5px}
+.explain-box.ans{border-left-color:var(--answer)}
+.big-stat{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--ink-2)}
+.big-stat b{font-family:"JetBrains Mono",monospace;font-size:26px;color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+input[type=range]{accent-color:var(--accent);width:100%}
+
+/* あいさつの図（はしご型） */
+.hs-card{padding:0;overflow:hidden}
+.hs-ladder{padding:16px 20px 6px}
+.hs-ends{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.hs-end{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:14px}
+.hs-state{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:1px 8px;border-radius:4px;border:1px solid var(--line);color:var(--ink-2);transition:all .3s}
+.hs-state.est{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.hs-state.mid{border-color:var(--accent);color:var(--accent)}
+.hs-rows{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px 0;min-height:200px;background:linear-gradient(var(--line),var(--line)) 25% 0/2px 100% no-repeat,linear-gradient(var(--line),var(--line)) 75% 0/2px 100% no-repeat}
+.hs-row{position:relative;height:44px;opacity:0;animation:in .4s forwards}
+.hs-arrow{position:absolute;top:22px;left:25%;right:25%;height:2px;background:var(--c);box-shadow:0 0 8px var(--c)}
+.hs-arrow::after{content:"";position:absolute;top:-5px;border:6px solid transparent}
+.hs-row.r .hs-arrow::after{right:-2px;border-left:9px solid var(--c);border-right:0}
+.hs-row.l .hs-arrow::after{left:-2px;border-right:9px solid var(--c);border-left:0}
+.hs-lbl{position:absolute;top:0;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;white-space:nowrap;color:var(--c);background:var(--surface);padding:0 8px;border-radius:4px}
+.hs-num{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2);white-space:nowrap}
+.hs-row.q{--c:var(--accent)}.hs-row.a{--c:var(--answer)}.hs-row.d{--c:var(--ok)}
+.hs-explain{padding:4px 20px 18px;font-size:15px}
+.hs-explain h3{margin:0 0 4px;font-size:18px}
+
+@keyframes pin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (max-width:720px){.hs-lbl{font-size:11px}.hs-num{font-size:10px}}
+
+/* 小さなブラウザの画面 */
+.mini-browser{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column;min-height:150px}
+.mb-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.mb-dots{display:flex;gap:4px}.mb-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.mb-url{flex:1;min-width:0;font-size:11.5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mb-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;text-align:center;font-size:14px}
+.mb-page .big{font-size:26px;font-weight:700;line-height:1.2}
+.mb-page .sm{font-size:12px;color:var(--ink-2)}
+.mb-page.warn{background:rgba(220,38,38,.08)}
+.row-btns{flex-wrap:wrap}
+.row-btns button,.ver-bar button{white-space:nowrap}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tri .mini-card p{margin:0}
+.rtt-lbl{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.rtt-lbl b{font-family:"JetBrains Mono",monospace;color:var(--accent)}
+@media (max-width:720px){.tri{grid-template-columns:1fr}}
+section > .card + .card{margin-top:14px}
+.note a{color:var(--accent)}
+.devtools ol{margin:6px 0 0;padding-left:1.4em;font-size:14.5px}
+.devtools li{margin:4px 0}
+.stepper > .explain-box{margin:0 20px 18px}
+
+/* ===== 第9章 ===== */
+/* 9.1 開封 */
+.un-body{padding:18px 20px}
+.un-stage{display:flex;justify-content:center;align-items:center;min-height:120px;margin-bottom:6px}
+.un-l{display:flex;align-items:stretch;border-radius:10px;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,transparent);padding:6px;gap:6px;animation:wrapin .45s}
+@keyframes wrapin{from{transform:scale(1.06);opacity:0}to{transform:none;opacity:1}}
+.un-tag{display:flex;flex-direction:column;justify-content:center;padding:6px 10px;border-radius:6px;background:var(--c);color:var(--on-accent);font-size:12px;font-weight:700;min-width:70px;text-align:center;line-height:1.35}
+.un-tag small{font-weight:400;font-size:10.5px;opacity:.85}
+.un-core{display:grid;place-items:center;padding:10px 14px;border-radius:6px;border:1px dashed var(--c);font-family:"JetBrains Mono",monospace;font-size:12px;text-align:center;min-width:130px;color:var(--ink)}
+.L-app{--c:#ec4899}.L-tls{--c:var(--ok)}.L-tcp{--c:var(--accent2)}.L-ip{--c:var(--accent)}.L-eth{--c:var(--answer)}
+
+/* 9.2 サーバーの中 */
+.sv-flow{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin:14px 0 8px}
+.sv-n{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 10px;border-radius:10px;border:2px solid var(--line);background:var(--surface-2);font-size:12px;text-align:center;min-width:90px;transition:all .3s;opacity:.4}
+.sv-n .ic{font-size:22px}
+.sv-n.on{opacity:1;border-color:var(--accent);box-shadow:var(--glow)}
+.sv-a{color:var(--ink-2);opacity:.4;transition:opacity .3s}
+.sv-a.on{opacity:1;color:var(--accent)}
+.sv-time{display:flex;height:22px;border-radius:6px;overflow:hidden;background:var(--surface-2);margin-top:6px}
+.sv-time span{display:grid;place-items:center;font-size:10.5px;font-weight:700;color:var(--on-accent);white-space:nowrap;overflow:hidden;transition:width .4s}
+
+/* 9.3 圧縮 */
+.gz-in{width:100%;min-height:120px;font:inherit;font-family:"JetBrains Mono",monospace;font-size:12.5px;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);resize:vertical}
+.gz-out{margin-top:12px;display:flex;flex-direction:column;gap:8px}
+.gz-bar{display:grid;grid-template-columns:7em minmax(0,1fr) 6.5em;gap:10px;align-items:center;font-size:13px}
+.gz-bar .tr{height:20px;border-radius:5px;background:var(--surface-2);overflow:hidden}
+.gz-bar .tr i{display:block;height:100%;border-radius:5px;transition:width .5s}
+.gz-bar b{font-family:"JetBrains Mono",monospace;text-align:right}
+.gz-hex{font-family:"JetBrains Mono",monospace;font-size:11.5px;background:#0d1117;color:#8b949e;border-radius:8px;padding:8px 12px;overflow-wrap:anywhere;max-height:84px;overflow:hidden}
+
+/* 9.4 帰り道 */
+.back{display:flex;align-items:center;gap:4px;overflow-x:auto;padding:24px 2px 6px}
+.bk-n{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:10.5px;min-width:60px;text-align:center}
+.bk-n .ic{width:40px;height:40px;border-radius:10px;border:2px solid var(--line);display:grid;place-items:center;font-size:18px;background:var(--surface);transition:all .25s}
+.bk-n.on .ic{border-color:var(--answer);box-shadow:0 0 0 1px var(--answer),0 0 16px var(--answer-soft)}
+.bk-n .ch{font-size:9.5px;color:var(--accent)}
+.bk-l{flex:1;min-width:12px;height:3px;border-radius:2px;background:var(--line);transition:background .25s}
+.bk-l.on{background:var(--answer);box-shadow:0 0 6px var(--answer)}
+
+/* 9.5 描画 */
+.rd-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;padding:18px 20px 10px}
+.rd-left{font-family:"JetBrains Mono",monospace;font-size:12px;background:#0d1117;color:#c9d1d9;border-radius:10px;padding:12px 14px;line-height:1.75;white-space:pre;overflow-x:auto;min-height:230px}
+.rd-left .t{color:#79c0ff}.rd-left .a{color:#ffa657}.rd-left .c{color:#7ee787}.rd-left .d{color:#6e7681}
+.rd-page{position:relative;min-height:200px;padding:14px;font-family:"Noto Sans JP",sans-serif;transition:background .3s}
+.rd-page .rd-box{border:1px dashed transparent;margin:6px 0;padding:4px 6px;font-size:13px;transition:all .3s;color:transparent}
+.rd-page.layout .rd-box{border-color:var(--accent);color:transparent;background:var(--accent-soft)}
+.rd-page.layout .rd-box::before{content:attr(data-l);font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--accent)}
+.rd-page.paint .rd-box{border-color:transparent;color:var(--ink);background:transparent}
+.rd-page.paint .rd-box::before{content:none}
+.rd-page.paint .h{font-size:20px;font-weight:700;color:var(--accent)}
+.rd-page.paint .btn{display:inline-block;background:var(--accent);color:var(--on-accent);border-radius:6px;padding:4px 12px}
+.rd-page.paint .img{height:46px;background:linear-gradient(135deg,var(--accent2),var(--accent));border-radius:6px}
+.rd-page .rd-layer{position:absolute;inset:0;border:2px solid transparent;border-radius:4px;pointer-events:none;transition:all .3s}
+.rd-page.comp .rd-layer{border-color:var(--answer);transform:translate(6px,6px)}
+.rd-ex{margin:6px 20px 18px}
+
+/* 9.6 時間 */
+.tl-ctrl{display:flex;flex-wrap:wrap;gap:8px 12px;margin-bottom:14px}
+.tl{display:flex;height:40px;border-radius:8px;overflow:hidden;background:var(--surface-2)}
+.tl span{display:grid;place-items:center;font-size:10.5px;font-weight:700;color:var(--on-accent);white-space:nowrap;overflow:hidden;transition:width .5s;min-width:0}
+.tl-legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:10px;font-size:12.5px;color:var(--ink-2)}
+.tl-legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:2px;background:var(--c);margin-right:5px;vertical-align:-1px}
+.tl-legend b{font-family:"JetBrains Mono",monospace;color:var(--ink)}
+
+/* 9.7 ふりかえり */
+.trip{display:flex;flex-direction:column;gap:0;margin-top:12px;position:relative}
+.trip a{display:grid;grid-template-columns:4.2em minmax(0,1fr);gap:14px;align-items:start;text-decoration:none;color:var(--ink);padding:10px 0;position:relative}
+.trip a::before{content:"";position:absolute;left:2.05em;top:38px;bottom:-10px;width:2px;background:linear-gradient(var(--accent),var(--accent2))}
+.trip a:last-child::before{display:none}
+.trip .n{width:4.2em;height:2.4em;border-radius:8px;display:grid;place-items:center;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;border:2px solid var(--accent);background:var(--surface);color:var(--accent);box-shadow:var(--glow);position:relative;z-index:1}
+.trip b{display:block;font-size:15px}
+.trip span{font-size:13.5px;color:var(--ink-2)}
+.trip a:hover b{color:var(--accent)}
+
+@media (max-width:720px){
+  .un-tag{min-width:44px;padding:4px 5px;font-size:10.5px}
+  .un-core{min-width:70px;padding:6px;font-size:11px}
+  .rd-body{grid-template-columns:1fr}
+  .gz-bar{grid-template-columns:5.5em minmax(0,1fr) 5.5em}
+  .tl-ctrl .seg{width:100%}
+}
+@media (max-width:720px){.bk-n{min-width:50px;font-size:9.5px}.bk-n .ic{width:34px;height:34px;font-size:16px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <nav class="top-nav"><a href="index.html">← 目次</a><a href="server.html">← 第8章 サーバー側の守りと分散</a></nav>
+  <div class="kicker">触って学ぶネットワーク ・ 第9章（試作）</div>
+  <h1>サーバー到着と帰り道</h1>
+  <p class="lead">長い旅をへて、小包はついにWebサーバーに届きました。最後の章では、サーバーが封筒を開けて頼みごとを読み、返事を作り、その返事があなたのもとへ戻って、画面に表示されるまでを見ていきます。そして最後に、旅の全体をふりかえります。</p>
+</header>
+
+<section>
+  <h2><span class="num">9.1</span>封筒を、外側から1枚ずつ開ける</h2>
+  <p>第5章では、データを送り出すときに、係ごとに封筒に入れてラベルを貼りました。受け取った側は、その逆に<b>外側から1枚ずつラベルを読んで、封筒を開けて</b>いきます。それぞれの係は、自分のラベルだけを確かめて、中身を次の係に渡します。</p>
+  <div class="card stepper">
+    <div class="stepper-bar">
+      <div class="group"><button id="unFirst">⟲ 最初から</button><button id="unPrev">◀ 戻る</button></div>
+      <span class="counter" id="unCount">1 / 6</span>
+      <div class="group"><button class="primary" id="unNext">開ける ▶</button></div>
+    </div>
+    <div class="un-body">
+      <div class="un-stage" id="unStage"></div>
+      <div class="explain-box" id="unExplain" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">9.2</span>Webサーバーの中 ── 置いてあるものを返すか、その場で作るか</h2>
+  <p>頼みごとを受け取ったWebサーバーの仕事は、大きく2つに分かれます。写真やCSSのように<b>置いてあるファイルをそのまま返す</b>ことと、ログインした人のページのように<b>その場でプログラムを動かして作る</b>ことです。頼みごとを選んで、サーバーの中の動きを見てみましょう。</p>
+  <div class="card">
+    <div class="presets" id="svReq"></div>
+    <div class="sv-flow" id="svFlow"></div>
+    <div class="sv-time" id="svTime"></div>
+    <div class="explain-box" id="svExplain" aria-live="polite"></div>
+  </div>
+  <p>Webサーバーのソフトには、Nginx・Apache・LiteSpeed などがあります。W3Techs の調べ（2026年10月）では、サイトの返事に名前が出ているものでは Cloudflare（32%）・Nginx（30%）・Apache（21%）の順でした。Cloudflare が1位なのは、CDNの拠点（第8章）が返事をしているサイトが多いためです。</p>
+  <p class="note">出典：<a href="https://w3techs.com/technologies/overview/web_server" target="_blank" rel="noopener">W3Techs（2026年10月18日に確認）</a></p>
+</section>
+
+<section>
+  <h2><span class="num">9.3</span>返事を縮めて送る</h2>
+  <p>返事の本文は、そのまま送るより<b>縮めて（圧縮して）</b>送った方が速く届きます。第1章のリクエストにあった <code>Accept-Encoding: gzip, br</code> は「縮めたものでも受け取れます」という意味でした。下の文を、ブラウザに入っている本物の圧縮の機能で縮めてみましょう。</p>
+  <div class="card">
+    <textarea id="gzIn" class="gz-in" spellcheck="false"></textarea>
+    <div class="row-btns">
+      <button class="primary" id="gzBtn">gzip で縮める</button>
+      <button id="gzSample">サンプルに戻す</button>
+    </div>
+    <div class="gz-out" id="gzOut"></div>
+  </div>
+  <p>HTMLやCSSのような文字のファイルは、同じ言葉がくり返し出てくるので、よく縮みます。example.com のページ（577バイト）を実際に取り寄せたところ、gzip で <b>400バイト</b>、より新しい Brotli（br）で <b>334バイト</b>になりました（2026年10月18日）。写真や動画は、ファイルの形式そのものがもう縮めてあるので、さらに縮めてもほとんど小さくなりません。</p>
+</section>
+
+<section>
+  <h2><span class="num">9.4</span>帰り道 ── 同じ旅を、逆向きに</h2>
+  <p>できあがった返事は、行きと同じように、<b>TCPで小分けに → IPとイーサネットで包んで → ルーターからルーターへ</b>と旅をして、あなたのPCに戻ります。ラベルの宛先と差出人が入れかわるだけで、仕組みは行きとまったく同じです。</p>
+  <div class="card">
+    <div class="row-btns" style="margin-top:0"><button class="primary" id="backBtn">返事を送り返す</button></div>
+    <div class="back" id="back"></div>
+    <div class="explain-box" id="backExplain" aria-live="polite"></div>
+  </div>
+  <p>ひとつおもしろいのは、<b>帰り道は行きと同じ道とは限らない</b>ことです。それぞれのネットワークが、自分の経路表で「次はどこへ」を決めるので、行きと帰りで別の道を通ることがよくあります。それでも、IPのラベルの宛先さえ正しければ、ちゃんと届きます。</p>
+</section>
+
+<section>
+  <h2><span class="num">9.5</span>ブラウザが画面を描く</h2>
+  <p>返事が届いても、まだ画面には何も出ません。ブラウザは、届いたHTMLとCSSを読みといて、<b>何を・どこに・どんな見た目で</b>描くかを計算してから、やっと画面に色をぬります。その手順を、1歩ずつ見てみましょう。</p>
+  <div class="card stepper">
+    <div class="stepper-bar">
+      <div class="group"><button id="rdFirst">⟲ 最初から</button><button id="rdPrev">◀ 戻る</button></div>
+      <span class="counter" id="rdCount">1 / 5</span>
+      <div class="group"><button class="primary" id="rdNext">次へ ▶</button></div>
+    </div>
+    <div class="rd-body">
+      <div class="rd-left" id="rdLeft"></div>
+      <div class="rd-right"><div class="mini-browser"><div class="mb-bar"><span class="mb-dots"><i></i><i></i><i></i></span><span class="mb-url mono">https://www.example.com/</span></div><div class="rd-page" id="rdPage"></div></div></div>
+    </div>
+    <div class="explain-box rd-ex" id="rdExplain" aria-live="polite"></div>
+  </div>
+  <p>JavaScriptがページの中身を書きかえたり、画面の大きさが変わったりすると、ブラウザは必要なところだけ、配置の計算と色ぬりをやり直します。1秒に60回ほど画面を描きかえられるように、ブラウザはとても工夫して作られています。</p>
+</section>
+
+<section>
+  <h2><span class="num">9.6</span>ぜんぶで、どれくらいかかった？</h2>
+  <p>ここまでの旅を、時間で並べてみましょう。条件を変えると、どの章の仕組みが効いているかがわかります。</p>
+  <div class="card">
+    <div class="tl-ctrl">
+      <div class="seg" id="tlVisit">
+        <button data-v="first" class="on">初めて開く</button>
+        <button data-v="again">2回目（記憶あり）</button>
+      </div>
+      <div class="seg" id="tlWhere">
+        <button data-w="near" class="on">近くの拠点（CDN）</button>
+        <button data-w="far">海外のサーバー</button>
+      </div>
+      <div class="seg" id="tlProto">
+        <button data-p="tcp" class="on">HTTP/2（TCP＋TLS）</button>
+        <button data-p="quic">HTTP/3（QUIC）</button>
+      </div>
+    </div>
+    <div class="tl" id="tl"></div>
+    <div class="tl-legend" id="tlLegend"></div>
+    <div class="explain-box" id="tlExplain"></div>
+  </div>
+  <p>表示の速さには、Google が示している目安（Core Web Vitals）があります。いちばん大きな部分が表示されるまで（LCP）が<b>2.5秒以内</b>、ボタンを押してから画面が反応するまで（INP）が<b>0.2秒以内</b>、読みこみ中に表示がずれる量（CLS）が<b>0.1以下</b>なら「良好」です。ネットワークの旅を短くする工夫は、そのまま使う人の気持ちよさにつながっています。</p>
+  <p class="note">出典：<a href="https://web.dev/articles/vitals" target="_blank" rel="noopener">web.dev「Web Vitals」</a></p>
+</section>
+
+<section>
+  <h2><span class="num">9.7</span>旅のふりかえり</h2>
+  <p>URLを打ってから画面が出るまでの、ほんの一瞬。その間に、これだけのことが起きていました。</p>
+  <div class="trip" id="trip"></div>
+</section>
+
+<section>
+  <h2><span class="num">9.8</span>自分のPCで試してみよう</h2>
+  <p>旅の時間の内訳は、ブラウザの開発者ツールでも、<code>curl</code> でも測れます。</p>
+  <div class="card mini-card devtools">
+    <h3>開発者ツールで見る（Chrome・Edge）</h3>
+    <ol>
+      <li><kbd>⌥</kbd>＋<kbd>⌘</kbd>＋<kbd>I</kbd>（Windowsは <kbd>F12</kbd>）で開き、「<b>ネットワーク</b>」タブでページを再読みこみする</li>
+      <li>一番上の行（HTML）を押して「<b>タイミング</b>」（Timing）を開くと、DNS・接続・TLS・待ち時間などの内訳が見える</li>
+      <li>「<b>Lighthouse</b>」タブで「分析」を押すと、LCP などの速さの目安を測ってくれる</li>
+    </ol>
+  </div>
+  <div class="card">
+    <div class="seg wrap-seg">
+      <button data-os="mac" class="on">Mac</button>
+      <button data-os="win">Windows</button>
+    </div>
+    <div class="cmds" id="cmds"></div>
+  </div>
+  <h3 class="sub-h">旅の時間の内訳を読んでみよう</h3>
+  <p>下は、2026年10月18日に Mac で example.com までの時間を測った、実際の結果です（どれも「始めてからの合計」の秒数）。行を押すと説明が出ます。</p>
+  <div class="card trace-card">
+    <div class="trace mono" id="real"></div>
+    <div class="trace-explain" id="realExplain" aria-live="polite"><span class="note">↑ 気になる行を押してみてください</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">9.9</span>まとめ</h2>
+  <div class="card summary">
+    <ul>
+      <li>受け取った側は、<b>イーサネット → IP → TCP → TLS → HTTP</b> の順に、外側から封筒を開ける</li>
+      <li>Webサーバーは、<b>置いてあるファイルを返す</b>か、<b>プログラムでその場で作る</b>（データベースに問い合わせることも）</li>
+      <li>文字のファイルは <b>gzip や Brotli で縮めて</b>送ると速い</li>
+      <li>返事は、行きと同じ仕組みで送り返される。<b>帰り道は行きと同じ道とは限らない</b></li>
+      <li>ブラウザは <b>DOM・CSSOM → レンダーツリー → 配置の計算 → 色ぬり → 重ね合わせ</b> の順に画面を描く</li>
+      <li>DNSの記憶・近くのCDN・HTTP/3 などの工夫が、表示までの時間を短くしている</li>
+    </ul>
+  </div>
+  <p>これで、URLを打ってから画面が出るまでの旅は終わりです。ふだん何気なく開いているページの裏で、世界中の機械が、何十年もかけて積み重ねられた決まりにしたがって、ほんの一瞬のうちにリレーをしています。次にページを開くとき、その旅を少しだけ思い出してもらえたらうれしいです。</p>
+
+  <h2><span class="num">9.10</span>確認クイズ</h2>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<footer>
+  <div class="chap-nav"><a href="index.html">← <b>目次にもどる</b></a></div>
+  この教材の文章と図はオリジナルです。数値や出来事は2026年10月18日時点で確認したものです。<br>
+  参考：RFC 9110（HTTPの意味）、RFC 1952（gzip）、RFC 7932（Brotli）、<a href="https://html.spec.whatwg.org/" target="_blank" rel="noopener">WHATWG HTML Standard</a>、<a href="https://web.dev/articles/vitals" target="_blank" rel="noopener">web.dev（Core Web Vitals）</a>、<a href="https://w3techs.com/technologies/overview/web_server" target="_blank" rel="noopener">W3Techs</a>
+</footer>
+</div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* コマンド集（Mac / Windows の切り替えとコピー） */
+function setupCmds(C, boxId = 'cmds'){
+  const box = $(boxId);
+  function show(os){
+    document.querySelectorAll('[data-os]').forEach(b => b.classList.toggle('on', b.dataset.os === os));
+    box.innerHTML = C[os].map(([c, d]) => `<div class="cmd"><div class="cmd-line"><code>${esc(c)}</code><button data-c="${esc(c)}">コピー</button></div><div class="cmd-desc">${d}</div></div>`).join('') + (C[os + 'Note'] || '');
+    box.querySelectorAll('[data-c]').forEach(b => b.onclick = async () => {
+      try{ await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'コピーした'; }
+      catch(e){ b.textContent = '選択してコピーしてね'; }
+      setTimeout(() => b.textContent = 'コピー', 1500);
+    });
+  }
+  document.querySelectorAll('[data-os]').forEach(b => b.onclick = () => show(b.dataset.os));
+  show('mac');
+}
+
+/* 実際の結果を1行ずつ解説する欄。L=[[グループ, 行の文字]]、E={グループ:[見出し, 説明]}。グループ'c'は説明なしの行 */
+function setupTrace(id, exId, L, E){
+  const tr = $(id);
+  tr.innerHTML = L.map(([g, t]) => `<div class="ln ${g === 'c' ? 'cmt' : 'g'}" data-g="${g}" ${g === 'c' ? '' : 'tabindex="0" role="button"'}>${esc(t).replace(/^([a-zA-Z_-]+[:=])/, '<span class="k">$1</span>')}</div>`).join('');
+  function pick(g){
+    tr.querySelectorAll('.ln').forEach(l => l.classList.toggle('on', l.dataset.g === g));
+    $(exId).innerHTML = `<h4>${E[g][0]}</h4>${E[g][1]}`;
+  }
+  tr.querySelectorAll('.ln.g').forEach(l => {
+    l.onclick = () => pick(l.dataset.g);
+    l.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); pick(l.dataset.g); } };
+  });
+}
+
+/* 確認クイズ */
+function setupQuiz(QUIZ, id = 'quiz'){
+  const quizEl = $(id);
+  QUIZ.forEach((item, qi) => {
+    const d = document.createElement('div');
+    d.className = 'card q';
+    d.innerHTML = `<b>Q${qi + 1}. ${item.q}</b><div class="opts">${item.o.map((o, k) => `<button data-k="${k}">${o}</button>`).join('')}</div><div class="fb"></div>`;
+    d.querySelectorAll('.opts button').forEach(b => b.onclick = () => {
+      const k = +b.dataset.k;
+      d.querySelectorAll('.opts button').forEach(x => x.classList.remove('right', 'wrong'));
+      b.classList.add(k === item.a ? 'right' : 'wrong');
+      d.querySelector('.fb').innerHTML = (k === item.a ? '⭕ 正解！ ' + item.e : '❌ もう一度考えてみよう。');
+    });
+    quizEl.appendChild(d);
+  });
+}
+
+/* 1歩ずつ進める手順（最初から・戻る・次へ）。render(i) を呼ぶ */
+function setupStepper({first, prev, next, count, total, render}){
+  let i = 0;
+  const upd = () => { render(i); $(count).textContent = `${i + 1} / ${total}`; $(prev).disabled = i === 0; $(next).disabled = i === total - 1; };
+  $(first).onclick = () => { i = 0; upd(); };
+  $(prev).onclick = () => { if(i > 0){ i--; upd(); } };
+  $(next).onclick = () => { if(i < total - 1){ i++; upd(); } };
+  upd();
+}
+
+/* 点を折れ線にそって動かす（SVG） */
+function moveDot(svg, pts, dur, color, r = 6){
+  return new Promise(res => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', r); c.setAttribute('fill', color); c.style.filter = `drop-shadow(0 0 4px ${color})`;
+    svg.appendChild(c);
+    const seg = []; let total = 0;
+    for(let i = 1; i < pts.length; i++){ const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); total += d; }
+    const t0 = performance.now(), D = reduced() ? 1 : dur;
+    const step = now => {
+      let k = Math.min(1, (now - t0) / D), dist = k * total, i = 0;
+      while(i < seg.length - 1 && dist > seg[i]){ dist -= seg[i]; i++; }
+      const f = seg[i] ? dist / seg[i] : 0;
+      c.setAttribute('cx', pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f);
+      c.setAttribute('cy', pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f);
+      if(k < 1) requestAnimationFrame(step); else { c.remove(); res(); }
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+
+/* ---------- 9.1 封筒を開ける ---------- */
+(function(){
+  const L = [
+    {cls:'L-eth', tag:['イーサネット', '宛先MAC：自分？'], h:'① イーサネットのラベル', e:'LANアダプタが信号を受け取り、<b>宛先MACアドレスが自分</b>か、FCSで<b>信号がこわれていないか</b>を確かめます。OKなら、このラベルをはがして中身（IPの小包）をOSに渡します。種類の欄（0x0800）を見て、渡す先をIPの係に決めます。'},
+    {cls:'L-ip', tag:['IP', '宛先IP：自分？'], h:'② IPのラベル', e:'IPの係は、<b>宛先IPアドレスが自分</b>かを確かめます。自分あてでなければ（ルーターなら）次へ送り、自分あてなら受け取ります。プロトコルの欄が6なので、中身をTCPの係に渡します。'},
+    {cls:'L-tcp', tag:['TCP', '443番あて'], h:'③ TCPのラベル', e:'TCPの係は、<b>シーケンス番号</b>を見て順番を並べ直し、ACKを返し（第3章）、<b>宛先ポート番号 443</b> を見て、443番で待っているWebサーバーのソフトに渡します。'},
+    {cls:'L-tls', tag:['TLS', '鍵を開ける'], h:'④ TLSの鍵を開ける', e:'Webサーバー（または手前のロードバランサー）は、あいさつで作った共通鍵で<b>暗号を解き</b>、改ざんされていないかも確かめます（第4章）。'},
+    {cls:'L-app', core:'GET /news/ HTTP/2<br>Host: www.example.com<br>Cookie: session=7f3a9c', h:'⑤ やっと、頼みごとが読める', e:'封筒を全部開けると、第1章でブラウザが書いた<b>HTTPリクエスト</b>が、そのまま出てきました。Webサーバーは、メソッド・パス・見出しを読んで、返事を作り始めます（9.2）。'},
+  ];
+  function build(n){
+    // n 枚開けた状態：残っている外側から順に組み立てる
+    let html = `<div class="un-l L-app"><div class="un-core">${L[4].core}</div></div>`;
+    for(let k = 3; k >= n; k--){ const l = L[k]; html = `<div class="un-l ${l.cls}"><span class="un-tag">${l.tag[0]}<small>${l.tag[1]}</small></span>${html}${k === 0 ? '<span class="un-tag">FCS<small>検査</small></span>' : ''}</div>`; }
+    return html;
+  }
+  setupStepper({first:'unFirst', prev:'unPrev', next:'unNext', count:'unCount', total:6, render:i => {
+    $('unStage').innerHTML = build(i);
+    $('unExplain').innerHTML = i === 0 ? '<b class="t">サーバーに届いた小包</b>第5章で包んだときと同じ、4重の封筒です。「開ける」を押して、外側から開けていきましょう。' : `<b class="t">${L[i - 1].h}</b>${L[i - 1].e}`;
+  }});
+})();
+
+/* ---------- 9.2 Webサーバーの中 ---------- */
+(function(){
+  const N = [['🌐', 'Webサーバー<br>（Nginx など）'], ['📁', 'ファイル<br>置き場'], ['⚙️', 'アプリ<br>（プログラム）'], ['🗄️', 'データ<br>ベース']];
+  const R = [
+    {lb:'GET /logo.png（写真）', path:[0, 1], t:[['受付', 1, 'var(--accent)'], ['ファイルを読む', 2, 'var(--ok)']],
+     e:'<b>置いてあるファイルをそのまま返します</b>（静的なファイル）。プログラムを動かさないので、とても速く、CDNに取っておいてもらうこともできます（第8章）。'},
+    {lb:'GET /news/（ニュース一覧）', path:[0, 2, 3], t:[['受付', 1, 'var(--accent)'], ['プログラム', 6, 'var(--accent2)'], ['データベース', 8, 'var(--answer)'], ['HTMLを組み立てる', 4, 'var(--accent2)']],
+     e:'Webサーバーは頼みごとを<b>アプリ（プログラム）</b>に渡します。アプリは<b>データベース</b>から新しいニュースの一覧を取り出し、HTMLを組み立てて返します（動的なページ）。みんなに同じ中身なら、しばらくCDNに取っておけます。'},
+    {lb:'GET /mypage（ログイン後）', path:[0, 2, 3], t:[['受付', 1, 'var(--accent)'], ['Cookieを確かめる', 4, 'var(--accent2)'], ['データベース', 10, 'var(--answer)'], ['HTMLを組み立てる', 4, 'var(--accent2)']],
+     e:'アプリは、まず <b>Cookie の番号札</b>（第1章）を確かめて、だれのページかを調べます。それからその人の注文履歴などをデータベースから取り出して、その人だけのページを作ります。人によって中身が変わるので、CDNには取っておけません。'},
+    {lb:'POST /contact（問い合わせ）', path:[0, 2, 3], t:[['受付', 1, 'var(--accent)'], ['入力を確かめる', 3, 'var(--accent2)'], ['データベースに保存', 8, 'var(--answer)'], ['結果を返す', 2, 'var(--accent2)']],
+     e:'送られてきた本文を、アプリが<b>確かめてから</b>（空ではないか、悪いものが混ざっていないか。第8章のWAFも参照）データベースに保存し、「送信しました」のページを返します。'},
+  ];
+  function show(i){
+    const r = R[i];
+    $('svReq').querySelectorAll('button').forEach((b, k) => b.classList.toggle('on', k === i));
+    $('svFlow').innerHTML = N.map(([ic, nm], k) => (k ? `<span class="sv-a${r.path.includes(k) ? ' on' : ''}">→</span>` : '') + `<div class="sv-n${r.path.includes(k) ? ' on' : ''}"><span class="ic">${ic}</span>${nm}</div>`).join('');
+    const tot = r.t.reduce((s, x) => s + x[1], 0);
+    $('svTime').innerHTML = r.t.map(([l, w, c]) => `<span style="width:${w / 22 * 100}%;background:${c}">${l}</span>`).join('');
+    $('svExplain').innerHTML = `<b class="t">${r.lb}　（サーバーの中で約${tot}ミリ秒のイメージ）</b>${r.e}`;
+  }
+  $('svReq').innerHTML = R.map((r, i) => `<button data-i="${i}">${r.lb}</button>`).join('');
+  $('svReq').querySelectorAll('button').forEach(b => b.onclick = () => show(+b.dataset.i));
+  show(0);
+})();
+
+/* ---------- 9.3 圧縮 ---------- */
+(function(){
+  const SAMPLE = `<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><title>今日のニュース</title></head>
+<body>
+<ul class="news">
+  <li class="news-item"><a class="news-link" href="/news/1">ニュース1</a></li>
+  <li class="news-item"><a class="news-link" href="/news/2">ニュース2</a></li>
+  <li class="news-item"><a class="news-link" href="/news/3">ニュース3</a></li>
+  <li class="news-item"><a class="news-link" href="/news/4">ニュース4</a></li>
+  <li class="news-item"><a class="news-link" href="/news/5">ニュース5</a></li>
+</ul>
+</body>
+</html>`;
+  $('gzIn').value = SAMPLE;
+  async function run(){
+    const raw = new TextEncoder().encode($('gzIn').value);
+    if(typeof CompressionStream === 'undefined'){ $('gzOut').innerHTML = '<p class="note">このブラウザでは圧縮の機能が使えません。</p>'; return; }
+    const cs = new Blob([raw]).stream().pipeThrough(new CompressionStream('gzip'));
+    const gz = new Uint8Array(await new Response(cs).arrayBuffer());
+    const max = Math.max(raw.length, 1);
+    const pct = Math.round(gz.length / max * 100);
+    $('gzOut').innerHTML = `
+      <div class="gz-bar"><span>そのまま</span><div class="tr"><i style="width:100%;background:var(--accent2)"></i></div><b>${raw.length.toLocaleString('ja-JP')} B</b></div>
+      <div class="gz-bar"><span>gzip</span><div class="tr"><i style="width:${Math.min(100, pct)}%;background:var(--ok)"></i></div><b>${gz.length.toLocaleString('ja-JP')} B</b></div>
+      <p style="margin:0;font-size:14px">${gz.length < raw.length ? `<b>${100 - pct}%</b> 小さくなりました。` : '短すぎる文は、圧縮のための情報のぶん、かえって大きくなることもあります。'}受け取ったブラウザは、見出しの <code>Content-Encoding: gzip</code> を見て、元に戻してから読みます。</p>
+      <div class="gz-hex">${[...gz.slice(0, 120)].map(b => b.toString(16).padStart(2, '0')).join(' ')}${gz.length > 120 ? ' …' : ''}</div>`;
+  }
+  $('gzBtn').onclick = run;
+  $('gzSample').onclick = () => { $('gzIn').value = SAMPLE; run(); };
+  run();
+})();
+
+/* ---------- 9.4 帰り道 ---------- */
+(function(){
+  const N = [['🖥️', 'Webサーバー', '9'], ['⚖️', 'ロードバランサー', '8'], ['🌐', 'CDN・ファイアウォール', '8'], ['🔁', 'ルーターたち', '6・7'], ['🏢', 'プロバイダ', '7'], ['📡', '家のルーター', '6'], ['💻', 'あなたのPC', '5']];
+  const E = [
+    '返事も、TCPで小分けにされ、IPとイーサネットのラベルを貼られます（第3・5章）。宛先は今度は<b>あなた</b>、差出人がサーバーです。暗号化も第4章の共通鍵でかけ直します。',
+    'ロードバランサーとCDN・ファイアウォールを通ります。行きに通した通信の返事なので、ファイアウォールは覚えていて通します（第8章）。',
+    'CDNの拠点は、返事に <code>Cache-Control</code> があれば取っておき、次のお客さんに使います（第8章）。',
+    'ルーターからルーターへ、経路表をたよりにリレーします。<b>行きと同じ道とは限りません</b>（第6・7章）。',
+    'プロバイダのネットワークを通って、光回線で家へ向かいます（第7章）。',
+    '家のルーターは、NATの表を見て、宛先を家の中の住所（192.168.1.23）に戻してから届けます（第6章）。',
+    'PCは封筒を開け（9.1と同じ順）、TCPが順番を並べ、TLSが鍵を開けて、ブラウザに返事を渡します。いよいよ画面を描きます（9.5）。',
+  ];
+  $('back').innerHTML = N.map(([ic, nm, ch], k) => (k ? '<div class="bk-l"></div>' : '') + `<div class="bk-n"><div class="ic">${ic}</div>${nm}<span class="ch">第${ch}章</span></div>`).join('');
+  const nodes = [...$('back').querySelectorAll('.bk-n')], links = [...$('back').querySelectorAll('.bk-l')];
+  let run = 0;
+  $('backBtn').onclick = async () => {
+    const me = ++run;
+    nodes.forEach(n => n.classList.remove('on')); links.forEach(l => l.classList.remove('on'));
+    for(let k = 0; k < nodes.length; k++){
+      if(me !== run) return;
+      nodes[k].classList.add('on'); if(k) links[k - 1].classList.add('on');
+      $('backExplain').innerHTML = `<b class="t">${N[k][1]}</b>${E[k]}`;
+      await sleep(reduced() ? 0 : 1500);
+    }
+  };
+  $('backExplain').innerHTML = '「返事を送り返す」を押すと、返事がサーバーからあなたのPCまで戻っていきます。';
+})();
+
+/* ---------- 9.5 画面を描く ---------- */
+(function(){
+  const HTML = `<span class="d">&lt;!-- 届いたHTML --&gt;</span>
+<span class="t">&lt;h1&gt;</span>今日のニュース<span class="t">&lt;/h1&gt;</span>
+<span class="t">&lt;img</span> <span class="a">src</span>="top.webp"<span class="t">&gt;</span>
+<span class="t">&lt;p&gt;</span>新しい駅が開業しました。<span class="t">&lt;/p&gt;</span>
+<span class="t">&lt;button&gt;</span>続きを読む<span class="t">&lt;/button&gt;</span>`;
+  const DOM = `<span class="d">// DOM：入れ子の木の形にする</span>
+document
+ └ html
+    └ body
+       ├ <span class="t">h1</span>  「今日のニュース」
+       ├ <span class="t">img</span>  top.webp
+       ├ <span class="t">p</span>   「新しい駅が…」
+       └ <span class="t">button</span> 「続きを読む」`;
+  const CSS = `<span class="d">/* CSSOM：見た目の決まりを当てはめる */</span>
+<span class="t">h1</span>     { <span class="a">font-size</span>: <span class="c">20px</span>; <span class="a">color</span>: <span class="c">水色</span> }
+<span class="t">img</span>    { <span class="a">height</span>: <span class="c">46px</span> }
+<span class="t">p</span>      { <span class="a">font-size</span>: <span class="c">13px</span> }
+<span class="t">button</span> { <span class="a">background</span>: <span class="c">水色</span> }
+
+<span class="d">→ DOM と合わせて、画面に出すものの
+  一覧（レンダーツリー）を作る</span>`;
+  const LAY = `<span class="d">// レイアウト：位置と大きさを計算</span>
+h1     x=14  y=14   幅=320 高さ=30
+img    x=14  y=52   幅=320 高さ=46
+p      x=14  y=106  幅=320 高さ=22
+button x=14  y=136  幅=96  高さ=28`;
+  const PAINT = `<span class="d">// ペイント：色をぬる命令を作る</span>
+文字「今日のニュース」を水色で描く
+画像 top.webp を描く
+文字「新しい駅が…」を描く
+四角を水色でぬり、文字を描く
+
+<span class="d">// 重ね合わせ（コンポジット）：
+// 層ごとに描いた絵を、GPUで重ねて
+// 画面に出す</span>`;
+  const S = [
+    {l:HTML, cls:'', h:'① HTMLが届いた', e:'返事の本文として、HTMLの文字が届きました。まだただの文字の並びなので、画面は真っ白です。'},
+    {l:DOM, cls:'', h:'② DOM（木の形）を作る', e:'ブラウザはHTMLを読み、タグの入れ子を<b>木の形</b>のデータ（DOM）にします。途中で <code>&lt;img&gt;</code> や CSS・JavaScript のファイルを見つけると、すぐに追加のリクエストを送ります（第1章 1.6）。'},
+    {l:CSS, cls:'', h:'③ CSSを当てはめる', e:'CSSを読んで、どの部品にどんな見た目を当てるかを決めます（CSSOM）。DOMと合わせて、<b>画面に出すものの一覧</b>（レンダーツリー）を作ります。'},
+    {l:LAY, cls:'layout', h:'④ 配置を計算する（レイアウト）', e:'画面の幅をもとに、<b>それぞれの部品をどこに・どの大きさで置くか</b>を計算します。右の点線の箱が、計算された位置です。まだ色はぬられていません。'},
+    {l:PAINT, cls:'paint comp', h:'⑤ 色をぬって、重ねる', e:'計算した位置に、文字や画像や色を<b>描き（ペイント）</b>、いくつかの層に分けて描いたものを<b>重ね合わせて</b>画面に出します。これでやっと、ページが見えました！'},
+  ];
+  const PAGE = '<div class="rd-box h" data-l="h1">今日のニュース</div><div class="rd-box img" data-l="img"></div><div class="rd-box" data-l="p">新しい駅が開業しました。</div><div class="rd-box"><span class="btn" data-l="button">続きを読む</span></div><div class="rd-layer"></div>';
+  setupStepper({first:'rdFirst', prev:'rdPrev', next:'rdNext', count:'rdCount', total:S.length, render:i => {
+    const s = S[i];
+    $('rdLeft').innerHTML = s.l;
+    const pg = $('rdPage'); pg.className = 'rd-page ' + s.cls; pg.innerHTML = i >= 3 ? PAGE : '';
+    if(i === 3) pg.querySelector('.btn').setAttribute('style', 'color:transparent');
+    $('rdExplain').innerHTML = `<b class="t">${s.h}</b>${s.e}`;
+  }});
+})();
+
+/* ---------- 9.6 ぜんぶでどれくらい ---------- */
+(function(){
+  const C = {dns:['DNS（第2章）', 'var(--ok)'], tcp:['TCP（第3章）', 'var(--accent)'], tls:['TLS（第4章）', 'var(--accent2)'], quic:['QUIC（第4章）', 'var(--accent2)'], wait:['サーバーの中・返事（第8・9章）', 'var(--answer)'], dl:['届くまで（第5〜7章）', '#ec4899'], render:['画面を描く（9.5）', 'var(--c-port)']};
+  let st = {v:'first', w:'near', p:'tcp'};
+  function calc(){
+    const rtt = st.w === 'near' ? 10 : 120;
+    const parts = [];
+    parts.push(['dns', st.v === 'first' ? (st.w === 'near' ? 40 : 160) : 0]);
+    if(st.p === 'tcp'){ parts.push(['tcp', rtt]); parts.push(['tls', rtt]); }
+    else parts.push(['quic', st.v === 'again' ? 0 : rtt]);
+    parts.push(['wait', rtt + (st.w === 'near' ? 5 : 60)]);
+    parts.push(['dl', st.v === 'again' ? Math.round(rtt * 0.5) : rtt * 3]);
+    parts.push(['render', st.v === 'again' ? 50 : 120]);
+    return parts;
+  }
+  function draw(){
+    const parts = calc().filter(p => p[1] > 0), tot = parts.reduce((s, p) => s + p[1], 0), MAX = 1300;
+    $('tl').innerHTML = parts.map(([k, ms]) => `<span style="width:${ms / MAX * 100}%;background:${C[k][1]}">${ms >= 60 ? ms + 'ms' : ''}</span>`).join('');
+    $('tlLegend').innerHTML = parts.map(([k, ms]) => `<span style="--c:${C[k][1]}">${C[k][0]} <b>${ms}ms</b></span>`).join('') + `<span style="--c:transparent">合計 <b>約${tot}ms</b></span>`;
+    const tips = [];
+    if(st.v === 'again') tips.push('2回目は、DNSの答え（第2章のキャッシュ）や、画像・CSS（ブラウザの記憶と第8章の304）を使えるので、ぐっと短くなります。' + (st.p === 'quic' ? 'QUICは前回の情報で、あいさつなしにデータを送り始められます（0-RTT）。' : ''));
+    if(st.w === 'far') tips.push('海外のサーバーは往復に時間がかかるので（第7章の光の速さ）、往復が必要な仕組みすべてが少しずつ遅くなります。だからCDNで近くに置くのが効きます。');
+    if(st.p === 'quic' && st.v === 'first') tips.push('HTTP/3（QUIC）は、TCPとTLSの2回のあいさつを1回にまとめるので、1往復分速くなります（第4章 4.8）。');
+    if(!tips.length) tips.push('近くのCDNの拠点に、初めてつなぐ場合です。条件を切りかえて、どこが変わるか見てみましょう。');
+    $('tlExplain').innerHTML = `<b class="t">合計 約${tot}ミリ秒（目安）</b>${tips.join('<br>')}<br><span class="note">※ 数字は考え方を見せるための目安です。実際は、ページの大きさや回線の速さで大きく変わります。</span>`;
+  }
+  const bind = (id, key) => document.querySelectorAll(`#${id} button`).forEach(b => b.onclick = () => { st[key] = b.dataset[key]; document.querySelectorAll(`#${id} button`).forEach(x => x.classList.toggle('on', x === b)); draw(); });
+  bind('tlVisit', 'v'); bind('tlWhere', 'w'); bind('tlProto', 'p');
+  draw();
+})();
+
+/* ---------- 9.7 ふりかえり ---------- */
+$('trip').innerHTML = [
+  ['browser.html', '第1章', 'ブラウザ', 'URLを分解して、HTTPリクエストという手紙を書く'],
+  ['dns.html', '第2章', 'DNS', '名前から、相手のIPアドレスを探す'],
+  ['tcp.html', '第3章', 'TCP', '相手とつながり、確実に・順番どおりに届ける約束をする'],
+  ['https.html', '第4章', 'HTTPS', '鍵を交換して、手紙を暗号化する'],
+  ['ip.html', '第5章', 'IPとイーサネット', '小包に詰めて、住所と隣の人の名札のラベルを貼る'],
+  ['router.html', '第6章', 'スイッチとルーター', 'ラベルを見て、次へ次へと手渡す'],
+  ['access.html', '第7章', '家からインターネットへ', '光回線とプロバイダを通り、ネットワークどうしのつながりを渡る'],
+  ['server.html', '第8章', 'サーバー側の守りと分散', '門番・案内係・倉庫を通って、サーバーにたどり着く'],
+  ['arrival.html', '第9章', 'サーバー到着と帰り道', '封筒を開けて返事を作り、同じ旅で戻って、画面に描く'],
+].map(([f, n, t, d]) => `<a href="${f}"><span class="n">${n}</span><div><b>${t}</b><span>${d}</span></div></a>`).join('');
+
+/* ---------- 9.8 試そう ---------- */
+setupCmds({
+  mac:[
+    ["curl -s -o /dev/null -w 'dns=%{time_namelookup} tcp=%{time_connect} tls=%{time_appconnect} ttfb=%{time_starttransfer} total=%{time_total}\\n' https://www.example.com", '旅の時間の内訳を表示します。下で、実際の結果を読みます。'],
+    ["curl -s -H 'Accept-Encoding: gzip' https://www.example.com | wc -c", '縮めて送ってもらったときの大きさ（バイト）です。<code>gzip</code> を <code>br</code> にしたり、<code>-H …</code> を外したりして比べてみましょう。'],
+  ],
+  win:[
+    ["curl.exe -s -o NUL -w \"dns=%{time_namelookup} tcp=%{time_connect} tls=%{time_appconnect} ttfb=%{time_starttransfer} total=%{time_total}\\n\" https://www.example.com", '旅の時間の内訳を表示します。'],
+    ['Measure-Command { Invoke-WebRequest https://www.example.com }', 'ページを取ってくるのにかかった時間を、まとめて測ります。'],
+  ],
+});
+setupTrace('real', 'realExplain', [
+  ['c', "$ curl -s -o /dev/null -w '…' https://www.example.com"],
+  ['dns', 'dns=0.002235'],
+  ['tcp', 'tcp=0.017598'],
+  ['tls', 'tls=0.036055'],
+  ['ttfb', 'ttfb=0.057153'],
+  ['total', 'total=0.057252'],
+  ['ver', 'http=2  size=577'],
+], {
+  dns:['DNS：2ミリ秒（第2章）', 'OSの記憶に答えがあったので、ほぼ一瞬でした。初めての名前なら、キャッシュDNSサーバーへの問い合わせで数十ミリ秒かかることもあります。'],
+  tcp:['TCPのあいさつ：約15ミリ秒（第3章）', 'DNSが終わってから、3ウェイハンドシェイクが終わるまでの時間です（0.0176 − 0.0022）。ほぼ1往復分です。'],
+  tls:['TLSのあいさつ：約18ミリ秒（第4章）', 'TCPがつながってから、鍵の交換が終わるまで（0.0361 − 0.0176）。TLS 1.3 なので、これも約1往復です。'],
+  ttfb:['最初の1バイトが届くまで：約21ミリ秒（第8・9章）', 'リクエストを送ってから、返事の最初が届くまで（0.0572 − 0.0361）。往復の時間に、CDNの拠点が返事を用意する時間を足したものです。'],
+  total:['ぜんぶで57ミリ秒', 'example.com のHTMLは577バイトと小さいので、最初の1バイトとほぼ同時に届き終わりました。0.06秒たらずの間に、この教科書の旅がまるごと起きていたことになります。'],
+  ver:['HTTP/2 で577バイト', 'HTTP/2 で話し、577バイトのHTMLを受け取りました。この curl は圧縮を頼んでいないので、そのままの大きさです（9.3 では、縮めると334バイトになりました）。'],
+});
+
+/* ---------- 9.10 クイズ ---------- */
+setupQuiz([
+  {q:'受け取った側が封筒を開ける順番は？', o:['HTTP → TCP → IP → イーサネット','イーサネット → IP → TCP → TLS → HTTP','IP → イーサネット → HTTP → TCP'], a:1,
+   e:'送るときと逆に、いちばん外側のイーサネットから開けていきます。'},
+  {q:'ログインした人だけのページ（/mypage）をCDNに取っておけないのはなぜ？', o:['ファイルが大きすぎるから','人によって中身が変わるから','HTTPSだから'], a:1,
+   e:'取っておくと、別の人に自分のページが見えてしまうおそれがあります。'},
+  {q:'gzip や Brotli で縮めると効果が大きいのは？', o:['HTMLやCSS','JPEGの写真','MP4の動画'], a:0,
+   e:'文字のファイルは同じ言葉のくり返しが多いのでよく縮みます。写真や動画はもう縮めてある形式です。'},
+  {q:'返事が戻る道について、正しいのは？', o:['必ず行きと同じ道を通る','行きと同じ道とは限らない','必ず海底ケーブルを通る'], a:1,
+   e:'それぞれのネットワークが自分の経路表で次を決めるので、行きと帰りで道がちがうことはよくあります。'},
+  {q:'ブラウザが画面を描く順番として正しいのは？', o:['色をぬる → 配置の計算 → DOMを作る','DOMを作る → 配置の計算 → 色をぬる','配置の計算 → DOMを作る → 色をぬる'], a:1,
+   e:'HTMLからDOMを作り、CSSを当てはめ、位置を計算してから色をぬります。'},
+  {q:'2回目に同じサイトを開くと速くなる理由として、ちがうものは？', o:['DNSの答えを覚えているから','画像やCSSをブラウザが覚えているから','光の速さが速くなるから'], a:2,
+   e:'光の速さは変わりません。記憶（キャッシュ）を使えるので、往復の回数が減るのです。'},
+]);
+</script>
+</body>
+</html>

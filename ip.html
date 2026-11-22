@@ -1,0 +1,1264 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IPとイーサネットの旅</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eaf2f8; --surface:#ffffff; --surface-2:#e1eff6; --ink:#0d1b2a; --ink-2:#4a5d75; --line:#c8d5e4;
+  --accent:#0891b2; --accent-soft:rgba(8,145,178,.12); --answer:#d97706; --answer-soft:rgba(217,119,6,.13); --ok:#15803d; --ok-soft:rgba(21,128,61,.12);
+  --ground:#e3ebf4; --zone-home:rgba(21,128,61,.09); --zone-isp:rgba(8,145,178,.1); --zone-net:rgba(217,119,6,.09);
+  --grid:rgba(8,145,178,.07); --glow:0 0 0 1px rgba(8,145,178,.4),0 0 16px rgba(8,145,178,.15); --on-accent:#ffffff;
+  --shadow:0 1px 2px rgba(13,27,42,.06),0 6px 18px rgba(13,27,42,.07);
+  --board-grid:rgba(8,145,178,.14); --board-edge:#b9cadc;
+  --z-home:rgba(21,128,61,.13); --z-home-edge:#15803d; --z-isp:rgba(8,145,178,.15); --z-isp-edge:#0e7490;
+  --z-net:rgba(217,119,6,.13); --z-net-edge:#b45309; --z-web:rgba(124,58,237,.11); --z-web-edge:#6d28d9;
+  --accent2:#7c3aed;
+  --wash:radial-gradient(1100px 620px at 0% 0%,rgba(8,145,178,.16),transparent 62%),radial-gradient(900px 560px at 100% 25%,rgba(124,58,237,.12),transparent 60%),radial-gradient(1000px 640px at 40% 100%,rgba(217,119,6,.10),transparent 60%);
+  --strip:linear-gradient(90deg,#06b6d4,#7c3aed 55%,#f59e0b);
+  --bar-bg:linear-gradient(90deg,rgba(8,145,178,.12),rgba(124,58,237,.09));
+  --primary-bg:linear-gradient(135deg,#0891b2,#4f46e5);
+  --num-bg:linear-gradient(135deg,#0891b2,#7c3aed); --num-fg:#ffffff;
+  --h1-grad:linear-gradient(90deg,#0d1b2a 20%,#0891b2 60%,#7c3aed);
+  --subh-bar:linear-gradient(#0891b2,#7c3aed);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+  }
+}
+:root[data-theme="dark"]{
+    --bg:#05080f; --surface:#0a111d; --surface-2:#0e1828; --ink:#e3f2ff; --ink-2:#8199b8; --line:#1a2b44;
+    --accent:#22d3ee; --accent-soft:rgba(34,211,238,.13); --answer:#ffb020; --answer-soft:rgba(255,176,32,.14); --ok:#3dff8f; --ok-soft:rgba(61,255,143,.12);
+    --ground:#08111f; --zone-home:rgba(61,255,143,.07); --zone-isp:rgba(34,211,238,.09); --zone-net:rgba(255,176,32,.07);
+    --grid:rgba(34,211,238,.05); --glow:0 0 0 1px rgba(34,211,238,.35),0 0 22px rgba(34,211,238,.18); --on-accent:#00141a;
+    --shadow:0 0 0 1px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.45);
+    --board-grid:rgba(34,211,238,.09); --board-edge:rgba(34,211,238,.35);
+    --z-home:rgba(61,255,143,.13); --z-home-edge:#3dff8f; --z-isp:rgba(34,211,238,.16); --z-isp-edge:#22d3ee;
+    --z-net:rgba(255,176,32,.12); --z-net-edge:#ffb020; --z-web:rgba(167,139,250,.14); --z-web-edge:#a78bfa;
+    --accent2:#a78bfa; --wash:none; --strip:none; --bar-bg:var(--surface-2); --primary-bg:var(--accent);
+    --num-bg:transparent; --num-fg:var(--accent); --h1-grad:linear-gradient(90deg,var(--ink) 30%,var(--accent)); --subh-bar:transparent;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:"Noto Sans JP",system-ui,sans-serif;line-height:1.85;font-size:16px}
+.wrap{max-width:980px;margin:0 auto;padding:0 16px}
+header{padding:48px 0 12px}
+.kicker{font-size:13px;color:var(--ink-2);letter-spacing:.08em}
+h1{font-size:clamp(26px,5vw,38px);line-height:1.35;margin:6px 0 12px}
+h2{font-size:clamp(20px,3.6vw,26px);margin:56px 0 8px;line-height:1.4}
+h2 .num{display:inline-block;font-size:14px;color:var(--accent);margin-right:8px;font-family:"JetBrains Mono",monospace}
+p{margin:.6em 0}
+.lead{font-size:17px;color:var(--ink-2)}
+b{color:var(--ink)}
+code,.mono{font-family:"JetBrains Mono",monospace;font-size:.92em}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow)}
+.note{font-size:13px;color:var(--ink-2)}
+button{font:inherit;cursor:pointer;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:10px;padding:8px 14px;transition:background .15s,border-color .15s}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.4;cursor:default}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
+button.primary:hover:not(:disabled){filter:brightness(1.08)}
+button.on{background:var(--accent-soft);border-color:var(--accent)}
+
+/* --- analogy --- */
+.analogy{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin-top:12px}
+.analogy .box{text-align:center;padding:14px}
+.analogy .big{font-size:20px;font-weight:700}
+.analogy .arrow{font-size:22px;color:var(--ink-2)}
+
+/* --- domain tree --- */
+.domain-input{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.domain-input input{flex:1;min-width:220px;font:inherit;font-family:"JetBrains Mono",monospace;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink)}
+.presets{display:flex;gap:6px;flex-wrap:wrap}
+.presets button{font-size:13px;padding:4px 10px}
+.stairs{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.stair{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin-left:calc(var(--k) * 22px);opacity:0;transform:translateX(-8px);animation:in .4s forwards}
+@keyframes in{to{opacity:1;transform:none}}
+.stair .blk{font-family:"JetBrains Mono",monospace;background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:8px;padding:6px 12px;white-space:nowrap}
+.stair .blk .new{color:var(--accent);font-weight:600}
+.stair .desc{flex:1 1 10em;font-size:13px;color:var(--ink-2)}
+.domain-err{color:var(--answer);font-size:14px}
+
+/* --- stage --- */
+.stage-card{padding:0;overflow:hidden}
+.stage-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stage-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.stage-bar button,.stepper-bar button{white-space:nowrap}
+.counter{font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--ink-2);min-width:56px;text-align:center}
+.stage-wrap{position:relative;width:100%;overflow:hidden;touch-action:pan-y;cursor:grab}
+.stage-wrap.dragging{cursor:grabbing}
+.stage{position:absolute;left:0;top:0;width:820px;height:600px;transform-origin:0 0;perspective:1500px;perspective-origin:50% 30%;
+  --ax:55deg; --az:-24deg}
+.plane{position:absolute;left:30px;top:50px;width:800px;height:520px;transform-style:preserve-3d;
+  transform:rotateX(var(--ax)) rotateZ(var(--az));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.dragging .plane,.dragging .anchor{transition:none!important}
+.plane > svg{position:absolute;inset:0;overflow:visible}
+.ground{fill:var(--ground)}
+.zone-home{fill:var(--zone-home)}.zone-isp{fill:var(--zone-isp)}.zone-net{fill:var(--zone-net)}
+.zone-label{font-size:16px;font-weight:700;letter-spacing:.04em}
+.board-gridline{stroke:var(--board-grid);stroke-width:1}
+.ground{stroke:var(--board-edge);stroke-width:2}
+.zone{stroke-width:2.5}
+.z-home{fill:var(--z-home);stroke:var(--z-home-edge)}.l-home{fill:var(--z-home-edge)}
+.z-isp{fill:var(--z-isp);stroke:var(--z-isp-edge)}.l-isp{fill:var(--z-isp-edge)}
+.z-net{fill:var(--z-net);stroke:var(--z-net-edge)}.l-net{fill:var(--z-net-edge)}
+.z-web{fill:var(--z-web);stroke:var(--z-web-edge)}.l-web{fill:var(--z-web-edge)}
+.link{stroke:var(--ink-2);stroke-opacity:.45;stroke-width:4;fill:none;stroke-linecap:round}
+.link.web{stroke-dasharray:2 10}
+.link.active{stroke:var(--accent);stroke-opacity:1;stroke-width:6;stroke-dasharray:10 8;animation:flow .6s linear infinite}
+.link.active.ans{stroke:var(--answer)}
+@keyframes flow{to{stroke-dashoffset:-18}}
+.shadow{fill:rgba(0,0,0,.18)}
+.anchor{position:absolute;width:0;height:0;transform-style:preserve-3d;
+  transform:rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1));transition:transform .7s cubic-bezier(.3,.7,.2,1)}
+.node{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;gap:2px;pointer-events:none}
+.node .icon{width:64px;height:64px;border-radius:16px;background:var(--surface);border:2px solid var(--line);display:grid;place-items:center;box-shadow:var(--shadow);transition:border-color .3s,box-shadow .3s,transform .3s}
+.node .icon svg{width:38px;height:38px;color:var(--ink-2)}
+.node.hl .icon{border-color:var(--accent);box-shadow:0 0 0 6px var(--accent-soft),var(--shadow);transform:translateY(-4px)}
+.node .lbl{font-size:15px;font-weight:700;white-space:nowrap;background:var(--surface);padding:0 8px;border-radius:6px;border:1px solid var(--line)}
+.node .sub{font-size:11px;color:var(--ink-2);white-space:nowrap;font-family:"JetBrains Mono",monospace}
+.bubble{position:absolute;bottom:136px;left:0;transform:translateX(-50%) scale(.6);opacity:0;background:var(--ink);color:var(--bg);font-size:13px;font-weight:700;padding:6px 12px;border-radius:12px;white-space:nowrap;transition:opacity .25s,transform .25s;pointer-events:none}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-6px;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:var(--ink)}
+.bubble.show{opacity:1;transform:translateX(-50%) scale(1)}
+.packet-anchor{transition:none;transform:translateZ(var(--h,0px)) rotateZ(calc(var(--az) * -1)) rotateX(calc(var(--ax) * -1))}
+.packet{position:absolute;bottom:0;left:0;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center}
+.packet .env{width:44px;height:30px;border-radius:6px;background:var(--accent);color:#fff;display:grid;place-items:center;font-weight:700;font-size:13px;box-shadow:0 4px 10px rgba(0,0,0,.25)}
+.packet.ans .env{background:var(--answer)}
+.packet.web .env{background:var(--ok)}
+.packet.hide{opacity:0}
+.drag-hint{position:absolute;right:12px;bottom:10px;font-size:12px;color:var(--ink-2);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:2px 8px;pointer-events:none}
+
+.panels{display:grid;grid-template-columns:1.25fr .8fr 1.2fr;gap:14px;margin-top:14px;align-items:start}
+.explain{padding:18px 22px 22px;border-top:1px solid var(--line);background:var(--surface);min-height:190px}
+.explain h3{margin:0 0 4px;font-size:21px;line-height:1.5}
+.explain #stepText{font-size:16.5px}
+.timeline{display:flex;gap:4px;overflow-x:auto;padding:10px 14px;border-bottom:1px solid var(--line);scrollbar-width:thin}
+.timeline button{flex:0 0 auto;font-size:12px;padding:3px 10px;border-radius:999px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.timeline button .n{font-family:"JetBrains Mono",monospace;font-size:11px;opacity:.7}
+.timeline button.done{color:var(--ink);border-color:var(--line);background:var(--surface-2)}
+.timeline button.cur{color:#fff;background:var(--accent);border-color:var(--accent);font-weight:700}
+.timeline button.cur.ans{background:var(--answer);border-color:var(--answer)}
+.node{transition:opacity .35s}
+.node.dim{opacity:.55}
+.url-split{font-size:14px;margin:4px 0 10px;padding:8px 12px;border-radius:8px;background:var(--surface-2)}
+.url-split .dim-part{color:var(--ink-2);opacity:.6}
+.url-split .host-part{color:var(--accent);font-weight:600;background:var(--accent-soft);border-radius:4px;padding:0 2px}
+.explain .stepno{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent)}
+.explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.side{display:flex;flex-direction:column;gap:14px}
+.panel-title{font-size:13px;font-weight:700;color:var(--ink-2);margin:0 0 8px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.msg{font-family:"JetBrains Mono",monospace;font-size:12.5px;line-height:1.6}
+.msg .head{display:inline-block;font-family:"Noto Sans JP",sans-serif;font-size:12px;font-weight:700;padding:1px 8px;border-radius:6px;margin-bottom:6px}
+.msg .head.q{background:var(--accent-soft);color:var(--accent)}
+.msg .head.a{background:var(--answer-soft);color:var(--answer)}
+.msg table{border-collapse:collapse;width:100%}
+.msg td{padding:3px 0;vertical-align:top;border-top:1px dashed var(--line)}
+.msg td:first-child{width:5.5em;white-space:nowrap;color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px;padding-right:8px}
+.msg .empty{color:var(--ink-2);font-family:"Noto Sans JP",sans-serif}
+.timer{font-family:"JetBrains Mono",monospace;font-size:28px;font-weight:600}
+.timer small{font-size:13px;color:var(--ink-2);font-weight:400}
+.history{display:flex;gap:6px;flex-wrap:wrap;margin-top:4px}
+.history span{font-family:"JetBrains Mono",monospace;font-size:12px;background:var(--surface-2);border-radius:6px;padding:1px 8px}
+.cache-list{list-style:none;margin:0;padding:0;font-size:13px}
+.cache-list li{display:flex;justify-content:space-between;gap:8px;padding:5px 0;border-top:1px dashed var(--line)}
+.cache-list li.flash{animation:flash 1.2s}
+@keyframes flash{0%{background:var(--ok-soft)}100%{background:transparent}}
+.cache-list .ttl{font-family:"JetBrains Mono",monospace;color:var(--ok);white-space:nowrap}
+.cache-list .gone{color:var(--ink-2);text-decoration:line-through}
+.cache-btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.cache-btns button{font-size:12px;padding:4px 10px}
+.clock{font-size:12px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+
+/* --- summary / quiz --- */
+.summary li{margin:6px 0}
+.quiz{display:flex;flex-direction:column;gap:14px;margin-top:12px}
+.q .opts{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+.q .opts button{text-align:left}
+.q .opts button.right{background:var(--ok-soft);border-color:var(--ok)}
+.q .opts button.wrong{background:var(--answer-soft);border-color:var(--answer)}
+.q .fb{font-size:14px;margin-top:6px;min-height:1.4em}
+footer{margin:64px 0 48px;padding-top:20px;border-top:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+footer a{color:var(--accent)}
+
+@media (max-width:720px){
+  .panels{grid-template-columns:1fr}
+  .explain{padding:16px}
+  .analogy{grid-template-columns:1fr}
+  .analogy .arrow{transform:rotate(90deg);text-align:center}
+  .drag-hint{display:none}
+}
+@media (prefers-reduced-motion: reduce){
+  .plane,.anchor{transition:none}
+  .link.active{animation:none}
+}
+
+/* --- 共通パーツ --- */
+.sub-h{font-size:18px;margin:32px 0 6px}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;background:var(--surface-2);padding:4px;border-radius:12px}
+.seg button{border:0;background:transparent;font-size:14px;padding:6px 12px;border-radius:8px}
+.seg button.on{background:var(--surface);box-shadow:var(--shadow);font-weight:700;color:var(--accent)}
+.wrap-seg{margin-bottom:12px}
+.row-btns{display:flex;gap:8px;margin-top:12px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.mini-card h3{margin:0 0 6px;font-size:16px}
+.mini-card p{font-size:14.5px}
+
+/* --- 2.3 PCの中 --- */
+.stepper{padding:0;overflow:hidden}
+.stepper-bar{display:flex;flex-wrap:wrap;gap:8px;justify-content:space-between;align-items:center;padding:12px 14px;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.stepper-bar .seg{background:var(--bg)}
+.stepper-bar .group{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.pc-body{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:20px;padding:20px}
+.pc-stack{position:relative;border:2px dashed var(--line);border-radius:16px;padding:30px 14px 14px;display:flex;flex-direction:column;gap:10px}
+.pc-frame-label{position:absolute;top:6px;left:14px;font-size:12px;font-weight:700;color:var(--ink-2)}
+.layer{border:2px solid var(--line);border-radius:12px;padding:10px 14px;background:var(--surface);transition:border-color .3s,background .3s,opacity .3s;position:relative}
+.layer .lname{font-weight:700;font-size:15px}
+.layer .lsub{font-size:12px;color:var(--ink-2)}
+.layer .lmem{position:absolute;right:12px;top:10px;font-size:11px;color:var(--ink-2)}
+.layer.on{border-color:var(--accent);background:var(--accent-soft)}
+.layer.skip{opacity:.35}
+.layer.skip .lname{text-decoration:line-through}
+.os-inner{display:flex;gap:8px;margin-top:8px}
+.mini{flex:1;font-size:12px;text-align:center;border:1px solid var(--line);border-radius:8px;padding:4px;background:var(--surface-2);transition:all .3s}
+.mini.on{border-color:var(--accent);background:var(--surface);color:var(--accent);font-weight:700;box-shadow:0 0 0 3px var(--accent-soft)}
+.pc-out{text-align:center;font-size:13px;color:var(--ink-2);padding:6px;border-radius:10px;transition:all .3s}
+.pc-out.on{color:var(--accent);font-weight:700;background:var(--accent-soft)}
+.pc-chip{position:absolute;right:-12px;top:0;background:var(--accent);color:#fff;font-size:12px;font-weight:700;padding:3px 10px;border-radius:8px;box-shadow:0 4px 10px rgba(0,0,0,.2);transition:top .5s cubic-bezier(.3,.7,.2,1),background .3s}
+.pc-chip.lock{background:var(--ok)}
+.pc-explain h3{margin:0 0 6px;font-size:19px}
+.pc-explain .tip{margin-top:10px;font-size:13px;color:var(--ink-2);border-left:3px solid var(--line);padding-left:10px}
+.pkt-box{margin-top:12px;font-family:"JetBrains Mono",monospace;font-size:12.5px;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.pkt-box div{display:flex;border-top:1px dashed var(--line)}
+.pkt-box div:first-child{border-top:0}
+.pkt-box span{padding:4px 10px}
+.pkt-box span:first-child{width:7.5em;white-space:nowrap;flex:0 0 auto;background:var(--surface-2);color:var(--ink-2);font-family:"Noto Sans JP",sans-serif;font-size:12px}
+
+/* --- 2.5 レコード --- */
+.tabs{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.tabs button{font-family:"JetBrains Mono",monospace;font-weight:600;min-width:64px}
+.tabs button.on{background:var(--accent);border-color:var(--accent);color:#fff}
+.rec-q,.rec-a{font-size:13.5px;padding:8px 12px;border-radius:8px;overflow-x:auto;white-space:nowrap}
+.rec-q{background:var(--accent-soft);color:var(--accent)}
+.rec-a{background:var(--answer-soft);color:var(--answer);margin-top:6px}
+.rec-body h3{margin:14px 0 4px;font-size:18px}
+.parallel{display:flex;flex-direction:column;gap:8px}
+.lane{display:grid;grid-template-columns:4.5em 1fr 9em;gap:10px;align-items:center}
+.lane .who{font-size:12px;color:var(--ink-2)}
+.track{position:relative;height:30px;border-radius:8px;background:var(--surface-2)}
+.chip{position:absolute;top:3px;left:4px;white-space:nowrap;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;background:var(--accent);color:#fff;transition:left 1s cubic-bezier(.4,0,.2,1)}
+.chip.ans{background:var(--answer)}
+.res{font-family:"JetBrains Mono",monospace;font-size:12.5px;color:var(--answer);opacity:0;transition:opacity .3s}
+.res.show{opacity:1}
+
+/* --- 2.6 CDN --- */
+.cdn-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px;align-items:start}
+#cdnMap{width:100%;height:auto;background:var(--surface-2);border-radius:12px}
+#cdnMap .grid{stroke:var(--line);stroke-width:1}
+#cdnMap .land{fill:var(--ground);stroke:var(--line);stroke-width:1}
+#cdnMap .edge{fill:var(--surface);stroke:var(--ink-2);stroke-width:2}
+#cdnMap .edge.pick{fill:var(--answer);stroke:var(--answer)}
+#cdnMap .origin{fill:var(--ink-2)}
+#cdnMap .me{fill:var(--accent)}
+#cdnMap .me-ring{fill:none;stroke:var(--accent);stroke-width:2;animation:ring 1.6s ease-out infinite;transform-box:fill-box;transform-origin:center}
+@keyframes ring{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+#cdnMap .route{stroke:var(--answer);stroke-width:3;stroke-dasharray:6 6;fill:none;animation:flow .6s linear infinite}
+#cdnMap .route.far{stroke:var(--ink-2);stroke-width:1.5;opacity:.6;animation:none}
+#cdnMap text{font-size:13px;fill:var(--ink);font-family:"Noto Sans JP",sans-serif}
+#cdnMap text.small{font-size:11px;fill:var(--ink-2)}
+.cdn-flow{font-size:12.5px;display:flex;flex-direction:column;gap:8px}
+.cdn-flow .f{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface)}
+.cdn-flow .f b{font-family:"Noto Sans JP",sans-serif;font-size:12px;color:var(--ink-2);display:block;font-weight:500}
+.cdn-flow .f.hit{border-color:var(--answer);background:var(--answer-soft)}
+.cdn-flow .lat{font-family:"Noto Sans JP",sans-serif;font-size:13px}
+.cdn-flow .lat strong{font-family:"JetBrains Mono",monospace;font-size:20px;color:var(--answer)}
+
+/* --- 2.7 守る --- */
+.enc-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.enc-view{border-radius:12px;overflow:hidden;border:1px solid var(--line)}
+.enc-label{font-size:12px;font-weight:700;padding:6px 12px;background:var(--surface-2);color:var(--ink-2)}
+.enc-screen{background:#0d1117;color:#7ee787;font-size:12.5px;padding:12px;min-height:150px;white-space:pre-wrap;word-break:break-all;line-height:1.7}
+.enc-screen .warn{color:#ffa657}
+.enc-screen .dim{color:#6e7681}
+.enc-grid h3{margin:0 0 6px;font-size:18px}
+.spec{border-collapse:collapse;margin-top:10px;font-size:13px;width:100%}
+.spec td{padding:4px 8px;border-top:1px solid var(--line)}
+.spec td:first-child{color:var(--ink-2);width:5em}
+.race{position:relative;margin-top:14px;display:flex;flex-direction:column;gap:10px;padding-right:96px}
+.race-row{display:grid;grid-template-columns:8.5em 1fr;gap:10px;align-items:center}
+.race-who{font-size:13px;font-weight:700;line-height:1.3}
+.race-who small{font-weight:400;color:var(--ink-2);font-size:11px}
+.race-track{position:relative;height:34px;background:var(--surface-2);border-radius:8px}
+.race-chip{position:absolute;left:4px;top:5px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:600;padding:2px 10px;border-radius:6px;color:#fff;white-space:nowrap;transition:left .9s cubic-bezier(.4,0,.2,1),opacity .4s,transform .4s}
+.race-chip.fake{background:#c92a2a}
+.race-chip.real{background:var(--ok)}
+.race-chip.arrived{left:calc(100% - 136px)}
+.race-chip.rejected{opacity:.35;transform:rotate(-8deg)}
+.race-chip.rejected::after{content:" ✕"}
+.race-chip.accepted::after{content:" ✓"}
+.race-goal{position:absolute;right:0;top:0;bottom:0;width:86px;border:2px solid var(--line);border-radius:12px;display:grid;place-items:center;text-align:center;font-size:11px;font-weight:700;background:var(--surface);padding:4px}
+.race-result{margin-top:12px;font-size:15px;min-height:1.5em}
+.race-result .bad{color:#e03131;font-weight:700}
+.race-result .good{color:var(--ok);font-weight:700}
+.chain{display:flex;flex-direction:column;gap:4px;margin:6px 0}
+.chain-step{border:1px solid var(--line);border-radius:10px;padding:6px 10px;background:var(--surface-2);font-size:13px;display:flex;flex-direction:column}
+.chain-step b{font-family:"JetBrains Mono",monospace}
+.chain-step span{color:var(--ink-2);font-size:12px}
+.chain-arrow{font-size:12px;color:var(--accent);padding-left:12px}
+
+/* --- 2.8 試す --- */
+.can-list{list-style:none;margin:8px 0 0;padding:0;display:flex;flex-direction:column;gap:8px}
+.can-list li{position:relative;padding:8px 12px 8px 38px;border:1px solid var(--line);border-radius:10px;background:var(--surface-2);font-size:13.5px;line-height:1.6}
+.can-list li b{display:block;font-size:14.5px}
+.can-list li span{color:var(--ink-2)}
+.can-list li::before{position:absolute;left:12px;top:8px;font-weight:700;font-size:15px}
+.can-list li.yes::before{content:"✓";color:var(--ok)}
+.can-list li.no::before{content:"✕";color:var(--answer)}
+.cmds{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.cmd{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.cmd-line{display:flex;align-items:center;gap:8px;background:#0d1117;padding:8px 8px 8px 12px}
+.cmd-line code{flex:1;color:#e6edf3;font-size:13.5px;overflow-x:auto;white-space:nowrap}
+.cmd-line code::before{content:"$ ";color:#6e7681}
+.cmd-line button{font-size:12px;padding:3px 10px;background:#21262d;color:#e6edf3;border-color:#30363d}
+.cmd-desc{font-size:13.5px;padding:8px 12px}
+.trace-card{padding:0;overflow:hidden}
+.trace{background:#0d1117;color:#c9d1d9;font-size:12px;padding:12px 0;overflow-x:auto;line-height:1.75}
+.trace .ln{padding:0 14px;white-space:pre;cursor:default}
+.trace .ln.g{cursor:pointer;border-left:3px solid transparent}
+.trace .ln.g:hover{background:#161b22}
+.trace .ln.g.on{background:#1f2a40;border-left-color:#6ea0ff}
+.trace .ln.recv{color:#7ee787}
+.trace .ln.cmt{color:#6e7681}
+.trace .ln .k{color:#ffa657}
+.trace-explain{padding:14px 18px;font-size:15px;border-top:1px solid var(--line);min-height:80px}
+.trace-explain h4{margin:0 0 4px;font-size:16px}
+
+@media (max-width:720px){
+  .pc-body,.cdn-grid,.enc-grid,.cols{grid-template-columns:1fr}
+  .pc-chip{right:6px}
+  .lane{grid-template-columns:1fr 7em}
+  .lane .who{display:none}
+  .stair{margin-left:calc(var(--k) * 12px)}
+  .rec-a{white-space:normal;overflow-wrap:anywhere}
+  .race{padding-right:0}
+  .race-row{grid-template-columns:6.5em 1fr}
+  .race-goal{position:static;width:auto;padding:8px}
+}
+
+/* ===== サイバー調の仕上げ ===== */
+body{background-color:var(--bg);background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:32px 32px;background-attachment:fixed}
+.kicker{font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.kicker::before{content:"▍";animation:blink 1.1s steps(1) infinite;margin-right:4px}
+@keyframes blink{50%{opacity:0}}
+h1{background:linear-gradient(90deg,var(--ink) 30%,var(--accent));-webkit-background-clip:text;background-clip:text;color:transparent}
+h2 .num{font-size:13px;padding:2px 8px;border:1px solid var(--accent);border-radius:4px;text-shadow:0 0 8px var(--accent-soft);vertical-align:3px}
+h2 .num::before{content:"// "}
+.card{position:relative;background:linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));border-color:var(--line);border-radius:10px}
+.card::before,.card::after{content:"";position:absolute;width:14px;height:14px;pointer-events:none;z-index:2}
+.card::before{top:0;left:0;border-top:2px solid var(--accent);border-left:2px solid var(--accent);border-top-left-radius:10px}
+.card::after{bottom:0;right:0;border-bottom:2px solid var(--accent);border-right:2px solid var(--accent);border-bottom-right-radius:10px}
+button{border-radius:6px;background:transparent;transition:border-color .15s,box-shadow .15s,background .15s}
+button:hover:not(:disabled){border-color:var(--accent);box-shadow:var(--glow)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 0 16px var(--accent-soft)}
+button.on,.seg button.on{background:var(--accent-soft);border-color:var(--accent);color:var(--accent);box-shadow:none}
+.seg{border:1px solid var(--line);background:var(--bg)}
+.seg button.on{box-shadow:inset 0 0 0 1px var(--accent)}
+.stage-bar,.stepper-bar{background:var(--surface-2)}
+.counter{color:var(--accent)}
+.node .icon{background:var(--surface);border-radius:12px}
+.node .icon svg{color:var(--accent)}
+.node.hl .icon{box-shadow:var(--glow);border-color:var(--accent)}
+.node .lbl{background:var(--surface);border-color:var(--line);border-radius:4px}
+.bubble{background:var(--accent);color:var(--on-accent);box-shadow:var(--glow)}
+.bubble::after{border-top-color:var(--accent)}
+.packet .env{box-shadow:0 0 18px var(--accent)}
+.packet.ans .env{box-shadow:0 0 18px var(--answer)}
+.link.active{filter:drop-shadow(0 0 4px var(--accent))}
+.link.active.ans{filter:drop-shadow(0 0 4px var(--answer))}
+.explain .stepno,.stepno{font-family:"JetBrains Mono",monospace;letter-spacing:.1em}
+.layer{border-radius:8px;overflow:hidden}
+.layer.on{box-shadow:var(--glow)}
+.layer.on::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent,var(--accent-soft),transparent);transform:translateX(-100%);animation:scan 1.8s linear infinite;pointer-events:none}
+@keyframes scan{to{transform:translateX(100%)}}
+.pc-stack{border-color:var(--accent-soft);border-radius:12px}
+.pc-frame-label{font-family:"JetBrains Mono",monospace;color:var(--accent);letter-spacing:.1em}
+.pc-chip{box-shadow:0 0 14px var(--accent);color:var(--on-accent)}
+.pc-chip.lock{box-shadow:0 0 14px var(--ok)}
+.timeline button.cur{color:var(--on-accent);box-shadow:0 0 12px var(--accent-soft)}
+.timer{color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+.tabs button.on{color:var(--on-accent);box-shadow:var(--glow)}
+.chip{color:var(--on-accent)}
+.stair .blk{border-radius:6px}
+.cache-list .ttl{text-shadow:0 0 8px var(--ok-soft)}
+.packet .env,.race-chip.real,.cdn-flow .f.hit{color:var(--on-accent)}
+.cdn-flow .f.hit{background:var(--answer);border-color:var(--answer)}
+.cdn-flow .f.hit b{color:var(--on-accent);opacity:.75}
+.enc-screen{background:#02050a;border-top:1px solid var(--line);text-shadow:0 0 6px rgba(126,231,135,.35)}
+.timeline{scrollbar-color:var(--line) transparent}
+.timeline::-webkit-scrollbar{height:6px}
+.timeline::-webkit-scrollbar-track{background:transparent}
+.timeline::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+.zone{filter:drop-shadow(0 0 6px var(--board-grid))}
+
+/* 送信・受信している2台を強く、それ以外を弱く */
+.node .icon{position:relative}
+.node .role{position:absolute;top:-11px;right:-22px;font-size:11px;font-weight:700;line-height:1;padding:4px 7px;border-radius:4px;background:var(--accent);color:var(--on-accent);box-shadow:0 0 10px var(--accent);opacity:0;transition:opacity .25s}
+.node.send .role,.node.recv .role{opacity:1}
+.node.hl .icon{background:var(--accent-soft);border-width:2.5px}
+.node.hl .lbl{border-color:var(--accent);color:var(--ink);box-shadow:0 0 10px var(--accent-soft)}
+.node.hl .sub{color:var(--ink)}
+.node.ans .icon{border-color:var(--answer);background:var(--answer-soft);box-shadow:0 0 0 1px var(--answer),0 0 22px var(--answer-soft)}
+.node.ans .icon svg{color:var(--answer)}
+.node.ans .lbl{border-color:var(--answer)}
+.node.ans .role{background:var(--answer);box-shadow:0 0 10px var(--answer)}
+.node.dim{opacity:.28;filter:grayscale(.7)}
+.zone,.zone-label{transition:opacity .4s}
+.zone-dim{opacity:.35}
+
+/* 色のトークンで切り替える装飾（ダークでは控えめ・ライトでは色を足す） */
+body::before{content:"";position:fixed;inset:0;background:var(--wash);pointer-events:none;z-index:-1}
+h1{background-image:var(--h1-grad)}
+h2 .num{background:var(--num-bg);color:var(--num-fg)}
+.card{background-image:var(--strip),linear-gradient(180deg,var(--surface),var(--surface) 60%,var(--surface-2));background-size:100% 3px,auto;background-repeat:no-repeat}
+.stage-bar,.stepper-bar{background:var(--bar-bg)}
+button.primary,.timeline button.cur:not(.ans){background:var(--primary-bg);border-color:transparent}
+.sub-h{border-left:4px solid transparent;border-image:var(--subh-bar) 1;padding-left:10px}
+.summary li::marker{color:var(--accent2)}
+@media (prefers-reduced-motion: reduce){
+  .kicker::before,.layer.on::after{animation:none}
+}
+.top-nav{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:13px;margin-bottom:14px}
+.top-nav a{color:var(--ink-2);text-decoration:none}
+.top-nav a:hover{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none;color:var(--accent)}
+
+/* ===== 章をまたいで使う部品（第3章以降） ===== */
+:root{--bad:#dc2626;--c-port:#64748b}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bad:#ff5c5c;--c-port:#94a3b8}}
+:root[data-theme="dark"]{--bad:#ff5c5c;--c-port:#94a3b8}
+.card a{color:var(--accent)}
+.chap-nav{margin-bottom:14px;font-size:15px}
+.chap-nav a{text-decoration:none}
+.chap-nav a:hover{text-decoration:underline}
+.ver-bar{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;margin-bottom:14px}
+.toggle{display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.toggle input{accent-color:var(--answer);width:16px;height:16px}
+.tag{display:inline-block;font-family:"JetBrains Mono",monospace;padding:0 6px;border-radius:4px;font-size:11px}
+.tag.q{background:var(--accent-soft);color:var(--accent)}
+.tag.a{background:var(--answer-soft);color:var(--answer)}
+kbd{font-family:"JetBrains Mono",monospace;font-size:12px;border:1px solid var(--line);border-bottom-width:2px;border-radius:4px;padding:0 5px;background:var(--surface-2)}
+.tbl-wrap{overflow-x:auto;margin-top:14px}
+table.cmp{width:100%;border-collapse:collapse;font-size:14px;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+table.cmp th,table.cmp td{padding:8px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+table.cmp thead th{background:var(--surface-2);font-size:13px;color:var(--ink-2)}
+table.cmp tbody th{font-weight:700;white-space:nowrap;color:var(--ink-2);font-size:13px}
+table.cmp tr:last-child td,table.cmp tr:last-child th{border-bottom:0}
+.trace .ln .hk{color:#79c0ff}
+.explain-box{margin-top:12px;font-size:14.5px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;min-height:3em}
+.explain-box b.t{display:block;font-size:15.5px}
+.explain-box.ans{border-left-color:var(--answer)}
+.big-stat{display:flex;align-items:baseline;gap:6px;font-size:13px;color:var(--ink-2)}
+.big-stat b{font-family:"JetBrains Mono",monospace;font-size:26px;color:var(--accent);text-shadow:0 0 12px var(--accent-soft)}
+input[type=range]{accent-color:var(--accent);width:100%}
+
+/* あいさつの図（はしご型） */
+.hs-card{padding:0;overflow:hidden}
+.hs-ladder{padding:16px 20px 6px}
+.hs-ends{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:6px}
+.hs-end{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:14px}
+.hs-state{font-family:"JetBrains Mono",monospace;font-size:11.5px;padding:1px 8px;border-radius:4px;border:1px solid var(--line);color:var(--ink-2);transition:all .3s}
+.hs-state.est{border-color:var(--ok);color:var(--ok);background:var(--ok-soft)}
+.hs-state.mid{border-color:var(--accent);color:var(--accent)}
+.hs-rows{position:relative;display:flex;flex-direction:column;gap:6px;padding:6px 0;min-height:200px;background:linear-gradient(var(--line),var(--line)) 25% 0/2px 100% no-repeat,linear-gradient(var(--line),var(--line)) 75% 0/2px 100% no-repeat}
+.hs-row{position:relative;height:44px;opacity:0;animation:in .4s forwards}
+.hs-arrow{position:absolute;top:22px;left:25%;right:25%;height:2px;background:var(--c);box-shadow:0 0 8px var(--c)}
+.hs-arrow::after{content:"";position:absolute;top:-5px;border:6px solid transparent}
+.hs-row.r .hs-arrow::after{right:-2px;border-left:9px solid var(--c);border-right:0}
+.hs-row.l .hs-arrow::after{left:-2px;border-right:9px solid var(--c);border-left:0}
+.hs-lbl{position:absolute;top:0;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:12.5px;font-weight:600;white-space:nowrap;color:var(--c);background:var(--surface);padding:0 8px;border-radius:4px}
+.hs-num{position:absolute;top:26px;left:50%;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--ink-2);white-space:nowrap}
+.hs-row.q{--c:var(--accent)}.hs-row.a{--c:var(--answer)}.hs-row.d{--c:var(--ok)}
+.hs-explain{padding:4px 20px 18px;font-size:15px}
+.hs-explain h3{margin:0 0 4px;font-size:18px}
+
+@keyframes pin{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+@media (max-width:720px){.hs-lbl{font-size:11px}.hs-num{font-size:10px}}
+
+/* 小さなブラウザの画面 */
+.mini-browser{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);display:flex;flex-direction:column;min-height:150px}
+.mb-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--surface-2);border-bottom:1px solid var(--line)}
+.mb-dots{display:flex;gap:4px}.mb-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.mb-url{flex:1;min-width:0;font-size:11.5px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:2px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mb-page{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:16px;text-align:center;font-size:14px}
+.mb-page .big{font-size:26px;font-weight:700;line-height:1.2}
+.mb-page .sm{font-size:12px;color:var(--ink-2)}
+.mb-page.warn{background:rgba(220,38,38,.08)}
+.row-btns{flex-wrap:wrap}
+.row-btns button,.ver-bar button{white-space:nowrap}
+.tri{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.tri .mini-card p{margin:0}
+.rtt-lbl{display:flex;flex-direction:column;gap:4px;font-size:14px}
+.rtt-lbl b{font-family:"JetBrains Mono",monospace;color:var(--accent)}
+@media (max-width:720px){.tri{grid-template-columns:1fr}}
+section > .card + .card{margin-top:14px}
+.note a{color:var(--accent)}
+.devtools ol{margin:6px 0 0;padding-left:1.4em;font-size:14.5px}
+.devtools li{margin:4px 0}
+.stepper > .explain-box{margin:0 20px 18px}
+
+/* ===== 第5章 ===== */
+/* 5.1 カプセル化 */
+.enc-size{align-self:center;font-size:13px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+.enc-stage{display:flex;justify-content:center;margin:16px 0 4px;min-height:120px}
+.enc-l{display:flex;align-items:stretch;border-radius:10px;border:2px solid var(--c);background:color-mix(in srgb,var(--c) 10%,transparent);padding:6px;gap:6px;animation:wrapin .45s cubic-bezier(.3,.7,.2,1)}
+@keyframes wrapin{from{transform:scale(1.08);opacity:0}to{transform:none;opacity:1}}
+.enc-tag{display:flex;flex-direction:column;justify-content:center;gap:2px;padding:6px 10px;border-radius:6px;background:var(--c);color:var(--on-accent);font-size:12px;font-weight:700;cursor:pointer;border:0;min-width:74px;text-align:center;line-height:1.35}
+.enc-tag small{font-weight:400;font-size:10.5px;opacity:.85;font-family:"JetBrains Mono",monospace}
+.enc-tag.sel{outline:3px solid var(--ink);outline-offset:1px}
+.enc-core{display:grid;place-items:center;padding:10px 14px;border-radius:6px;border:1px dashed var(--c);font-family:"JetBrains Mono",monospace;font-size:12px;color:var(--ink-2);text-align:center;min-width:120px}
+.L-app{--c:#ec4899}.L-tcp{--c:var(--accent2)}.L-ip{--c:var(--accent)}.L-eth{--c:var(--answer)}
+.enc-l.L-eth > .enc-tag:last-child{min-width:46px}
+
+/* 5.2 サブネット */
+.sn-ctrl{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:14px;align-items:center}
+.sn-ip{font:inherit;font-family:"JetBrains Mono",monospace;font-size:16px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);width:100%}
+.sn-len{display:flex;align-items:center;gap:12px;font-family:"JetBrains Mono",monospace;font-size:18px}
+.sn-len b{color:var(--accent)}
+.sn-bits{margin:14px 0 8px;display:flex;flex-wrap:wrap;gap:6px 10px;font-size:15px}
+.sn-oct{display:flex;flex-direction:column;align-items:center;gap:2px}
+.sn-oct .d{font-size:12px;color:var(--ink-2)}
+.sn-oct .b span{padding:1px 0}
+.sn-oct .b .n{color:var(--accent);text-shadow:0 0 8px var(--accent-soft);font-weight:700}
+.sn-oct .b .h{color:var(--answer)}
+.sn-res{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px}
+.sn-res div{border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--surface-2);font-size:12.5px;color:var(--ink-2)}
+.sn-res b{display:block;font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--ink)}
+.sn-res .kind{grid-column:1/-1;color:var(--ink);font-size:13.5px}
+
+/* 5.3 IPv6 */
+.v6-out{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.v6-row{display:grid;grid-template-columns:8em minmax(0,1fr);gap:10px;align-items:start;font-size:13px}
+.v6-row .k{color:var(--ink-2);padding-top:4px}
+.v6-row .v{font-family:"JetBrains Mono",monospace;font-size:13.5px;background:var(--surface-2);border-radius:6px;padding:4px 10px;overflow-wrap:anywhere}
+.v6-row .v .z{color:var(--ink-2);opacity:.6}
+.v6-row .v .pfx{color:var(--accent)}
+.v6-row .v .iid{color:var(--answer)}
+.v6-err{color:var(--answer);font-size:14px}
+
+/* 5.4 ヘッダー */
+.hdr-grid{display:grid;grid-template-columns:repeat(32,1fr);gap:3px;margin:4px 0}
+.hdr-scale{grid-column:span 8;font-size:10px;color:var(--ink-2);font-family:"JetBrains Mono",monospace;border-left:1px solid var(--line);padding-left:3px}
+.hdr-f{border:1px solid var(--line);border-radius:5px;background:var(--surface-2);font-size:11.5px;padding:6px 4px;text-align:center;cursor:pointer;line-height:1.3;min-height:40px;display:flex;flex-direction:column;justify-content:center;transition:all .15s;color:var(--ink)}
+.hdr-f small{display:block;font-size:9.5px;color:var(--ink-2);font-family:"JetBrains Mono",monospace}
+.hdr-f:hover{border-color:var(--accent)}
+.hdr-f.key{background:var(--accent-soft);border-color:var(--accent)}
+.hdr-f.sel{box-shadow:var(--glow);border-color:var(--accent);background:var(--accent-soft)}
+
+/* 5.5 同じネットワークか */
+.rt-pc{font-size:13.5px;margin-bottom:10px}
+.rt-pc b{color:var(--accent)}
+.nb-calc{margin-top:12px;font-size:13px;background:#0d1117;color:#c9d1d9;border-radius:8px;padding:10px 14px;line-height:1.8;overflow-x:auto;white-space:pre}
+.nb-calc .n{color:#79c0ff}.nb-calc .g{color:#7ee787}.nb-calc .x{color:#ff7b72}
+.nb-res{margin-top:10px;font-size:14.5px;border-left:3px solid var(--accent);padding:2px 0 2px 12px;min-height:2em}
+
+/* 5.6 ARP */
+.arp-lan{position:relative;display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin:16px 0 8px;padding:14px 8px 8px;border-radius:12px;border:2px dashed var(--line)}
+.arp-lan::before{content:"家のネットワーク（192.168.1.0/24）";position:absolute;top:-10px;left:12px;font-size:11px;font-weight:700;color:var(--ink-2);background:var(--surface);padding:0 6px}
+.arp-dev{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11.5px;text-align:center;position:relative;transition:opacity .3s}
+.arp-ic{width:46px;height:46px;border-radius:12px;border:2px solid var(--line);display:grid;place-items:center;font-size:22px;background:var(--surface);transition:all .3s}
+.arp-dev .ip{font-family:"JetBrains Mono",monospace;font-size:10.5px;color:var(--ink-2)}
+.arp-dev .bub{position:absolute;top:-30px;left:50%;transform:translateX(-50%) scale(.7);white-space:nowrap;font-size:11px;font-weight:700;padding:3px 8px;border-radius:8px;opacity:0;transition:all .25s;z-index:2}
+.arp-dev .bub.q{background:var(--accent);color:var(--on-accent)}
+.arp-dev .bub.a{background:var(--answer);color:var(--on-accent)}
+.arp-dev .bub.show{opacity:1;transform:translateX(-50%) scale(1)}
+.arp-dev.hear .arp-ic{border-color:var(--accent);box-shadow:var(--glow)}
+.arp-dev.ignore{opacity:.4}
+.arp-dev.reply .arp-ic{border-color:var(--answer);box-shadow:0 0 0 1px var(--answer),0 0 18px var(--answer-soft)}
+.arp-bottom{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:14px;align-items:start;margin-top:14px}
+.arp-table{border:1px solid var(--line);border-radius:10px;padding:8px 10px;background:var(--surface-2);min-height:64px}
+.arp-h{font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:4px}
+.arp-row{font-family:"JetBrains Mono",monospace;font-size:12px;display:flex;justify-content:space-between;gap:8px;animation:pin .35s}
+.arp-row b{color:var(--answer)}
+.arp-empty{font-size:12px;color:var(--ink-2)}
+
+/* 5.7 フレームとMAC */
+.frame{display:flex;flex-wrap:wrap;gap:4px;margin:14px 0}
+.fr-f{flex:var(--w) 1 0;min-width:84px;border-radius:6px;padding:6px 8px;font-size:12px;line-height:1.4;border:1px solid var(--c);background:color-mix(in srgb,var(--c) 12%,transparent)}
+.fr-f b{display:block;font-size:12.5px;color:var(--c)}
+.fr-f span{color:var(--ink-2);font-family:"JetBrains Mono",monospace;font-size:11px}
+.mac-out{display:flex;flex-direction:column;gap:6px;margin-top:12px}
+.mac-bytes{display:flex;flex-wrap:wrap;gap:6px;font-family:"JetBrains Mono",monospace}
+.mac-b{display:flex;flex-direction:column;align-items:center;padding:4px 8px;border-radius:6px;border:1px solid var(--line);background:var(--surface-2);font-size:14px}
+.mac-b small{font-size:10px;color:var(--ink-2)}
+.mac-b.oui{border-color:var(--accent);background:var(--accent-soft)}
+.mac-b .bits{font-size:10.5px;letter-spacing:.06em}
+.mac-b .bits i{font-style:normal}
+.mac-b .bits i.ul{color:var(--answer);font-weight:700;text-decoration:underline}
+.mac-b .bits i.ig{color:var(--bad);font-weight:700;text-decoration:underline}
+.mac-note{font-size:13.5px;padding:6px 10px;border-radius:8px;background:var(--surface-2)}
+.mac-note b{color:var(--accent)}
+
+/* 5.8 信号 */
+.sig-bytes{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0 6px;font-size:13px}
+.sig-byte{display:flex;flex-direction:column;align-items:center;padding:4px 8px;border-radius:6px;background:var(--surface-2);border:1px solid var(--line)}
+.sig-byte small{font-size:11px;color:var(--ink-2);font-family:"Noto Sans JP",sans-serif}
+.sig-byte .bits{color:var(--accent);letter-spacing:.08em}
+.sig-wave{width:100%;height:90px;display:block;background:#0d1117;border-radius:8px}
+.sig-wave path{fill:none;stroke:#7ee787;stroke-width:2;filter:drop-shadow(0 0 3px rgba(126,231,135,.6))}
+.sig-wave text{fill:#6e7681;font-size:10px;font-family:"JetBrains Mono",monospace}
+.sig-wave line{stroke:#30363d;stroke-width:1}
+
+@media (max-width:720px){
+  .sn-ctrl{grid-template-columns:1fr}
+  .enc-stage{overflow-x:auto;justify-content:flex-start}
+  .enc-tag{min-width:52px;padding:4px 6px;font-size:11px}
+  .enc-core{min-width:70px;padding:6px}
+  .hdr-f{font-size:9.5px;padding:4px 1px;min-height:34px}
+  .hdr-f small{display:none}
+  .arp-lan{grid-template-columns:repeat(5,1fr);gap:2px}
+  .arp-ic{width:36px;height:36px;font-size:18px}
+  .arp-dev{font-size:10px}
+  .arp-dev .ip{display:none}
+  .arp-bottom{grid-template-columns:1fr}
+  .v6-row{grid-template-columns:1fr;gap:2px}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <nav class="top-nav"><a href="index.html">← 目次</a><a href="https.html">← 第4章 HTTPS</a><a href="router.html">第6章 スイッチとルーター →</a></nav>
+  <div class="kicker">触って学ぶネットワーク ・ 第5章（試作）</div>
+  <h1>IPとイーサネットで包む</h1>
+  <p class="lead">鍵をかけた手紙は、TCPが小分けにしてくれました。この章では、その1つ1つを<b>小包</b>に詰め、「どこの住所あてか（IP）」と「すぐ隣のだれに渡すか（イーサネット）」の2枚のラベルを貼って、電気や電波の信号として送り出すまでを見ていきます。</p>
+</header>
+
+<section>
+  <h2><span class="num">5.1</span>封筒を、さらに封筒に入れる</h2>
+  <p>ネットワークでは、データを送り出すときに、係ごとに<b>封筒に入れて、自分のラベルを貼る</b>ことをくり返します。中身には手をつけず、外側に情報を足していくだけです。これを<b>カプセル化</b>と呼びます。「包む」を押して、小包ができあがる様子を見てみましょう。ラベルを押すと、何が書いてあるかがわかります。</p>
+  <div class="card">
+    <div class="row-btns" style="margin-top:0">
+      <button class="primary" id="encNext">包む ▶</button>
+      <button id="encReset">最初から</button>
+      <span class="enc-size" id="encSize"></span>
+    </div>
+    <div class="enc-stage" id="encStage"></div>
+    <div class="explain-box" id="encExplain" aria-live="polite"></div>
+  </div>
+  <p>受け取った側は、逆に外側から1枚ずつラベルを読んで、封筒を開けていきます（第9章）。それぞれの係は<b>自分のラベルだけを見て仕事をする</b>ので、たとえば Wi-Fi が有線に変わっても、TCPやHTTPは何も変えなくて済みます。このように仕事を<b>層（レイヤー）</b>に分けるのが、ネットワークの大きな工夫です。</p>
+</section>
+
+<section>
+  <h2><span class="num">5.2</span>IPアドレスは「町名」と「番地」でできている</h2>
+  <p>IPv4のアドレスは、0〜255の数字4つ（全部で32ビット）でした。この32ビットは、前の方が<b>ネットワーク部</b>（どの町か）、後ろが<b>ホスト部</b>（その町の何番地か）に分かれています。どこで分けるかを表すのが、末尾の <code>/24</code> のような数字（プレフィックス長）です。数字を変えてみましょう。</p>
+  <div class="card">
+    <div class="sn-ctrl">
+      <input id="snIp" class="sn-ip mono" value="192.168.1.23" aria-label="IPアドレス" spellcheck="false" autocomplete="off">
+      <label class="sn-len"><span>/<b id="snLenOut">24</b></span><input type="range" id="snLen" min="8" max="30" value="24"></label>
+    </div>
+    <div class="presets" id="snPresets">
+      <button data-ip="192.168.1.23/24">家のPC（/24）</button>
+      <button data-ip="10.20.30.40/8">会社（/8）</button>
+      <button data-ip="203.0.113.77/26">小さく区切る（/26）</button>
+      <button data-ip="100.64.12.5/10">プロバイダの中（/10）</button>
+    </div>
+    <div class="sn-bits mono" id="snBits"></div>
+    <div class="sn-res" id="snRes"></div>
+  </div>
+  <div class="cols">
+    <div class="card mini-card">
+      <h3>家の中だけで使う住所（プライベートアドレス）</h3>
+      <p><code>10.0.0.0/8</code>・<code>172.16.0.0/12</code>・<code>192.168.0.0/16</code> は、家や会社の中だけで自由に使ってよい住所です（RFC 1918）。インターネットに出るときは、ルーターが外の住所に付けかえます（第6章のNAT）。世界中の家に <code>192.168.1.x</code> があるのはこのためです。</p>
+    </div>
+    <div class="card mini-card">
+      <h3>IPv4 は足りなくなった</h3>
+      <p>32ビットで表せるのは、約43億個。世界の人口より少なく、新しく配る住所は、地域ごとの管理団体で2011年から2019年にかけて次々に尽きました。日本を含むアジア太平洋は2011年です。そこで、プライベートアドレスとNATで1つの住所をみんなで使い回しつつ、新しい IPv6 への移行が進んでいます。</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">5.3</span>IPv6 ── 住所がほぼ無限にある世界</h2>
+  <p><b>IPv6</b> のアドレスは<b>128ビット</b>。IPv4の4倍の長さで、数にすると 2<sup>128</sup>（約340澗＝3.4×10<sup>38</sup>）個です。地球上の砂粒すべてに配ってもあまるほどあります。16進数で、4けたずつ8つに区切って書きます。長いので、決まった書き方で縮めます。いろいろ入れてみましょう。</p>
+  <div class="card">
+    <div class="domain-input">
+      <input id="v6In" class="mono" value="2001:0db8:0000:0000:0000:ff00:0042:8329" aria-label="IPv6アドレス" spellcheck="false" autocomplete="off">
+      <button class="primary" id="v6Btn">読みとく</button>
+    </div>
+    <div class="presets" id="v6Presets">
+      <button data-v="2001:0db8:0000:0000:0000:ff00:0042:8329">長い形</button>
+      <button data-v="2001:db8::1">短い形</button>
+      <button data-v="fe80::1cb2:cc9f:77e4:411e">同じネットワーク専用</button>
+      <button data-v="::1">自分自身</button>
+    </div>
+    <div class="v6-out" id="v6Out"></div>
+  </div>
+  <p>Google の統計では、2026年春に、Google に届くアクセスのうちIPv6が<b>初めて半分をこえました</b>。住所が足りるので、IPv6では家の機器にも世界で1つだけの住所が配られ、NATがいりません。今はまだ、IPv4とIPv6の両方を使える状態（デュアルスタック）が主流で、第2章で見た「A と AAAA を同時に聞いて、速くつながった方を使う」工夫は、このためにあります。</p>
+</section>
+
+<section>
+  <h2><span class="num">5.4</span>IPのラベルに書いてあること</h2>
+  <p>IPのラベル（<b>IPヘッダー</b>）には、宛先と差出人の住所のほかにも、大切な情報が書かれています。1行が32ビットの表になっています。ます目を押してみましょう。</p>
+  <div class="card">
+    <div class="seg wrap-seg" id="hdrMode">
+      <button data-h="4" class="on">IPv4（20バイト）</button>
+      <button data-h="6">IPv6（40バイト）</button>
+    </div>
+    <div class="hdr-grid" id="hdrGrid"></div>
+    <div class="explain-box" id="hdrExplain" aria-live="polite"></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">5.5</span>相手は同じネットワーク？ それとも外？</h2>
+  <p>小包を送る前に、PCはまず<b>「相手は自分と同じネットワーク（同じ町）にいるか」</b>を調べます。同じなら直接渡し、ちがえば町の出口にいる<b>ルーター</b>（デフォルトゲートウェイ）に預けます。宛先を選んでみましょう。</p>
+  <div class="card">
+    <div class="rt-pc mono">あなたのPC：<b>192.168.1.23/24</b>　ルーター：<b>192.168.1.1</b></div>
+    <div class="presets" id="nbDest">
+      <button data-d="192.168.1.50">192.168.1.50（家のプリンター）</button>
+      <button data-d="203.0.113.10">203.0.113.10（Webサーバー）</button>
+      <button data-d="192.168.2.7">192.168.2.7（となりの町）</button>
+      <button data-d="192.168.1.1">192.168.1.1（ルーター）</button>
+    </div>
+    <div class="nb-calc mono" id="nbCalc"></div>
+    <div class="nb-res" id="nbRes" aria-live="polite"></div>
+  </div>
+  <p>どの宛先をだれに預けるかの決まりを、<b>経路表（ルーティングテーブル）</b>と呼びます。PCの経路表はとても単純で、「同じネットワークなら直接、それ以外（<code>default</code>）はルーターへ」の2行が中心です。ルーターの経路表は第6章で見ます。</p>
+</section>
+
+<section>
+  <h2><span class="num">5.6</span>ARP ── IPアドレスから、隣の人の名札を探す</h2>
+  <p>IPアドレスは「最終的な宛先の住所」です。でも、実際に電線や電波で小包を渡すときには、<b>すぐ隣の機器の名札（MACアドレス）</b>が必要です。ルーターのIPアドレスはわかっていても、MACアドレスはわかりません。そこで、ネットワークの全員に大声でたずねます。これが <b>ARP</b> です。</p>
+  <div class="card">
+    <div class="row-btns" style="margin-top:0">
+      <button class="primary" id="arpBtn">ルーターに小包を送る</button>
+      <button id="arpClear">ARPの記憶を消す</button>
+    </div>
+    <div class="arp-lan" id="arpLan"></div>
+    <div class="arp-bottom">
+      <div class="arp-table"><div class="arp-h">PCのARPの記憶</div><div id="arpTable"></div></div>
+      <div class="explain-box" id="arpExplain" aria-live="polite"></div>
+    </div>
+  </div>
+  <p class="note">IPv6 では ARP の代わりに、NDP（近隣探索）という仕組みで同じことをします。全員に叫ぶのではなく、関係しそうな機器のグループにだけたずねるので、むだが少なくなっています。</p>
+</section>
+
+<section>
+  <h2><span class="num">5.7</span>イーサネットのラベルとMACアドレス</h2>
+  <p>いちばん外側のラベルが <b>イーサネットヘッダー</b>です。書いてあるのは、<b>次に渡す相手のMACアドレス</b>、<b>自分のMACアドレス</b>、そして<b>中身の種類</b>（IPv4かIPv6か）だけ。最後に、途中で信号がこわれていないか確かめるための数字（FCS）がつきます。</p>
+  <div class="frame" id="frame"></div>
+  <p>MACアドレスは48ビットで、ネットワークの機器が1台ずつ持つ名札です。前半の3バイトは、メーカーごとに割り当てられた番号です。MACアドレスを入れて、読みといてみましょう。</p>
+  <div class="card">
+    <div class="domain-input">
+      <input id="macIn" class="mono" value="96:89:3f:12:34:56" aria-label="MACアドレス" spellcheck="false" autocomplete="off">
+      <button class="primary" id="macBtn">読みとく</button>
+    </div>
+    <div class="presets" id="macPresets">
+      <button data-m="f8:94:97:12:34:56">家のルーター（メーカーの番号）</button>
+      <button data-m="96:89:3f:12:34:56">このMacのWi-Fi</button>
+      <button data-m="ff:ff:ff:ff:ff:ff">全員あて</button>
+    </div>
+    <div class="mac-out" id="macOut"></div>
+  </div>
+  <p>スマホやPCは、プライバシーを守るため、Wi-Fiごとに<b>ランダムなMACアドレス</b>を使うようになっています（iPhone は2020年の iOS 14 から）。お店のWi-Fiなどで、同じ機器だと追いかけられないようにするためです。</p>
+</section>
+
+<section>
+  <h2><span class="num">5.8</span>最後は、電気・光・電波の信号に</h2>
+  <p>できあがった小包は、LANアダプタ（Wi-Fiや有線のつなぎ口）で<b>0と1の信号</b>に変えられ、ケーブルや空中に送り出されます。文字が信号になる様子を、ごく単純にした形で見てみましょう。</p>
+  <div class="card">
+    <div class="domain-input">
+      <input id="sigIn" value="Hi" maxlength="4" aria-label="文字" spellcheck="false" autocomplete="off">
+      <span class="note">← 4文字まで</span>
+    </div>
+    <div class="sig-bytes mono" id="sigBytes"></div>
+    <svg class="sig-wave" id="sigWave" viewBox="0 0 640 90" preserveAspectRatio="none" aria-label="信号の波形"></svg>
+  </div>
+  <p>図では「1は高い電圧、0は低い電圧」としましたが、実際はもっと複雑です。たとえば今の有線LANでは、電圧の高さを何段階も使い分けて1回に何ビットも送ります。Wi-Fi では、電波の強さとずれ方の組み合わせで、1回に10ビット以上を送ることもあります（Wi-Fi 7、IEEE 802.11be、2024年承認）。光ファイバーでは、光の点滅や強さで表します（第7章）。</p>
+</section>
+
+<section>
+  <h2><span class="num">5.9</span>自分のPCで試してみよう</h2>
+  <p>自分のPCのIPアドレス、ルーター、ARPの記憶は、コマンドで確かめられます。</p>
+  <div class="card">
+    <div class="seg wrap-seg">
+      <button data-os="mac" class="on">Mac</button>
+      <button data-os="win">Windows</button>
+    </div>
+    <div class="cmds" id="cmds"></div>
+  </div>
+  <h3 class="sub-h">実際の結果を読んでみよう</h3>
+  <p>下は、2026年10月18日に Mac で実行した、実際の結果です（MACアドレスの一部は伏せています）。行を押すと説明が出ます。</p>
+  <div class="card trace-card">
+    <div class="trace mono" id="real"></div>
+    <div class="trace-explain" id="realExplain" aria-live="polite"><span class="note">↑ 気になる行を押してみてください</span></div>
+  </div>
+</section>
+
+<section>
+  <h2><span class="num">5.10</span>まとめ</h2>
+  <div class="card summary">
+    <ul>
+      <li>係ごとに封筒に入れてラベルを貼る（<b>カプセル化</b>）。HTTP → TCP → IP → イーサネット の順に外側へ包む</li>
+      <li>IPv4アドレスは32ビット。<b>ネットワーク部</b>と<b>ホスト部</b>に分かれ、境目を <code>/24</code> のように表す</li>
+      <li>家の中では <b>プライベートアドレス</b>（192.168.x.x など）を使う。IPv4は足りなくなった</li>
+      <li><b>IPv6</b> は128ビット。2026年春に、Google へのアクセスの半分をこえた</li>
+      <li>PCは、相手が同じネットワークなら直接、ちがえば<b>ルーター</b>に預ける</li>
+      <li>隣の機器のMACアドレスは <b>ARP</b> で全員にたずねて調べ、しばらく覚えておく</li>
+      <li>イーサネットのラベルには、<b>次に渡す相手と自分のMACアドレス</b>だけが書かれる</li>
+      <li>最後に、電気・光・電波の信号として送り出す</li>
+    </ul>
+  </div>
+  <p>小包は、PCを出て、家の中のネットワークへ旅立ちました。次の章では、この小包を受け取って、次へ次へと送り届けていく<b>スイッチとルーター</b>の仕事を見ていきます。</p>
+
+  <h2><span class="num">5.11</span>確認クイズ</h2>
+  <div class="quiz" id="quiz"></div>
+</section>
+
+<footer>
+  <div class="chap-nav"><a href="router.html">次の章：<b>第6章 スイッチとルーター</b> →</a></div>
+  この教材の文章と図はオリジナルです。数値や出来事は2026年10月18日時点で確認したものです。<br>
+  参考：RFC 791（IPv4）、RFC 8200（IPv6）、RFC 4291・5952（IPv6アドレスと書き方）、RFC 1918（プライベートアドレス）、RFC 6598（共有アドレス 100.64.0.0/10）、RFC 826（ARP）、RFC 4861（NDP）、IEEE 802.3（イーサネット）、<a href="https://www.google.com/intl/en/ipv6/statistics.html" target="_blank" rel="noopener">Google IPv6 統計</a>、<a href="https://blog.apnic.net/2026/04/28/google-hits-50-ipv6/" target="_blank" rel="noopener">APNIC Blog（2026年4月）</a>
+</footer>
+</div>
+
+<script>
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const $ = id => document.getElementById(id);
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const reduced = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* コマンド集（Mac / Windows の切り替えとコピー） */
+function setupCmds(C, boxId = 'cmds'){
+  const box = $(boxId);
+  function show(os){
+    document.querySelectorAll('[data-os]').forEach(b => b.classList.toggle('on', b.dataset.os === os));
+    box.innerHTML = C[os].map(([c, d]) => `<div class="cmd"><div class="cmd-line"><code>${esc(c)}</code><button data-c="${esc(c)}">コピー</button></div><div class="cmd-desc">${d}</div></div>`).join('') + (C[os + 'Note'] || '');
+    box.querySelectorAll('[data-c]').forEach(b => b.onclick = async () => {
+      try{ await navigator.clipboard.writeText(b.dataset.c); b.textContent = 'コピーした'; }
+      catch(e){ b.textContent = '選択してコピーしてね'; }
+      setTimeout(() => b.textContent = 'コピー', 1500);
+    });
+  }
+  document.querySelectorAll('[data-os]').forEach(b => b.onclick = () => show(b.dataset.os));
+  show('mac');
+}
+
+/* 実際の結果を1行ずつ解説する欄。L=[[グループ, 行の文字]]、E={グループ:[見出し, 説明]}。グループ'c'は説明なしの行 */
+function setupTrace(id, exId, L, E){
+  const tr = $(id);
+  tr.innerHTML = L.map(([g, t]) => `<div class="ln ${g === 'c' ? 'cmt' : 'g'}" data-g="${g}" ${g === 'c' ? '' : 'tabindex="0" role="button"'}>${esc(t).replace(/^([a-zA-Z_-]+[:=])/, '<span class="k">$1</span>')}</div>`).join('');
+  function pick(g){
+    tr.querySelectorAll('.ln').forEach(l => l.classList.toggle('on', l.dataset.g === g));
+    $(exId).innerHTML = `<h4>${E[g][0]}</h4>${E[g][1]}`;
+  }
+  tr.querySelectorAll('.ln.g').forEach(l => {
+    l.onclick = () => pick(l.dataset.g);
+    l.onkeydown = ev => { if(ev.key === 'Enter' || ev.key === ' '){ ev.preventDefault(); pick(l.dataset.g); } };
+  });
+}
+
+/* 確認クイズ */
+function setupQuiz(QUIZ, id = 'quiz'){
+  const quizEl = $(id);
+  QUIZ.forEach((item, qi) => {
+    const d = document.createElement('div');
+    d.className = 'card q';
+    d.innerHTML = `<b>Q${qi + 1}. ${item.q}</b><div class="opts">${item.o.map((o, k) => `<button data-k="${k}">${o}</button>`).join('')}</div><div class="fb"></div>`;
+    d.querySelectorAll('.opts button').forEach(b => b.onclick = () => {
+      const k = +b.dataset.k;
+      d.querySelectorAll('.opts button').forEach(x => x.classList.remove('right', 'wrong'));
+      b.classList.add(k === item.a ? 'right' : 'wrong');
+      d.querySelector('.fb').innerHTML = (k === item.a ? '⭕ 正解！ ' + item.e : '❌ もう一度考えてみよう。');
+    });
+    quizEl.appendChild(d);
+  });
+}
+
+/* 1歩ずつ進める手順（最初から・戻る・次へ）。render(i) を呼ぶ */
+function setupStepper({first, prev, next, count, total, render}){
+  let i = 0;
+  const upd = () => { render(i); $(count).textContent = `${i + 1} / ${total}`; $(prev).disabled = i === 0; $(next).disabled = i === total - 1; };
+  $(first).onclick = () => { i = 0; upd(); };
+  $(prev).onclick = () => { if(i > 0){ i--; upd(); } };
+  $(next).onclick = () => { if(i < total - 1){ i++; upd(); } };
+  upd();
+}
+
+/* 点を折れ線にそって動かす（SVG） */
+function moveDot(svg, pts, dur, color, r = 6){
+  return new Promise(res => {
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('r', r); c.setAttribute('fill', color); c.style.filter = `drop-shadow(0 0 4px ${color})`;
+    svg.appendChild(c);
+    const seg = []; let total = 0;
+    for(let i = 1; i < pts.length; i++){ const d = Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]); seg.push(d); total += d; }
+    const t0 = performance.now(), D = reduced() ? 1 : dur;
+    const step = now => {
+      let k = Math.min(1, (now - t0) / D), dist = k * total, i = 0;
+      while(i < seg.length - 1 && dist > seg[i]){ dist -= seg[i]; i++; }
+      const f = seg[i] ? dist / seg[i] : 0;
+      c.setAttribute('cx', pts[i][0] + (pts[i + 1][0] - pts[i][0]) * f);
+      c.setAttribute('cy', pts[i][1] + (pts[i + 1][1] - pts[i][1]) * f);
+      if(k < 1) requestAnimationFrame(step); else { c.remove(); res(); }
+    };
+    requestAnimationFrame(step);
+  });
+}
+
+
+/* ---------- 5.1 カプセル化 ---------- */
+(function(){
+  const L = [
+    {cls:'L-app', tag:null, core:'TLSで暗号化した<br>HTTPのデータ<br>1,400 B', size:1400,
+     h:'中身：暗号化された手紙', e:'第4章で鍵をかけた、HTTPのデータです。ここから先の係は、中身を読まずに（読めずに）運びます。'},
+    {cls:'L-tcp', tag:['TCP', '20 B'], size:20,
+     h:'TCPのラベル（第3章）', e:'<b>ポート番号</b>（送り元 63553 → 宛先 443）、<b>シーケンス番号</b>・<b>ACK番号</b>、<b>ウインドウ</b>など。「どのアプリの、何番目のデータか」を表します。'},
+    {cls:'L-ip', tag:['IP', '20 B'], size:20,
+     h:'IPのラベル（5.4）', e:'<b>送り元のIPアドレス</b>（192.168.1.23）と<b>宛先のIPアドレス</b>（203.0.113.10）、寿命の <b>TTL</b>、中身がTCPであること、など。「最終的にどこへ届けるか」を表し、旅の終わりまで変わりません。'},
+    {cls:'L-eth', tag:['イーサネット', '14 B'], trailer:['FCS', '4 B'], size:18,
+     h:'イーサネットのラベル（5.7）', e:'<b>次に渡す相手のMACアドレス</b>（ルーター）と<b>自分のMACアドレス</b>、中身の種類（IPv4）。最後尾の <b>FCS</b> は、信号がこわれていないか確かめるための数字です。このラベルは「すぐ隣まで」用なので、ルーターを通るたびに<b>貼りかえられます</b>（第6章）。'},
+  ];
+  let n = 0, sel = 0;
+  function build(i){
+    const l = L[i];
+    if(i === 0) return `<div class="enc-l ${l.cls}"><div class="enc-core">${l.core}</div></div>`;
+    const tag = `<button class="enc-tag${sel === i ? ' sel' : ''}" data-i="${i}">${l.tag[0]}<small>${l.tag[1]}</small></button>`;
+    const tr = l.trailer ? `<button class="enc-tag${sel === i ? ' sel' : ''}" data-i="${i}">${l.trailer[0]}<small>${l.trailer[1]}</small></button>` : '';
+    return `<div class="enc-l ${l.cls}">${tag}${build(i - 1)}${tr}</div>`;
+  }
+  function draw(){
+    $('encStage').innerHTML = build(n);
+    const total = L.slice(0, n + 1).reduce((s, l) => s + l.size, 0);
+    $('encSize').textContent = `全体：${total.toLocaleString('ja-JP')} バイト`;
+    $('encExplain').innerHTML = `<b class="t">${L[sel].h}</b>${L[sel].e}`;
+    $('encNext').disabled = n >= L.length - 1;
+    $('encStage').querySelectorAll('.enc-tag').forEach(b => b.onclick = () => { sel = +b.dataset.i; draw(); });
+  }
+  $('encNext').onclick = () => { if(n < L.length - 1){ n++; sel = n; draw(); } };
+  $('encReset').onclick = () => { n = 0; sel = 0; draw(); };
+  draw();
+})();
+
+/* ---------- 5.2 サブネット ---------- */
+(function(){
+  const toN = s => s.split('.').reduce((a, o) => (a << 8 >>> 0) + (+o), 0) >>> 0;
+  const toS = n => [24, 16, 8, 0].map(k => (n >>> k) & 255).join('.');
+  function kind(n){
+    const inR = (base, len) => len === 0 || (n >>> (32 - len)) === (toN(base) >>> (32 - len));
+    if(inR('10.0.0.0', 8) || inR('172.16.0.0', 12) || inR('192.168.0.0', 16)) return 'プライベートアドレス：家や会社の中だけで使う住所（RFC 1918）';
+    if(inR('100.64.0.0', 10)) return '共有アドレス：プロバイダが、たくさんの家で1つの外の住所を分け合うときに使う住所（RFC 6598）';
+    if(inR('127.0.0.0', 8)) return 'ループバック：このPC自身を表す住所';
+    if(inR('169.254.0.0', 16)) return 'リンクローカル：住所をもらえなかったとき、機器が自分で付ける住所';
+    if(inR('192.0.2.0', 24) || inR('198.51.100.0', 24) || inR('203.0.113.0', 24)) return '説明用の住所：本や資料の例に使うための住所（RFC 5737）。この教材の例もこれです';
+    return 'グローバルアドレス：インターネットで使う、世界で1つの住所';
+  }
+  function run(){
+    const raw = $('snIp').value.trim(), p = +$('snLen').value;
+    $('snLenOut').textContent = p;
+    if(!/^(\d{1,3}\.){3}\d{1,3}$/.test(raw) || raw.split('.').some(o => +o > 255)){
+      $('snBits').innerHTML = '<span class="v6-err">0〜255 の数字4つを、ドットで区切って入れてください。</span>'; $('snRes').innerHTML = ''; return;
+    }
+    const ip = toN(raw), mask = p ? (0xffffffff << (32 - p)) >>> 0 : 0, net = (ip & mask) >>> 0, bc = (net | ~mask) >>> 0;
+    const octs = raw.split('.').map(Number);
+    $('snBits').innerHTML = octs.map((o, k) => {
+      const bits = o.toString(2).padStart(8, '0').split('').map((b, j) => `<span class="${k * 8 + j < p ? 'n' : 'h'}">${b}</span>`).join('');
+      return `<div class="sn-oct"><span class="d">${o}</span><span class="b">${bits}</span></div>`;
+    }).join('<span style="align-self:flex-end">.</span>');
+    const hosts = Math.pow(2, 32 - p) - 2;
+    $('snRes').innerHTML = `
+      <div>ネットワーク部（町）<b>${toS(net)}/${p}</b></div>
+      <div>サブネットマスク<b>${toS(mask)}</b></div>
+      <div>使える番地<b>${toS(net + 1)} 〜 ${toS(bc - 1)}</b></div>
+      <div>機器をつなげる数<b>${hosts.toLocaleString('ja-JP')} 台</b></div>
+      <div>全員あて（ブロードキャスト）<b>${toS(bc)}</b></div>
+      <div class="kind">${kind(ip)}</div>
+      <div class="kind" style="color:var(--ink-2)">水色のビットがネットワーク部、オレンジがホスト部です。番地のうち、全部0（町そのもの）と全部1（全員あて）は機器に使えないので、2を引いています。</div>`;
+  }
+  $('snIp').oninput = run; $('snLen').oninput = run;
+  $('snPresets').querySelectorAll('button').forEach(b => b.onclick = () => { const [ip, l] = b.dataset.ip.split('/'); $('snIp').value = ip; $('snLen').value = l; run(); });
+  run();
+})();
+
+/* ---------- 5.3 IPv6 ---------- */
+(function(){
+  function parse(s){
+    s = s.trim().toLowerCase().replace(/%.*$/, '');
+    if(!/^[0-9a-f:]+$/.test(s) || (s.match(/::/g) || []).length > 1) return null;
+    let parts;
+    if(s.includes('::')){
+      const [a, b] = s.split('::');
+      const A = a ? a.split(':') : [], B = b ? b.split(':') : [];
+      if(A.length + B.length > 7) return null;
+      parts = [...A, ...Array(8 - A.length - B.length).fill('0'), ...B];
+    } else parts = s.split(':');
+    if(parts.length !== 8 || parts.some(p => !/^[0-9a-f]{1,4}$/.test(p))) return null;
+    return parts.map(p => parseInt(p, 16));
+  }
+  function compress(g){
+    let best = [-1, 0], cur = [-1, 0];
+    g.forEach((v, i) => {
+      if(v === 0){ if(cur[0] < 0) cur = [i, 1]; else cur[1]++; if(cur[1] > best[1]) best = [...cur]; }
+      else cur = [-1, 0];
+    });
+    const h = g.map(v => v.toString(16));
+    if(best[1] < 2) return h.join(':');
+    return h.slice(0, best[0]).join(':') + '::' + h.slice(best[0] + best[1]).join(':');
+  }
+  function kind(g){
+    const f = g[0];
+    if(g.every((v, i) => i < 7 ? v === 0 : v === 1)) return 'ループバック：このPC自身（IPv4の 127.0.0.1 と同じ）';
+    if(f === 0x2001 && g[1] === 0x0db8) return '説明用の住所（2001:db8::/32）：本や資料の例に使うための住所';
+    if((f & 0xffc0) === 0xfe80) return 'リンクローカル（fe80::/10）：同じネットワークの中だけで使える住所。機器が自分で作る';
+    if((f & 0xfe00) === 0xfc00) return 'ユニークローカル（fc00::/7）：家や会社の中だけで使う住所';
+    if((f & 0xff00) === 0xff00) return 'マルチキャスト（ff00::/8）：グループあての住所';
+    if((f & 0xe000) === 0x2000) return 'グローバルアドレス（2000::/3）：インターネットで使う、世界で1つの住所';
+    return 'そのほかの住所';
+  }
+  function run(){
+    const g = parse($('v6In').value);
+    if(!g){ $('v6Out').innerHTML = '<span class="v6-err">IPv6アドレスとして読めませんでした。16進数（0〜9、a〜f）を「:」で区切って入れてください。「::」は1か所だけ使えます。</span>'; return; }
+    const full = g.map((v, i) => { const h = v.toString(16).padStart(4, '0'); const z = h.match(/^0*/)[0]; return `<span class="${i < 4 ? 'pfx' : 'iid'}"><span class="z">${z}</span>${h.slice(z.length)}</span>`; }).join(':');
+    $('v6Out').innerHTML = `
+      <div class="v6-row"><span class="k">省略しない形</span><span class="v">${full}</span></div>
+      <div class="v6-row"><span class="k">縮めた形</span><span class="v">${compress(g)}</span></div>
+      <div class="v6-row"><span class="k">種類</span><span class="v" style="font-family:inherit">${kind(g)}</span></div>
+      <p class="note">縮め方の決まり：①各区切りの先頭の0は省く（薄い0）　②0だけの区切りが2つ以上続くところは「::」にまとめる（一番長いところ1か所だけ）　③英字は小文字（RFC 5952）。<br>水色の前半64ビットが<b>ネットワーク部</b>、オレンジの後半64ビットが機器ごとの部分（インターフェースID）です。家のネットワークにも 2<sup>64</sup> 個の住所があります。</p>`;
+  }
+  $('v6Btn').onclick = run;
+  $('v6In').addEventListener('keydown', e => { if(e.key === 'Enter') run(); });
+  $('v6Presets').querySelectorAll('button').forEach(b => b.onclick = () => { $('v6In').value = b.dataset.v; run(); });
+  run();
+})();
+
+/* ---------- 5.4 IPヘッダー ---------- */
+(function(){
+  const H = {
+    '4':[
+      ['ver', 'バージョン', 4, '4'], ['ihl', 'ヘッダー長', 4, '5'], ['tos', 'サービス種別', 8, 'DSCP / ECN'], ['len', '全体の長さ', 16, '1440'],
+      ['id', '識別番号', 16, '0x1c46'], ['flg', 'フラグ', 3, 'DF'], ['off', '断片の位置', 13, '0'],
+      ['ttl', 'TTL（寿命）', 8, '64', 1], ['proto', 'プロトコル', 8, '6 = TCP', 1], ['sum', 'チェックサム', 16, '0xb1e6'],
+      ['src', '送り元アドレス', 32, '192.168.1.23', 1],
+      ['dst', '宛先アドレス', 32, '203.0.113.10', 1],
+    ],
+    '6':[
+      ['ver6', 'バージョン', 4, '6'], ['tc', 'トラフィッククラス', 8, 'DSCP / ECN'], ['flow', 'フローラベル', 20, '0x8a3f1'],
+      ['plen', '中身の長さ', 16, '1420'], ['nh', '次のヘッダー', 8, '6 = TCP', 1], ['hop', 'ホップリミット', 8, '64', 1],
+      ['src6', '送り元アドレス（128ビット＝4行分）', 32, '2001:db8:1::23', 1],
+      ['dst6', '宛先アドレス（128ビット＝4行分）', 32, '2001:db8:5::10', 1],
+    ],
+  };
+  const E = {
+    ver:'IPの版。IPv4なら4です。', ihl:'このヘッダーの長さ（4バイト単位）。5なら20バイトです。',
+    tos:'優先度（DSCP）と、混雑の合図（ECN）。ECNは、ルーターが「混んできた」とデータを捨てる前に知らせる仕組みで、第3章の輻輳制御を助けます。',
+    len:'ヘッダーと中身を合わせた長さ（バイト）。',
+    id:'大きすぎる小包を途中で分割したとき、元の小包を組み立て直すための番号です。',
+    flg:'DF（Don\'t Fragment）が立っていると「途中で分割しないで」という意味。今はほとんどの小包にDFが立っています（第6章のMTU）。',
+    off:'分割した断片が、元の小包の何番目の位置にあたるか。',
+    ttl:'小包の<b>寿命</b>。ルーターを1つ通るたびに1ずつ減り、0になったら捨てられます。経路がぐるぐる回る事故が起きても、小包が永遠にさまよわないための仕組みです（第6章）。Mac や Linux は64、Windows は128から始めるのがふつうです。',
+    proto:'中身が何か。6ならTCP、17ならUDP。受け取った側は、これを見て次の係に渡します。',
+    sum:'IPヘッダーがこわれていないか確かめるための数字。TTLが減るたびに、ルーターが計算し直します。',
+    src:'送り元のIPアドレス。返事はここに届きます。', dst:'宛先のIPアドレス。旅の途中のルーターは、ここだけを見て道を決めます（第6章）。',
+    ver6:'IPの版。IPv6なら6です。', tc:'IPv4のサービス種別と同じで、優先度と混雑の合図です。',
+    flow:'同じ流れ（たとえば1本の動画）に属する小包に同じ番号をつけ、ルーターがまとめて扱いやすくするための番号です。',
+    plen:'中身の長さ。IPv6のヘッダーは40バイトに固定なので、中身だけを書きます。',
+    nh:'次に続くヘッダー（中身）が何か。IPv4のプロトコルと同じで、6ならTCPです。',
+    hop:'IPv4のTTLと同じ寿命です。名前が「何回通過できるか」を表すものに変わりました。',
+    src6:'送り元のIPv6アドレス（128ビット）。', dst6:'宛先のIPv6アドレス（128ビット）。',
+  };
+  let mode = '4', sel = null;
+  function draw(){
+    const scale = [0, 8, 16, 24].map(b => `<span class="hdr-scale">${b}</span>`).join('');
+    $('hdrGrid').innerHTML = scale + H[mode].map(([k, nm, w, v, key]) =>
+      `<button class="hdr-f${key ? ' key' : ''}${sel === k ? ' sel' : ''}" style="grid-column:span ${w}${/src6|dst6/.test(k) ? ';min-height:64px' : ''}" data-k="${k}">${nm}<small>${v}</small></button>`).join('');
+    $('hdrGrid').querySelectorAll('.hdr-f').forEach(b => b.onclick = () => { sel = b.dataset.k; draw(); });
+    const f = H[mode].find(x => x[0] === sel);
+    $('hdrExplain').innerHTML = f ? `<b class="t">${f[1]}（${f[2]}ビット）：${f[3]}</b>${E[sel]}` :
+      (mode === '4' ? '水色のます目が、特に大切な欄です。押すと説明が出ます。' : 'IPv6のヘッダーは、IPv4よりも欄が少なく、すっきりしています。チェックサムをなくし（ほかの係に任せる）、途中のルーターでの分割もやめました。そのぶんルーターの仕事が軽くなります。');
+  }
+  document.querySelectorAll('#hdrMode button').forEach(b => b.onclick = () => {
+    mode = b.dataset.h; sel = null;
+    document.querySelectorAll('#hdrMode button').forEach(x => x.classList.toggle('on', x === b));
+    draw();
+  });
+  draw();
+})();
+
+/* ---------- 5.5 同じネットワークか ---------- */
+(function(){
+  const pad = s => s.padEnd(15);
+  function pick(d){
+    $('nbDest').querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.d === d));
+    const o = d.split('.').map(Number);
+    const net = `${o[0]}.${o[1]}.${o[2]}.0`, same = net === '192.168.1.0';
+    $('nbCalc').innerHTML =
+      `自分  ${pad('192.168.1.23')} AND 255.255.255.0 = <span class="n">192.168.1.0</span>\n` +
+      `相手  ${pad(d)} AND 255.255.255.0 = <span class="${same ? 'g' : 'x'}">${net}</span>\n` +
+      `→ ${same ? '<span class="g">同じネットワーク</span>' : '<span class="x">ちがうネットワーク</span>'}`;
+    $('nbRes').innerHTML = same
+      ? (d === '192.168.1.1' ? 'ルーター自身も、同じネットワークの一員です。<b>直接渡します</b>。' : `同じ町の中です。ルーターを通さず、<b>${d} に直接渡します</b>。ARPでたずねるのは ${d} のMACアドレスです。`)
+      : `町の外です。<b>ルーター（192.168.1.1）に預けます</b>。IPのラベルの宛先は ${d} のまま、イーサネットのラベルの宛先だけをルーターのMACアドレスにします。ARPでたずねるのは、ルーターのMACアドレスです。`;
+  }
+  $('nbDest').querySelectorAll('button').forEach(b => b.onclick = () => pick(b.dataset.d));
+  pick('203.0.113.10');
+})();
+
+/* ---------- 5.6 ARP ---------- */
+(function(){
+  const D = [
+    {ic:'💻', nm:'あなたのPC', ip:'192.168.1.23', pc:true},
+    {ic:'🖨️', nm:'プリンター', ip:'192.168.1.50'},
+    {ic:'📱', nm:'スマホ', ip:'192.168.1.31'},
+    {ic:'📺', nm:'テレビ', ip:'192.168.1.40'},
+    {ic:'📡', nm:'ルーター', ip:'192.168.1.1', router:true},
+  ];
+  const ROUTER_MAC = 'f8:94:97:12:34:56';
+  let cache = false, run = 0;
+  $('arpLan').innerHTML = D.map((d, i) => `<div class="arp-dev" data-i="${i}"><span class="bub"></span><div class="arp-ic">${d.ic}</div><b>${d.nm}</b><span class="ip">${d.ip}</span></div>`).join('');
+  const devs = [...$('arpLan').children];
+  const reset = () => devs.forEach(el => { el.className = 'arp-dev'; el.querySelector('.bub').className = 'bub'; });
+  const bub = (i, cls, t) => { const b = devs[i].querySelector('.bub'); b.textContent = t; b.className = `bub ${cls} show`; };
+  function table(){ $('arpTable').innerHTML = cache ? `<div class="arp-row"><span>192.168.1.1</span><b>${ROUTER_MAC}</b></div>` : '<div class="arp-empty">（空っぽ）</div>'; }
+  async function send(){
+    const me = ++run, T = reduced() ? 0 : 900;
+    reset();
+    if(cache){
+      $('arpExplain').innerHTML = '<b class="t">記憶にあった！</b>ルーターのMACアドレスを覚えているので、たずねずにすぐ送れました。ARPの記憶は、数分〜20分ほどで消えます（OSによってちがいます）。';
+      devs[4].classList.add('reply'); return;
+    }
+    bub(0, 'q', '192.168.1.1 はだれ？'); devs.slice(1).forEach(el => el.classList.add('hear'));
+    $('arpExplain').innerHTML = '<b class="t">① 全員にたずねる</b>宛先MACアドレスを <code>ff:ff:ff:ff:ff:ff</code>（全員あて）にして、「192.168.1.1 の人、MACアドレスを教えて」と叫びます。同じネットワークの全員に届きます。';
+    await sleep(T * 1.6); if(me !== run) return;
+    devs.slice(1, 4).forEach(el => { el.classList.remove('hear'); el.classList.add('ignore'); });
+    devs[4].classList.remove('hear'); devs[4].classList.add('reply');
+    devs[0].querySelector('.bub').className = 'bub';
+    bub(4, 'a', `わたし！ ${ROUTER_MAC.slice(0, 8)}…`);
+    $('arpExplain').innerHTML = '<b class="t">② 本人だけが答える</b>自分の住所ではない機器は、だまって無視します。ルーターだけが、自分のMACアドレスを<b>PCにだけ</b>返します。';
+    await sleep(T * 1.6); if(me !== run) return;
+    cache = true; table();
+    $('arpExplain').innerHTML = '<b class="t">③ 覚えて、送る</b>PCは答えを記憶してから、イーサネットのラベルの宛先にルーターのMACアドレスを書いて、小包を送りました。もう一度「ルーターに小包を送る」を押すと、今度はたずねずに送れます。';
+  }
+  $('arpBtn').onclick = send;
+  $('arpClear').onclick = () => { run++; cache = false; table(); reset(); $('arpExplain').innerHTML = 'ARPの記憶を消しました。'; };
+  table();
+  $('arpExplain').innerHTML = 'PCは、ルーターのIPアドレス（192.168.1.1）は知っていますが、MACアドレスは知りません。「ルーターに小包を送る」を押してみましょう。';
+})();
+
+/* ---------- 5.7 フレームとMACアドレス ---------- */
+(function(){
+  const F = [['宛先MAC', '6 B', 'ルーター', 'var(--answer)', 6], ['送り元MAC', '6 B', '自分', 'var(--answer)', 6], ['種類', '2 B', '0x0800 = IPv4<br>0x86DD = IPv6', 'var(--answer)', 4], ['中身：IPの小包', '46〜1500 B', 'IPヘッダー＋TCP＋データ', 'var(--accent)', 18], ['FCS', '4 B', 'こわれていないか', 'var(--answer)', 4]];
+  $('frame').innerHTML = F.map(([n, s, d, c, w]) => `<div class="fr-f" style="--c:${c};--w:${w}"><b>${n}</b><span>${s}</span><br>${d}</div>`).join('');
+  function run(){
+    const raw = $('macIn').value.trim().toLowerCase().replace(/-/g, ':');
+    const parts = raw.split(':');
+    if(parts.length !== 6 || parts.some(p => !/^[0-9a-f]{1,2}$/.test(p))){ $('macOut').innerHTML = '<span class="v6-err">16進数2けたを6つ、「:」で区切って入れてください。</span>'; return; }
+    const b = parts.map(p => parseInt(p, 16));
+    const ig = b[0] & 1, ul = (b[0] >> 1) & 1, bc = b.every(x => x === 255);
+    const bits = b[0].toString(2).padStart(8, '0').split('').map((x, j) => `<i class="${j === 7 ? 'ig' : j === 6 ? 'ul' : ''}">${x}</i>`).join('');
+    const bytes = b.map((x, i) => `<div class="mac-b${i < 3 && !ul && !ig ? ' oui' : ''}">${x.toString(16).padStart(2, '0')}${i === 0 ? `<span class="bits">${bits}</span>` : ''}<small>${bc || ig ? '' : i < 3 ? (ul ? '自分で決めた番号' : 'メーカーの番号') : '機器ごとの番号'}</small></div>`).join('');
+    let note;
+    if(bc) note = '<b>全員あて（ブロードキャスト）</b>。48ビットすべてが1です。ARPでたずねるときなどに使います。';
+    else if(ig) note = '1バイト目の一番右のビット（赤）が1なので、<b>グループあて（マルチキャスト）</b>の番号です。';
+    else if(ul) note = '1バイト目の右から2番目のビット（オレンジ）が1なので、<b>メーカーが付けた番号ではなく、機器が自分で決めた番号</b>です。スマホやPCが、プライバシーのために使う<b>ランダムなMACアドレス</b>の可能性が高いです。';
+    else note = `右から2番目のビット（オレンジ）が0なので、メーカーが付けた番号です。前半の <b>${parts.slice(0, 3).join(':')}</b> は、IEEE（規格を決める団体）がメーカーに割り当てた番号（OUI）で、調べるとメーカーがわかります。`;
+    $('macOut').innerHTML = `<div class="mac-bytes">${bytes}</div><div class="mac-note">${note}</div>`;
+  }
+  $('macBtn').onclick = run;
+  $('macIn').addEventListener('keydown', e => { if(e.key === 'Enter') run(); });
+  $('macPresets').querySelectorAll('button').forEach(b => b.onclick = () => { $('macIn').value = b.dataset.m; run(); });
+  run();
+})();
+
+/* ---------- 5.8 信号 ---------- */
+(function(){
+  function run(){
+    const bytes = [...new TextEncoder().encode($('sigIn').value)];
+    const chars = [...$('sigIn').value];
+    let ci = 0, left = 0;
+    $('sigBytes').innerHTML = bytes.map((x, i) => {
+      if(left === 0){ const c = chars[ci++] || ''; left = new TextEncoder().encode(c).length; var label = c; }
+      left--;
+      return `<div class="sig-byte"><small>${label !== undefined ? esc(label) : '〃'}</small>${x.toString(16).padStart(2, '0')}<span class="bits">${x.toString(2).padStart(8, '0')}</span></div>`;
+    }).join('') || '<span class="note">文字を入れてください。</span>';
+    const bits = bytes.slice(0, 4).map(x => x.toString(2).padStart(8, '0')).join('').split('').map(Number);
+    const W = 640, n = Math.max(bits.length, 1), w = (W - 20) / n, hi = 20, lo = 64;
+    let d = `M10,${bits[0] ? hi : lo}`, txt = '', grid = '';
+    bits.forEach((bt, i) => {
+      const x = 10 + i * w, y = bt ? hi : lo;
+      if(i) d += ` L${x},${y}`;
+      d += ` L${x + w},${y}`;
+      txt += `<text x="${x + w / 2 - 3}" y="84">${bt}</text>`;
+      if(i % 8 === 0) grid += `<line x1="${x}" y1="6" x2="${x}" y2="76"/>`;
+    });
+    $('sigWave').innerHTML = grid + (bits.length ? `<path d="${d}"/>` : '') + txt + (bytes.length > 4 ? `<text x="${W - 150}" y="14">（最初の4バイトだけ表示）</text>` : '');
+  }
+  $('sigIn').oninput = run; run();
+})();
+
+/* ---------- 5.9 試そう ---------- */
+setupCmds({
+  mac:[
+    ['ifconfig en0', 'Wi-Fi（en0）の設定です。<code>inet</code> がIPv4アドレス、<code>ether</code> がMACアドレス、<code>mtu</code> が1回に運べる大きさです。有線LANは en1 や en6 などになります。'],
+    ['netstat -rn -f inet', '経路表です。<code>default</code> の行の Gateway がルーターです。'],
+    ['arp -an', 'ARPの記憶です。ルーターなど、最近やり取りした相手のMACアドレスが並びます。'],
+    ['networksetup -getinfo Wi-Fi', 'IPアドレス・サブネットマスク・ルーターを、まとめて表示します。'],
+  ],
+  win:[
+    ['ipconfig /all', 'IPv4アドレス、サブネットマスク、デフォルトゲートウェイ（ルーター）、物理アドレス（MACアドレス）が表示されます。'],
+    ['route print -4', '経路表です。宛先 0.0.0.0 の行が「それ以外はぜんぶルーターへ」です。'],
+    ['arp -a', 'ARPの記憶です。'],
+    ['Get-NetNeighbor -AddressFamily IPv6', 'IPv6の近隣探索（NDP）の記憶です。'],
+  ],
+});
+setupTrace('real', 'realExplain', [
+  ['c', '$ ifconfig en0 （抜き出し）'],
+  ['mtu', 'en0: flags=8863<UP,BROADCAST,SMART,RUNNING,SIMPLEX,MULTICAST> mtu 1500'],
+  ['ether', '        ether 96:89:3f:xx:xx:xx'],
+  ['inet6', '        inet6 fe80::1cb2:cc9f:77e4:411e%en0 prefixlen 64 secured'],
+  ['inet', '        inet 192.168.11.6 netmask 0xffffff00 broadcast 192.168.11.255'],
+  ['c', '$ netstat -rn -f inet （抜き出し）'],
+  ['def', 'default            192.168.11.1       UGScg       en6'],
+  ['c', '$ arp -an （抜き出し）'],
+  ['arp', '? (192.168.11.1) at f8:94:97:xx:xx:xx on en6 ifscope [ethernet]'],
+], {
+  mtu:['1回に運べる大きさ：1500バイト', '<b>MTU 1500</b>。イーサネットの小包の中身は1500バイトまで、という意味です。第3章のMSS（1460バイト）は、ここからIPとTCPのラベルを引いた数でした。'],
+  ether:['このMacのWi-FiのMACアドレス', '最初の <code>96</code> は2進数で <code>10010110</code>。右から2番目のビットが1なので、メーカーの番号ではなく、<b>プライバシーのためのランダムな番号</b>です（5.7 の「このMacのWi-Fi」で確かめられます）。'],
+  inet6:['同じネットワーク専用のIPv6アドレス', '<code>fe80::</code> で始まるのは、同じネットワークの中だけで使えるIPv6アドレスです。IPv6が使える機器は、だれからも住所をもらわなくても、これを自分で作ります。<code>secured</code> は、推測されにくい作り方をしたという意味です。'],
+  inet:['IPv4アドレスとネットワーク', 'IPv4アドレスは <b>192.168.11.6</b>。<code>netmask 0xffffff00</code> は16進数で書いた 255.255.255.0、つまり <b>/24</b> です。ネットワークは 192.168.11.0/24、全員あては .255 です（5.2）。'],
+  def:['経路表の「それ以外ぜんぶ」の行', '<code>default</code> は「ほかのどの行にも当てはまらない宛先は、ぜんぶ 192.168.11.1（ルーター）へ」という意味です。<code>en6</code> は有線LANのつなぎ口です。'],
+  arp:['ルーターのMACアドレスを覚えている', 'ルーター 192.168.11.1 のMACアドレスを、ARPで調べて覚えています（後半は伏せています）。前半の <code>f8:94:97</code> はメーカーの番号です。'],
+});
+
+/* ---------- 5.11 クイズ ---------- */
+setupQuiz([
+  {q:'カプセル化で、いちばん外側に貼られるラベルは？', o:['TCPのラベル','IPのラベル','イーサネットのラベル'], a:2,
+   e:'HTTP → TCP → IP → イーサネット の順に外へ包みます。いちばん外は「すぐ隣まで」用のイーサネットです。'},
+  {q:'192.168.1.23/24 のネットワーク部はどれ？', o:['192.168.1','192.168','23'], a:0,
+   e:'/24 は「前から24ビット（数字3つ分）がネットワーク部」という意味です。'},
+  {q:'IPv6アドレスの長さは？', o:['32ビット','64ビット','128ビット'], a:2,
+   e:'IPv4の4倍の128ビット。住所がほぼ無限にあるので、NATがいりません。'},
+  {q:'宛先が別のネットワークにあるとき、イーサネットのラベルの宛先は？', o:['最終的な相手のMACアドレス','ルーターのMACアドレス','全員あて'], a:1,
+   e:'IPのラベルの宛先は最終的な相手のまま、イーサネットのラベルだけルーターあてにして預けます。'},
+  {q:'ARP で全員にたずねるのは何？', o:['IPアドレスに対応するMACアドレス','サイトの名前に対応するIPアドレス','ルーターのパスワード'], a:0,
+   e:'名前からIPアドレスを調べるのはDNS（第2章）。IPアドレスからMACアドレスを調べるのがARPです。'},
+  {q:'家の中だけで使うプライベートアドレスはどれ？', o:['203.0.113.10','192.168.1.23','198.51.100.7'], a:1,
+   e:'192.168.0.0/16 はプライベートアドレス。インターネットに出るときは、ルーターが外の住所に付けかえます。'},
+]);
+</script>
+</body>
+</html>
